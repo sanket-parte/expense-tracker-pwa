@@ -5,6 +5,7 @@ import { Plus, Trash2, AlertCircle } from 'lucide-react';
 import Modal from '../components/Modal';
 import BudgetForm from '../components/BudgetForm';
 import Loading from '../components/Loading';
+import SwipeableItem from '../components/SwipeableItem';
 
 export default function Budgets() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,54 +61,56 @@ export default function Budgets() {
                         const isNearLimit = percent > 85;
 
                         return (
-                            <div key={budget.id} className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-6 rounded-3xl border border-white/40 dark:border-slate-800 shadow-glass group relative overflow-hidden">
-                                <div className="flex justify-between items-start mb-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-2xl bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-brand-400 font-bold border border-brand-100 dark:border-brand-500/20">
-                                            {budget.category?.name?.[0] || 'C'}
+                            <SwipeableItem key={budget.id} id={budget.id} onDelete={() => deleteMutation.mutate(budget.id)}>
+                                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-6 rounded-3xl border border-white/40 dark:border-slate-800 shadow-glass group relative overflow-hidden">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-2xl bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-brand-400 font-bold border border-brand-100 dark:border-brand-500/20">
+                                                {budget.category?.name?.[0] || 'C'}
+                                            </div>
+                                            <div>
+                                                <h3 className="font-bold text-slate-800 dark:text-white">{budget.category?.name}</h3>
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">{budget.period}</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h3 className="font-bold text-slate-800 dark:text-white">{budget.category?.name}</h3>
-                                            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">{budget.period}</p>
-                                        </div>
+                                        <button
+                                            onClick={() => deleteMutation.mutate(budget.id)}
+                                            className="text-slate-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg"
+                                        >
+                                            <Trash2 size={18} />
+                                        </button>
                                     </div>
-                                    <button
-                                        onClick={() => deleteMutation.mutate(budget.id)}
-                                        className="text-slate-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg"
-                                    >
-                                        <Trash2 size={18} />
-                                    </button>
-                                </div>
 
-                                <div className="space-y-4">
-                                    <div>
-                                        <div className="flex justify-between text-sm font-bold mb-2">
-                                            <span className={isOverBudget ? "text-red-600 dark:text-red-400" : "text-slate-600 dark:text-slate-300"}>
-                                                ₹{budget.spent.toLocaleString()}
+                                    <div className="space-y-4">
+                                        <div>
+                                            <div className="flex justify-between text-sm font-bold mb-2">
+                                                <span className={isOverBudget ? "text-red-600 dark:text-red-400" : "text-slate-600 dark:text-slate-300"}>
+                                                    ₹{budget.spent.toLocaleString()}
+                                                </span>
+                                                <span className="text-slate-400 dark:text-slate-500">
+                                                    of ₹{budget.amount.toLocaleString()}
+                                                </span>
+                                            </div>
+                                            <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                                                <div
+                                                    className={`h-full rounded-full transition-all duration-1000 ease-out ${isOverBudget ? 'bg-red-500' : isNearLimit ? 'bg-amber-400' : 'bg-brand-500'
+                                                        }`}
+                                                    style={{ width: `${percent}%` }}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="flex justify-between items-center text-xs font-semibold">
+                                            <span className={isOverBudget ? "text-red-500 dark:text-red-400" : isNearLimit ? "text-amber-500" : "text-emerald-500"}>
+                                                {isOverBudget ? "Over Budget" : isNearLimit ? "Near Limit" : "On Track"}
                                             </span>
                                             <span className="text-slate-400 dark:text-slate-500">
-                                                of ₹{budget.amount.toLocaleString()}
+                                                {Math.round(percent)}% Used
                                             </span>
                                         </div>
-                                        <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                            <div
-                                                className={`h-full rounded-full transition-all duration-1000 ease-out ${isOverBudget ? 'bg-red-500' : isNearLimit ? 'bg-amber-400' : 'bg-brand-500'
-                                                    }`}
-                                                style={{ width: `${percent}%` }}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="flex justify-between items-center text-xs font-semibold">
-                                        <span className={isOverBudget ? "text-red-500 dark:text-red-400" : isNearLimit ? "text-amber-500" : "text-emerald-500"}>
-                                            {isOverBudget ? "Over Budget" : isNearLimit ? "Near Limit" : "On Track"}
-                                        </span>
-                                        <span className="text-slate-400 dark:text-slate-500">
-                                            {Math.round(percent)}% Used
-                                        </span>
                                     </div>
                                 </div>
-                            </div>
+                            </SwipeableItem>
                         );
                     })
                 )}

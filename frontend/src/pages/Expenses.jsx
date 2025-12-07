@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { Plus } from 'lucide-react';
 import ExpenseItem from '../components/ExpenseItem';
+import SwipeableItem from '../components/SwipeableItem';
 import Modal from '../components/Modal';
 import ExpenseForm from '../components/ExpenseForm';
 import ExpenseFilters from '../components/ExpenseFilters';
@@ -122,11 +123,13 @@ export default function Expenses() {
                                 style={{ animationDelay: `${index * 50}ms` }}
                                 className="animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards"
                             >
-                                <ExpenseItem
-                                    expense={expense}
-                                    onEdit={handleEdit}
-                                    onDelete={handleDelete}
-                                />
+                                <SwipeableItem id={expense.id} onDelete={handleDelete} onEdit={() => handleEdit(expense)}>
+                                    <ExpenseItem
+                                        expense={expense}
+                                        onEdit={handleEdit}
+                                        onDelete={handleDelete}
+                                    />
+                                </SwipeableItem>
                             </div>
                         );
                     })}
