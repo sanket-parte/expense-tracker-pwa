@@ -68,15 +68,11 @@ export default function BudgetOverview({ budgets }) {
                 </div>
 
                 {/* Progress Bar Visual */}
-                <div className="mt-4 bg-black/20 rounded-full h-1.5 overflow-hidden w-full">
+                <div className="mt-4 bg-black/20 rounded-full h-2 overflow-hidden w-full">
                     <div
                         className={cn("h-full rounded-full transition-all duration-1000", isOverBudget ? "bg-red-400" : "bg-emerald-400")}
                         style={{ width: `${percentage}%` }}
                     ></div>
-                </div>
-                <div className="mt-2 flex justify-between text-xs font-medium text-indigo-200">
-                    <span>₹0</span>
-                    <span>₹{totalBudget.toLocaleString()}</span>
                 </div>
             </div>
         </div>

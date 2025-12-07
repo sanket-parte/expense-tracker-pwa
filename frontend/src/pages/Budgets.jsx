@@ -28,7 +28,7 @@ export default function Budgets() {
     if (error) return <div className="text-red-500">Error loading budgets</div>;
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <div>
                     <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Budgets</h2>

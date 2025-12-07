@@ -125,7 +125,7 @@ export default function Layout() {
 
             {/* Main Content Area */}
             <main className="flex-1 min-w-0 transition-all duration-300 lg:pl-72 flex flex-col h-[100dvh] overflow-hidden pt-16 lg:pt-0">
-                <div className="flex-1 overflow-y-auto relative scroll-smooth w-full">
+                <div className="flex-1 overflow-y-auto relative w-full">
                     <div className={cn(
                         "max-w-7xl mx-auto w-full min-h-full",
                         location.pathname === '/' ? "p-4 pb-24 lg:p-8" : "p-4 pb-24 lg:p-8"
