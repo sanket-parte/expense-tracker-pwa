@@ -65,7 +65,10 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
             onClose();
         } catch (error) {
             console.error("Failed to save expense", error);
-            alert("Failed to save expense");
+            if (error.response) {
+                console.error("Error response:", error.response.data);
+            }
+            alert("Failed to save expense (check console)");
         }
     };
 
@@ -148,7 +151,7 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
                     disabled={loading}
                     className="flex-1 px-6 py-3.5 bg-gradient-to-br from-brand-600 to-indigo-600 text-white rounded-xl hover:shadow-lg hover:shadow-brand-500/30 font-bold transition-all active:scale-95 disabled:opacity-70 disabled:shadow-none"
                 >
-                    {loading ? 'Saving...' : (initialData ? 'Update Expense' : 'Add Expense')}
+                    {loading ? 'Saving...' : (initialData?.id ? 'Update Expense' : 'Add Expense')}
                 </button>
             </div>
         </form>

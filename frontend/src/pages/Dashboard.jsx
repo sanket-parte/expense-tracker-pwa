@@ -7,8 +7,10 @@ import QuickAdd from '../components/QuickAdd';
 import Modal from '../components/Modal';
 import ExpenseForm from '../components/ExpenseForm';
 import PullToRefresh from '../components/PullToRefresh';
+import BudgetOverview from '../components/BudgetOverview';
+import RecentTransactions from '../components/RecentTransactions';
 import { cn } from '../lib/utils';
-import { useDashboardStats } from '../hooks/useQueries';
+import { useDashboardStats, useBudgets } from '../hooks/useQueries';
 
 const COLORS = ['#6366f1', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6'];
 
@@ -39,6 +41,7 @@ const StatCard = ({ title, amount, icon: Icon, trend, color, labelColor, delay }
 export default function Dashboard() {
     const queryClient = useQueryClient();
     const { data, isLoading: loading, error, refetch } = useDashboardStats();
+    const { data: budgets } = useBudgets();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [quickAddData, setQuickAddData] = useState(null);
 
@@ -102,17 +105,29 @@ export default function Dashboard() {
 
                 <QuickAdd onQuickAdd={handleQuickAdd} />
 
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <StatCard
-                        title="Total Expenses"
-                        amount={data.total_expense}
-                        icon={Wallet}
-                        color="bg-brand-500"
-                        labelColor="text-brand-600"
-                        trend={12}
-                        delay={0}
-                    />
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Left Column: Key Metrics */}
+                    <div className="space-y-6 lg:col-span-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <StatCard
+                                title="Total Expenses"
+                                amount={data.total_expense}
+                                icon={Wallet}
+                                color="bg-brand-500"
+                                labelColor="text-brand-600"
+                                trend={12}
+                                delay={0}
+                            />
+                            {/* Placeholder for Income or Savings if available later */}
+                            <BudgetOverview budgets={budgets || []} />
+                        </div>
+                    </div>
+
+                    {/* Right Column: Recent Activity */}
+                    <div className="lg:col-span-1">
+                        <RecentTransactions />
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

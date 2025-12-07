@@ -56,24 +56,39 @@ export const useCreateExpense = () => {
             // Optimistically update Infinite Query
             queryClient.setQueriesData({ queryKey: [QUERY_KEYS.expenses] }, (old) => {
                 if (!old) return old;
-                // Add to the first page
-                const newPages = [...old.pages];
-                if (newPages.length > 0) {
-                    newPages[0] = [
-                        { ...newExpense, id: Date.now(), created_at: new Date().toISOString() }, // Temp ID & date
-                        ...newPages[0]
+
+                // Handle Infinite Query (pages)
+                if (old.pages) {
+                    const newPages = [...old.pages];
+                    if (newPages.length > 0) {
+                        newPages[0] = [
+                            { ...newExpense, id: Date.now(), created_at: new Date().toISOString() }, // Temp ID & date
+                            ...newPages[0]
+                        ];
+                    }
+                    return { ...old, pages: newPages };
+                }
+
+                // Handle Standard Query (Array e.g. Recent Expenses)
+                if (Array.isArray(old)) {
+                    return [
+                        { ...newExpense, id: Date.now(), created_at: new Date().toISOString() },
+                        ...old
                     ];
                 }
-                return { ...old, pages: newPages };
+
+                return old;
             });
 
             return { previousExpenses };
         },
         onError: (err, newExpense, context) => {
             // Restore all modified queries
-            context.previousExpenses.forEach(([queryKey, data]) => {
-                queryClient.setQueryData(queryKey, data);
-            });
+            if (context?.previousExpenses) {
+                context.previousExpenses.forEach(([queryKey, data]) => {
+                    queryClient.setQueryData(queryKey, data);
+                });
+            }
         },
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.expenses] });
@@ -95,20 +110,33 @@ export const useUpdateExpense = () => {
 
             queryClient.setQueriesData({ queryKey: [QUERY_KEYS.expenses] }, (old) => {
                 if (!old) return old;
-                return {
-                    ...old,
-                    pages: old.pages.map(page =>
-                        page.map(expense => expense.id === id ? { ...expense, ...data } : expense)
-                    )
-                };
+
+                // Handle Infinite Query
+                if (old.pages) {
+                    return {
+                        ...old,
+                        pages: old.pages.map(page =>
+                            page.map(expense => expense.id === id ? { ...expense, ...data } : expense)
+                        )
+                    };
+                }
+
+                // Handle Standard Query
+                if (Array.isArray(old)) {
+                    return old.map(expense => expense.id === id ? { ...expense, ...data } : expense);
+                }
+
+                return old;
             });
 
             return { previousExpenses };
         },
         onError: (err, variables, context) => {
-            context.previousExpenses.forEach(([queryKey, data]) => {
-                queryClient.setQueryData(queryKey, data);
-            });
+            if (context?.previousExpenses) {
+                context.previousExpenses.forEach(([queryKey, data]) => {
+                    queryClient.setQueryData(queryKey, data);
+                });
+            }
         },
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.expenses] });
@@ -130,18 +158,31 @@ export const useDeleteExpense = () => {
 
             queryClient.setQueriesData({ queryKey: [QUERY_KEYS.expenses] }, (old) => {
                 if (!old) return old;
-                return {
-                    ...old,
-                    pages: old.pages.map(page => page.filter(expense => expense.id !== id))
-                };
+
+                // Handle Infinite Query
+                if (old.pages) {
+                    return {
+                        ...old,
+                        pages: old.pages.map(page => page.filter(expense => expense.id !== id))
+                    };
+                }
+
+                // Handle Standard Query
+                if (Array.isArray(old)) {
+                    return old.filter(expense => expense.id !== id);
+                }
+
+                return old;
             });
 
             return { previousExpenses };
         },
         onError: (err, id, context) => {
-            context.previousExpenses.forEach(([queryKey, data]) => {
-                queryClient.setQueryData(queryKey, data);
-            });
+            if (context?.previousExpenses) {
+                context.previousExpenses.forEach(([queryKey, data]) => {
+                    queryClient.setQueryData(queryKey, data);
+                });
+            }
         },
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.expenses] });

@@ -76,3 +76,14 @@ export const useExpenses = (filters) => {
         keepPreviousData: true,
     });
 };
+
+export const useRecentExpenses = () => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.expenses, 'recent'],
+        queryFn: async () => {
+            const { data } = await api.get('/expenses/?limit=5&offset=0');
+            return data;
+        },
+        staleTime: 1000 * 60 * 1, // 1 minute
+    });
+};
