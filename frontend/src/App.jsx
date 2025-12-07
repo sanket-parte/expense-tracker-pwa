@@ -15,6 +15,7 @@ const Login = React.lazy(() => import('./pages/Login'));
 const Register = React.lazy(() => import('./pages/Register'));
 const Profile = React.lazy(() => import('./pages/Profile'));
 const Budgets = React.lazy(() => import('./pages/Budgets'));
+const Recurring = React.lazy(() => import('./pages/Recurring'));
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
                 <Route path="/expenses" element={<Expenses />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/budgets" element={<Budgets />} />
+                <Route path="/recurring" element={<Recurring />} />
                 <Route path="/profile" element={<Profile />} />
               </Route>
             </Route>

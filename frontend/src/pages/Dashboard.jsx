@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import api from '../lib/api';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Wallet, TrendingDown, TrendingUp, ArrowUpRight, ArrowDownRight, PieChart as PieChartIcon } from 'lucide-react';
 import QuickAdd from '../components/QuickAdd';
@@ -34,6 +36,7 @@ const StatCard = ({ title, amount, icon: Icon, trend, color, labelColor, delay }
 );
 
 export default function Dashboard() {
+    const queryClient = useQueryClient();
     const { data, isLoading: loading, error } = useDashboardStats();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [quickAddData, setQuickAddData] = useState(null);
@@ -46,6 +49,14 @@ export default function Dashboard() {
     const handleSuccess = () => {
         setIsModalOpen(false);
     };
+
+    // Trigger recurring expense value generation
+    useEffect(() => {
+        api.post('/recurring/process').then(() => {
+            queryClient.invalidateQueries(['expenses']);
+            queryClient.invalidateQueries(['stats']);
+        }).catch(console.error);
+    }, [queryClient]);
 
     if (loading) return (
         <div className="flex items-center justify-center min-h-[60vh]">

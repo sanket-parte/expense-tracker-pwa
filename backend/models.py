@@ -72,3 +72,27 @@ class BudgetRead(BudgetBase):
     category: Optional[CategoryRead] = None
     created_at: datetime
     spent: Optional[float] = 0.0 # Computed field for response
+
+class RecurringExpenseBase(SQLModel):
+    title: str
+    amount: float
+    category_id: int = Field(foreign_key="category.id")
+    frequency: str = "monthly" # monthly, weekly
+    next_due_date: datetime
+    is_active: bool = True
+
+class RecurringExpense(RecurringExpenseBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id")
+    category: Optional[Category] = Relationship()
+    last_generated: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class RecurringExpenseCreate(RecurringExpenseBase):
+    pass
+
+class RecurringExpenseRead(RecurringExpenseBase):
+    id: int
+    category: Optional[CategoryRead] = None
+    created_at: datetime
+    last_generated: Optional[datetime] = None

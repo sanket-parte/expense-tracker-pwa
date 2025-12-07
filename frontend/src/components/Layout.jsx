@@ -1,7 +1,7 @@
 // ... (imports remain)
 import React from 'react';
 import { NavLink, Outlet, useLocation, Link } from 'react-router-dom';
-import { Home, Receipt, Settings, PieChart, LogOut, UserCircle, Plus, Wallet } from 'lucide-react';
+import { Home, Receipt, Settings, PieChart, LogOut, UserCircle, Plus, Wallet, RefreshCcw } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useAuth } from '../context/AuthContext';
 
@@ -13,6 +13,7 @@ export default function Layout() {
         { to: "/", icon: Home, label: "Home" },
         { to: "/expenses", icon: Receipt, label: "Expenses" },
         { to: "/budgets", icon: Wallet, label: "Budgets" },
+        { to: "/recurring", icon: RefreshCcw, label: "Recurring" },
         { to: "/settings", icon: Settings, label: "Settings" },
         { to: "/profile", icon: UserCircle, label: "Profile" },
     ];
