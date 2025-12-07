@@ -8,7 +8,7 @@ import ExpenseFilters from '../components/ExpenseFilters';
 
 export default function Expenses() {
     const [expenses, setExpenses] = useState([]);
-    const [categories, setCategories] = useState({});
+    const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingExpense, setEditingExpense] = useState(null);
@@ -29,7 +29,7 @@ export default function Expenses() {
     }, [loading, hasMore]);
     const [filters, setFilters] = useState({
         search: '',
-        category: '',
+        category_id: '',
         type: '',
         start_date: '',
         end_date: '',
@@ -73,7 +73,7 @@ export default function Expenses() {
 
             // Fetch categories only once if needed, or check if we have them
             const promises = [api.get(`/expenses/?${params.toString()}`)];
-            if (Object.keys(categories).length === 0) {
+            if (categories.length === 0) {
                 promises.push(api.get('/categories/'));
             }
 
@@ -89,11 +89,7 @@ export default function Expenses() {
             }
 
             if (catRes) {
-                const catMap = {};
-                catRes.data.forEach(c => {
-                    catMap[c.name] = c.color;
-                });
-                setCategories(catMap);
+                setCategories(catRes.data);
             }
         } catch (error) {
             console.error("Failed to load data", error);
@@ -169,7 +165,6 @@ export default function Expenses() {
                                 <div ref={lastExpenseElementRef} key={expense.id}>
                                     <ExpenseItem
                                         expense={expense}
-                                        color={categories[expense.category] || '#64748b'}
                                         onEdit={handleEdit}
                                         onDelete={handleDelete}
                                     />
@@ -180,7 +175,6 @@ export default function Expenses() {
                                 <ExpenseItem
                                     key={expense.id}
                                     expense={expense}
-                                    color={categories[expense.category] || '#64748b'}
                                     onEdit={handleEdit}
                                     onDelete={handleDelete}
                                 />

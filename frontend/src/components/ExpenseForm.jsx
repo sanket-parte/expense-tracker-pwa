@@ -6,7 +6,7 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
     const [formData, setFormData] = useState({
         title: '',
         amount: '',
-        category: 'Food',
+        category_id: '',
         date: new Date().toISOString().split('T')[0],
     });
 
@@ -18,7 +18,7 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
                 const res = await api.get('/categories/');
                 setCategories(res.data);
                 if (!initialData && res.data.length > 0) {
-                    setFormData(prev => ({ ...prev, category: res.data[0].name }));
+                    setFormData(prev => ({ ...prev, category_id: res.data[0].id }));
                 }
             } catch (error) {
                 console.error("Failed to load categories", error);
@@ -32,7 +32,7 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
             setFormData({
                 title: initialData.title,
                 amount: initialData.amount,
-                category: initialData.category,
+                category_id: initialData.category?.id || initialData.category_id,
                 date: initialData.date ? initialData.date.split('T')[0] : new Date().toISOString().split('T')[0],
             });
         }
@@ -43,9 +43,10 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
         setLoading(true);
         try {
             const payload = {
-                ...formData,
+                title: formData.title,
                 amount: parseFloat(formData.amount),
                 date: new Date(formData.date).toISOString(),
+                category_id: parseInt(formData.category_id),
             };
 
             if (initialData?.id) {
@@ -106,12 +107,12 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
             <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">Category</label>
                 <select
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    value={formData.category_id}
+                    onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
                     className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
                 >
                     {categories.map(c => (
-                        <option key={c.id} value={c.name}>{c.name}</option>
+                        <option key={c.id} value={c.id}>{c.name}</option>
                     ))}
                 </select>
             </div>

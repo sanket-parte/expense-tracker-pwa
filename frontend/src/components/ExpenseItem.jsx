@@ -9,9 +9,9 @@ export default function ExpenseItem({ expense, color, onEdit, onDelete }) {
             <div className="flex items-center gap-4">
                 <div
                     className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg"
-                    style={{ backgroundColor: `${color}20`, color: color }}
+                    style={{ backgroundColor: `${expense.category?.color || color}20`, color: expense.category?.color || color }}
                 >
-                    {expense.category[0]}
+                    {expense.category?.name?.[0] || '?'}
                 </div>
                 <div>
                     <h4 className="font-semibold text-slate-800">{expense.title}</h4>

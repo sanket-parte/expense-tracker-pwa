@@ -11,7 +11,7 @@ export default function ExpenseFilters({ filters, onChange, categories }) {
     const clearFilters = () => {
         onChange({
             search: '',
-            category: '',
+            category_id: '',
             type: '',
             start_date: '',
             end_date: '',
@@ -44,8 +44,8 @@ export default function ExpenseFilters({ filters, onChange, categories }) {
                 <button
                     onClick={() => setIsOpen(!isOpen)}
                     className={`px-4 py-2 border rounded-xl flex items-center gap-2 font-medium transition-colors ${isOpen || hasActiveFilters
-                            ? 'bg-violet-50 border-violet-200 text-violet-700'
-                            : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                        ? 'bg-violet-50 border-violet-200 text-violet-700'
+                        : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                         }`}
                 >
                     <Filter size={20} />
@@ -91,13 +91,13 @@ export default function ExpenseFilters({ filters, onChange, categories }) {
                         <div>
                             <label className="block text-xs font-medium text-slate-500 mb-1">Category</label>
                             <select
-                                value={filters.category || ''}
-                                onChange={(e) => handleChange('category', e.target.value)}
+                                value={filters.category_id || ''}
+                                onChange={(e) => handleChange('category_id', e.target.value)}
                                 className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm"
                             >
                                 <option value="">All Categories</option>
-                                {Object.keys(categories).map((cat) => (
-                                    <option key={cat} value={cat}>{cat}</option>
+                                {categories.map((cat) => (
+                                    <option key={cat.id} value={cat.id}>{cat.name}</option>
                                 ))}
                             </select>
                         </div>

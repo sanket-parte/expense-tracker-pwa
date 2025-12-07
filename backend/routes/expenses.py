@@ -28,7 +28,7 @@ def read_expenses(
     session: Session = Depends(get_session),
     offset: int = 0,
     limit: int = 100,
-    category: Optional[str] = None,
+    category_id: Optional[int] = None,
     search: Optional[str] = None,
     start_date: Optional[datetime] = None,
     end_date: Optional[datetime] = None,
@@ -39,8 +39,8 @@ def read_expenses(
 ):
     query = select(Expense).where(Expense.user_id == current_user.id)
     
-    if category:
-        query = query.where(Expense.category == category)
+    if category_id:
+        query = query.where(Expense.category_id == category_id)
     
     if search:
         query = query.where(Expense.title.ilike(f"%{search}%"))

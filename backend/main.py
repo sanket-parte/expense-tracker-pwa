@@ -2,13 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from database import create_db_and_tables
-from routes import expenses, analytics, data, categories
 from routes import expenses, analytics, data, categories, auth
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    create_db_and_tables()
+    # create_db_and_tables() # Managed by Alembic now
     yield
 
 app = FastAPI(lifespan=lifespan)

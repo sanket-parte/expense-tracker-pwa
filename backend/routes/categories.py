@@ -15,11 +15,10 @@ def create_category(
     category: CategoryCreate,
     current_user: User = Depends(get_current_user)
 ):
-    # Check uniqueness for this user
+    # Check uniqueness globally
     existing = session.exec(
         select(Category).where(
-            Category.name == category.name,
-            Category.user_id == current_user.id
+            Category.name == category.name
         )
     ).first()
     
@@ -27,7 +26,7 @@ def create_category(
         raise HTTPException(status_code=400, detail="Category already exists")
     
     db_category = Category.from_orm(category)
-    db_category.user_id = current_user.id
+    # No user_id needed
     session.add(db_category)
     session.commit()
     session.refresh(db_category)
@@ -38,10 +37,8 @@ def read_categories(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_current_user)
 ):
-    # Get defaults (user_id is None) and user's categories
-    statement = select(Category).where(
-        or_(Category.user_id == None, Category.user_id == current_user.id)
-    )
+    # Get all categories (master table)
+    statement = select(Category)
     categories = session.exec(statement).all()
     return categories
 
@@ -53,9 +50,9 @@ def delete_category(
     current_user: User = Depends(get_current_user)
 ):
     category = session.get(Category, category_id)
-    # Only allow deleting user's own categories
-    if not category or category.user_id != current_user.id:
-        raise HTTPException(status_code=404, detail="Category not found or cannot be deleted")
+    # Allow deleting any category (master) - might want to restrict this later to admin only, but for now open.
+    if not category:
+        raise HTTPException(status_code=404, detail="Category not found")
     
     session.delete(category)
     session.commit()
