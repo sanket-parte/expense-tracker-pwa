@@ -9,10 +9,12 @@ import Settings from './pages/Settings';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
+import InstallPrompt from './components/InstallPrompt';
 
 export default function App() {
   return (
     <AuthProvider>
+      <InstallPrompt />
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
