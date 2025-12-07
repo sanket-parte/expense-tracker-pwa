@@ -65,10 +65,7 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
             onClose();
         } catch (error) {
             console.error("Failed to save expense", error);
-            if (error.response) {
-                console.error("Error response:", error.response.data);
-            }
-            alert("Failed to save expense (check console)");
+            alert("Failed to save expense");
         }
     };
 
