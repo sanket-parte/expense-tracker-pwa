@@ -130,7 +130,7 @@ export default function Layout() {
                         "max-w-7xl mx-auto w-full min-h-full",
                         location.pathname === '/' ? "p-4 pb-24 lg:p-8" : "p-4 pb-24 lg:p-8"
                     )}>
-                        <AnimatePresence mode="wait">
+                        <AnimatePresence>
                             <motion.div
                                 key={location.pathname}
                                 initial={{ opacity: 0, y: 10 }}
