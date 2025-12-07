@@ -126,14 +126,14 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
                 <button
                     type="button"
                     onClick={onClose}
-                    className="flex-1 px-6 py-3.5 border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 font-semibold transition-colors active:scale-95"
+                    className="flex-1 px-6 py-3.5 border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 font-bold transition-colors active:scale-95"
                 >
                     Cancel
                 </button>
                 <button
                     type="submit"
                     disabled={loading}
-                    className="flex-1 px-6 py-3.5 bg-brand-600 text-white rounded-xl hover:bg-brand-700 font-semibold shadow-lg shadow-brand-200 transition-all active:scale-95 disabled:opacity-70 disabled:shadow-none"
+                    className="flex-1 px-6 py-3.5 bg-gradient-to-br from-brand-600 to-indigo-600 text-white rounded-xl hover:shadow-lg hover:shadow-brand-500/30 font-bold transition-all active:scale-95 disabled:opacity-70 disabled:shadow-none"
                 >
                     {loading ? 'Saving...' : (initialData ? 'Update Expense' : 'Add Expense')}
                 </button>

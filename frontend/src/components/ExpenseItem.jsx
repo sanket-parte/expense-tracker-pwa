@@ -7,51 +7,58 @@ export default function ExpenseItem({ expense, color, onEdit, onDelete }) {
     const categoryColor = expense.category?.color || color;
 
     return (
-        <div className="group bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between hover:shadow-md transition-all active:scale-[0.99] touch-manipulation">
-            <div className="flex items-start gap-4 mb-4 sm:mb-0 w-full sm:w-auto">
-                <div
-                    className="w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg shadow-sm shrink-0"
-                    style={{ backgroundColor: `${categoryColor}20`, color: categoryColor }}
-                >
-                    {expense.category?.name?.[0] || '?'}
-                </div>
-                <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-slate-800 truncate pr-2 text-base">{expense.title}</h4>
-                    <div className="flex items-center gap-3 mt-1 text-xs text-slate-500">
-                        <span className="flex items-center gap-1">
-                            <Calendar size={12} className="text-slate-400" />
-                            {format(new Date(expense.date), 'MMM d, yyyy')}
-                        </span>
-                        <span className="flex items-center gap-1 px-2 py-0.5 bg-slate-100 rounded-full">
-                            <Tag size={10} className="text-slate-400" />
-                            {expense.category?.name || 'Uncategorized'}
-                        </span>
+        <div className="group relative bg-white/70 backdrop-blur-lg p-5 rounded-2xl border border-white/60 shadow-sm hover:shadow-glass hover:bg-white/90 hover:-translate-y-1 transition-all duration-300 active:scale-[0.99] touch-manipulation z-10 w-full overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+                <div className="flex items-start gap-4 w-full sm:w-auto">
+                    <div
+                        className="w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-xl shadow-inner shrink-0 transition-transform group-hover:scale-105 group-hover:rotate-3"
+                        style={{ backgroundColor: `${categoryColor}15`, color: categoryColor, boxShadow: `inset 0 0 10px ${categoryColor}10` }}
+                    >
+                        {expense.category?.name?.[0] || '?'}
+                    </div>
+                    <div className="flex-1 min-w-0 py-0.5">
+                        <div className="flex items-center justify-between sm:justify-start gap-2">
+                            <h4 className="font-bold text-slate-800 truncate text-lg tracking-tight group-hover:text-brand-700 transition-colors">{expense.title}</h4>
+                            {/* Mobile Amount - Visible on top right */}
+                            <div className="sm:hidden font-bold text-slate-900 text-lg">
+                                -₹{expense.amount.toFixed(2)}
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-3 mt-1.5 text-xs font-medium text-slate-500">
+                            <span className="flex items-center gap-1.5 bg-slate-100/80 px-2 py-1 rounded-lg">
+                                <Calendar size={12} className="text-slate-400" />
+                                {format(new Date(expense.date), 'MMM d, yyyy')}
+                            </span>
+                            <span className="flex items-center gap-1.5 px-2 py-1 rounded-lg" style={{ backgroundColor: `${categoryColor}10`, color: categoryColor }}>
+                                <Tag size={12} style={{ color: categoryColor }} />
+                                {expense.category?.name || 'Uncategorized'}
+                            </span>
+                        </div>
                     </div>
                 </div>
-                {/* Mobile Amount - Visible on top right */}
-                <div className="sm:hidden font-bold text-slate-900 text-lg">
-                    -₹{expense.amount.toFixed(2)}
-                </div>
-            </div>
 
-            <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-6 border-t sm:border-0 border-slate-50 pt-3 sm:pt-0 mt-2 sm:mt-0 w-full sm:w-auto">
-                <span className="hidden sm:block font-bold text-slate-900 text-lg">-₹{expense.amount.toFixed(2)}</span>
+                <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-6 pt-2 sm:pt-0 border-t sm:border-0 border-slate-100/50 mt-2 sm:mt-0">
+                    <span className="hidden sm:block font-bold text-slate-900 text-xl tracking-tight">-₹{expense.amount.toFixed(2)}</span>
 
-                <div className="flex gap-2 w-full sm:w-auto justify-end">
-                    <button
-                        onClick={() => onEdit(expense)}
-                        className="flex-1 sm:flex-none justify-center sm:justify-start flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-600 bg-slate-50 hover:bg-brand-50 hover:text-brand-600 rounded-lg transition-colors border border-slate-100 hover:border-brand-200"
-                    >
-                        <Edit2 size={16} />
-                        <span className="sm:hidden">Edit</span>
-                    </button>
-                    <button
-                        onClick={() => onDelete(expense.id)}
-                        className="flex-1 sm:flex-none justify-center sm:justify-start flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-600 bg-slate-50 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors border border-slate-100 hover:border-red-200"
-                    >
-                        <Trash2 size={16} />
-                        <span className="sm:hidden">Delete</span>
-                    </button>
+                    <div className="flex gap-2 w-full sm:w-auto justify-end opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-300 translate-x-0 sm:translate-x-2 sm:group-hover:translate-x-0">
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onEdit(expense); }}
+                            className="flex-1 sm:flex-none justify-center sm:justify-start flex items-center gap-2 px-3 py-2 text-sm font-semibold text-slate-600 bg-white hover:bg-brand-50 hover:text-brand-600 rounded-xl transition-all shadow-sm border border-slate-200 hover:border-brand-200 hover:shadow-md active:scale-95"
+                        >
+                            <Edit2 size={16} strokeWidth={2.5} />
+                            <span className="sm:hidden">Edit</span>
+                        </button>
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onDelete(expense.id); }}
+                            className="flex-1 sm:flex-none justify-center sm:justify-start flex items-center gap-2 px-3 py-2 text-sm font-semibold text-slate-600 bg-white hover:bg-red-50 hover:text-red-600 rounded-xl transition-all shadow-sm border border-slate-200 hover:border-red-200 hover:shadow-md active:scale-95"
+                        >
+                            <Trash2 size={16} strokeWidth={2.5} />
+                            <span className="sm:hidden">Delete</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

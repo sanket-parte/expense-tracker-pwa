@@ -53,15 +53,15 @@ export default function QuickAdd({ onQuickAdd }) {
     };
 
     return (
-        <div className="relative mb-8 group">
+        <div className="relative mb-8 group z-20">
             <div className={cn(
-                "absolute -inset-0.5 bg-gradient-to-r from-brand-500 to-indigo-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500",
-                isFocused ? "opacity-70" : ""
+                "absolute -inset-0.5 bg-gradient-to-r from-brand-500 via-purple-500 to-indigo-500 rounded-3xl blur opacity-20 group-hover:opacity-60 transition duration-700",
+                isFocused ? "opacity-80 blur-md" : ""
             )}></div>
-            <div className="relative bg-white rounded-2xl p-1 shadow-sm border border-slate-100">
-                <form onSubmit={handleSubmit} className="flex items-center gap-2 p-1">
-                    <div className="pl-3 text-brand-500">
-                        <Zap size={20} fill="currentColor" className="opacity-80" />
+            <div className="relative bg-white/80 backdrop-blur-xl rounded-3xl p-2 shadow-glass border border-white/60">
+                <form onSubmit={handleSubmit} className="flex items-center gap-2">
+                    <div className="pl-4 pr-2 text-brand-600">
+                        <Zap size={24} fill="currentColor" className={cn("transition-all duration-300", isFocused ? "scale-110 drop-shadow-[0_0_8px_rgba(99,102,241,0.6)]" : "opacity-70")} />
                     </div>
                     <input
                         type="text"
@@ -70,20 +70,20 @@ export default function QuickAdd({ onQuickAdd }) {
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
                         placeholder="Quick add: 'Lunch 150'"
-                        className="flex-1 py-3 text-base md:text-lg bg-transparent border-none focus:ring-0 placeholder-slate-400 text-slate-800"
+                        className="flex-1 py-4 text-lg bg-transparent border-none focus:ring-0 placeholder-slate-400 text-slate-800 font-medium"
                     />
                     <button
                         type="submit"
                         disabled={loading || !input.trim()}
-                        className="p-3 bg-brand-600 text-white rounded-xl hover:bg-brand-700 active:scale-95 transition-all shadow-md shadow-brand-200 disabled:opacity-50 disabled:shadow-none"
+                        className="p-3.5 bg-gradient-to-br from-brand-600 to-indigo-600 text-white rounded-2xl hover:shadow-lg hover:shadow-brand-500/30 active:scale-95 transition-all disabled:opacity-50 disabled:shadow-none"
                     >
-                        <Send size={18} strokeWidth={2.5} />
+                        <Send size={20} strokeWidth={2.5} />
                     </button>
                 </form>
             </div>
             {isFocused && (
-                <p className="absolute left-4 -bottom-6 text-xs text-slate-400 font-medium animate-in fade-in slide-in-from-top-1">
-                    Try: <span className="text-brand-600">"Coffee 50"</span> or <span className="text-brand-600">"Taxi 200rs"</span>
+                <p className="absolute left-6 -bottom-8 text-xs text-slate-500 font-medium animate-in fade-in slide-in-from-top-1 bg-white/50 backdrop-blur-md px-3 py-1 rounded-full border border-white/40">
+                    Try: <span className="text-brand-700 font-bold">"Coffee 50"</span> or <span className="text-brand-700 font-bold">"Taxi 200rs"</span>
                 </p>
             )}
         </div>

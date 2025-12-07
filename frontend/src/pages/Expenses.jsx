@@ -59,7 +59,6 @@ export default function Expenses() {
         if (confirm('Are you sure you want to delete this expense?')) {
             try {
                 await deleteExpenseMutation.mutateAsync(id);
-                // React Query handles refetch/invalidation
             } catch (error) {
                 console.error("Failed to delete", error);
             }
@@ -74,17 +73,17 @@ export default function Expenses() {
     const expenses = data ? data.pages.flatMap(page => page) : [];
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold text-slate-800">Expenses</h2>
-                    <p className="text-slate-500">Manage your transactions</p>
+                    <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Expenses</h2>
+                    <p className="text-slate-500 font-medium">Manage your transactions</p>
                 </div>
                 <button
                     onClick={handleAdd}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-brand-600 text-white rounded-xl hover:bg-brand-700 shadow-md shadow-brand-200 transition-all font-medium active:scale-95"
+                    className="flex items-center gap-2 px-6 py-3 bg-brand-600 text-white rounded-2xl hover:bg-brand-700 shadow-md shadow-brand-200 transition-all font-bold active:scale-95 group"
                 >
-                    <Plus size={20} className="stroke-2" />
+                    <Plus size={22} className="stroke-2 group-hover:rotate-90 transition-transform" />
                     <span className="hidden sm:inline">Add Expense</span>
                     <span className="sm:hidden">Add</span>
                 </button>
@@ -93,48 +92,52 @@ export default function Expenses() {
             <ExpenseFilters filters={filters} onChange={setFilters} categories={categories} />
 
             {isLoading ? (
-                <div className="text-center py-20 text-slate-400 animate-pulse">Loading expenses...</div>
+                <div className="flex flex-col items-center justify-center py-24 gap-4">
+                    <div className="w-10 h-10 border-4 border-brand-100 border-t-brand-600 rounded-full animate-spin" />
+                    <p className="text-slate-400 font-medium animate-pulse">Loading transaction history...</p>
+                </div>
             ) : error ? (
-                <div className="text-center py-20 text-red-400">Error loading expenses</div>
+                <div className="text-center py-20 bg-red-50 rounded-3xl border border-red-100 text-red-500 font-medium">
+                    Error loading expenses. Please try again.
+                </div>
             ) : expenses.length === 0 ? (
-                <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-200">
-                    <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
-                        <Plus size={24} />
+                <div className="text-center py-24 bg-white/60 backdrop-blur-xl rounded-3xl border border-dashed border-slate-300 shadow-sm flex flex-col items-center">
+                    <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6 text-slate-300 ring-8 ring-slate-50/50">
+                        <Plus size={32} />
                     </div>
-                    <p className="text-slate-500 mb-2 font-medium">No expenses found</p>
-                    <p className="text-slate-400 text-sm mb-6">Start tracking your spending</p>
-                    <button onClick={handleAdd} className="text-brand-600 font-medium hover:underline">
+                    <p className="text-slate-600 text-lg font-semibold mb-2">No expenses found</p>
+                    <p className="text-slate-400 mb-8 max-w-xs mx-auto">Your expense history is empty. Start tracking your spending now!</p>
+                    <button onClick={handleAdd} className="text-brand-600 font-bold hover:text-brand-700 hover:underline decoration-2 underline-offset-4">
                         Add your first expense
                     </button>
                 </div>
             ) : (
-                <div className="space-y-3 pb-8">
+                <div className="space-y-4 pb-20 md:pb-8">
                     {expenses.map((expense, index) => {
-                        if (expenses.length === index + 1) {
-                            return (
-                                <div ref={lastExpenseElementRef} key={expense.id}>
-                                    <ExpenseItem
-                                        expense={expense}
-                                        onEdit={handleEdit}
-                                        onDelete={handleDelete}
-                                    />
-                                </div>
-                            );
-                        } else {
-                            return (
+                        const isLast = expenses.length === index + 1;
+                        return (
+                            <div
+                                ref={isLast ? lastExpenseElementRef : null}
+                                key={expense.id}
+                                style={{ animationDelay: `${index * 50}ms` }}
+                                className="animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards"
+                            >
                                 <ExpenseItem
-                                    key={expense.id}
                                     expense={expense}
                                     onEdit={handleEdit}
                                     onDelete={handleDelete}
                                 />
-                            );
-                        }
+                            </div>
+                        );
                     })}
-                    {isFetchingNextPage && <div className="text-center py-4 text-slate-400">Loading more...</div>}
-                    {!hasNextPage && expenses.length > 0 && (
-                        <div className="text-center py-6">
-                            <span className="px-3 py-1 bg-slate-100 text-slate-400 text-xs rounded-full font-medium">End of list</span>
+                    {isFetchingNextPage && (
+                        <div className="flex justify-center py-6">
+                            <div className="w-6 h-6 border-2 border-brand-200 border-t-brand-600 rounded-full animate-spin" />
+                        </div>
+                    )}
+                    {!hasNextPage && expenses.length > 5 && (
+                        <div className="text-center py-8">
+                            <span className="px-4 py-1.5 bg-slate-100 text-slate-400 text-xs rounded-full font-bold uppercase tracking-wider">End of list</span>
                         </div>
                     )}
                 </div>
