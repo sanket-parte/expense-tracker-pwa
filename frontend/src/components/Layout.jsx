@@ -162,22 +162,31 @@ export default function Layout() {
             </AnimatePresence>
 
             {/* Main Content Area */}
-            <main className={cn(
-                "flex-1 min-w-0 transition-all duration-300 lg:pl-72",
-                location.pathname === '/' ? "p-4 pb-24 lg:p-8" : "p-4 pb-24 lg:p-8"
-            )}>
-                <div className="pt-16 lg:pt-0 max-w-7xl mx-auto w-full">
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={location.pathname}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.2 }}
-                        >
-                            <Outlet />
-                        </motion.div>
-                    </AnimatePresence>
+            <main className="flex-1 min-w-0 transition-all duration-300 lg:pl-72 flex flex-col h-[100dvh] overflow-hidden pt-16 lg:pt-0">
+                <div className="flex-1 overflow-y-auto relative scroll-smooth w-full">
+                    <div className={cn(
+                        "max-w-7xl mx-auto w-full min-h-full",
+                        location.pathname === '/' ? "p-4 pb-24 lg:p-8" : "p-4 pb-24 lg:p-8"
+                    )}>
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={location.pathname}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ duration: 0.2 }}
+                                className="h-full"
+                            >
+                                <React.Suspense fallback={
+                                    <div className="flex items-center justify-center h-full">
+                                        <div className="w-10 h-10 border-4 border-brand-100 border-t-brand-600 rounded-full animate-spin" />
+                                    </div>
+                                }>
+                                    <Outlet />
+                                </React.Suspense>
+                            </motion.div>
+                        </AnimatePresence>
+                    </div>
                 </div>
             </main>
 

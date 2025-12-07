@@ -18,40 +18,69 @@ export default function PullToRefresh({ onRefresh, children }) {
     const rotate = useTransform(y, [0, PULL_THRESHOLD], [0, 360]);
     const opacity = useTransform(y, [0, PULL_THRESHOLD / 2, PULL_THRESHOLD], [0, 0.5, 1]);
 
-    const handleDragEnd = async () => {
+    const handleTouchStart = (e) => {
+        if (containerRef.current.scrollTop === 0) {
+            startY.current = e.touches[0].clientY;
+        } else {
+            startY.current = null;
+        }
+    };
+
+    const handleTouchMove = (e) => {
+        if (!startY.current) return;
+
+        const currentY = e.touches[0].clientY;
+        const diff = currentY - startY.current;
+
+        if (diff > 0 && containerRef.current.scrollTop === 0) {
+            // Pulling down at top
+            e.preventDefault(); // Prevent browser refresh/scroll
+            // Add resistance
+            const damped = diff * 0.4; // simpler damping
+            y.set(damped);
+        }
+        // Else: scrolling up or not at top - let native scroll happen
+    };
+
+    const handleTouchEnd = async () => {
+        if (!startY.current) return;
+        startY.current = null;
+
         if (y.get() > PULL_THRESHOLD) {
             medium();
             setIsRefreshing(true);
-            await controls.start({ y: 60 }); // Stay visible while refreshing
+            await controls.start({ y: 60 });
             await onRefresh();
             setIsRefreshing(false);
-            controls.start({ y: 0 }); // Return to top
+            controls.start({ y: 0 });
         } else {
             controls.start({ y: 0 });
         }
     };
 
+    const startY = useRef(null);
+
     return (
-        <div className="relative z-0 h-full overflow-hidden" ref={containerRef}>
+        <div className="relative z-0 h-full overflow-hidden">
+            {/* Loading Indicator */}
             <motion.div
-                drag="y"
-                dragConstraints={{ top: 0, bottom: 0 }} // Only allow pulling down when at top
-                dragElastic={0.2}
-                onDragEnd={handleDragEnd}
+                style={{ opacity, rotate, y }}
+                className="absolute top-4 left-0 right-0 flex justify-center items-center z-0"
+            >
+                <div className="bg-white dark:bg-slate-800 rounded-full p-2 shadow-md border border-slate-100 dark:border-slate-700">
+                    <Loader2 className={`w-5 h-5 text-brand-600 dark:text-brand-400 ${isRefreshing ? 'animate-spin' : ''}`} />
+                </div>
+            </motion.div>
+
+            <motion.div
                 animate={controls}
                 style={{ y }}
-                className="relative z-10 h-full overflow-y-auto touch-pan-y"
+                className="relative z-10 h-full overflow-y-auto touch-pan-y no-scrollbar"
+                ref={containerRef}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
             >
-                {/* Loading Indicator - Positioned absolutely behind the content but revealed by drag */}
-                <motion.div
-                    style={{ opacity, rotate }}
-                    className="absolute top-[-50px] left-0 right-0 flex justify-center items-center h-12"
-                >
-                    <div className="bg-white dark:bg-slate-800 rounded-full p-2 shadow-md">
-                        <Loader2 className={`w-5 h-5 text-brand-600 dark:text-brand-400 ${isRefreshing ? 'animate-spin' : ''}`} />
-                    </div>
-                </motion.div>
-
                 {children}
             </motion.div>
         </div>
