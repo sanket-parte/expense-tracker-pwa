@@ -8,6 +8,7 @@
   body {
     @apply bg-slate-50 text-slate-900 font-sans antialiased;
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
 }
 

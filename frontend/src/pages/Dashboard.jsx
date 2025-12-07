@@ -9,7 +9,7 @@ import { useDashboardStats } from '../hooks/useQueries';
 
 const COLORS = ['#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#6366f1'];
 
-const StatCard = ({ title, amount, icon: Icon, trend, color, subValue, labelColor }) => (
+const StatCard = ({ title, amount, icon: Icon, trend, color, labelColor }) => (
     <div className="relative overflow-hidden bg-white p-6 rounded-2xl border border-slate-100 shadow-sm transition-all hover:shadow-md group">
         <div className={cn("absolute -right-6 -top-6 w-24 h-24 rounded-full opacity-10 transition-transform group-hover:scale-150", color)}></div>
         <div className="flex justify-between items-start mb-4 relative z-10">

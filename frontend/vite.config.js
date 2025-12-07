@@ -10,9 +10,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'Expense Tracker',
-        short_name: 'Expenses',
-        description: 'Track your daily expenses',
+        name: 'Flow: Expense Tracker',
+        short_name: 'Flow',
+        description: 'Track your daily expenses with Flow',
         theme_color: '#ffffff',
         icons: [
           {

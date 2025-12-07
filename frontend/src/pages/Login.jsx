@@ -20,7 +20,7 @@ export default function Login() {
             // Use a hard navigation or just navigate? 
             // Navigate should trigger re-render of AuthProvider child
             navigate('/');
-        } catch (err) {
+        } catch {
             setError('Invalid email or password');
         } finally {
             setLoading(false);
