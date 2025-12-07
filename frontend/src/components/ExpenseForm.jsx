@@ -23,14 +23,26 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
 
     useEffect(() => {
         if (initialData) {
+            let categoryId = initialData.category?.id || initialData.category_id;
+
+            // Handle Quick Add case where category is just a string name like "Other"
+            if (!categoryId && typeof initialData.category === 'string' && categories.length > 0) {
+                const foundCategory = categories.find(c =>
+                    c.name.toLowerCase() === initialData.category.toLowerCase()
+                );
+                if (foundCategory) {
+                    categoryId = foundCategory.id;
+                }
+            }
+
             setFormData({
                 title: initialData.title,
                 amount: initialData.amount,
-                category_id: initialData.category?.id || initialData.category_id,
+                category_id: categoryId,
                 date: initialData.date ? initialData.date.split('T')[0] : new Date().toISOString().split('T')[0],
             });
         }
-    }, [initialData]);
+    }, [initialData, categories]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

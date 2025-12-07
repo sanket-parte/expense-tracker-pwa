@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlmodel import Session, select, func
 from datetime import datetime, timedelta
 from database import get_session
-from models import Expense, User
+from models import Expense, User, Category
 from auth import get_current_user
 
 router = APIRouter(prefix="/analytics", tags=["analytics"])
@@ -29,13 +29,14 @@ def get_dashboard_stats(
     
     # Category Breakdown
     category_stats = session.exec(
-        select(Expense.category, func.sum(Expense.amount))
+        select(Category.name, func.sum(Expense.amount))
+        .join(Category)
         .where(Expense.type == "expense")
         .where(Expense.user_id == current_user.id)
-        .group_by(Expense.category)
+        .group_by(Category.name)
     ).all()
     
-    formatted_categories = [{"name": cat, "value": amt} for cat, amt in category_stats]
+    formatted_categories = [{"name": cat_name, "value": amt} for cat_name, amt in category_stats]
 
     # Daily Trend (Last 30 days)
     thirty_days_ago = datetime.utcnow() - timedelta(days=30)
