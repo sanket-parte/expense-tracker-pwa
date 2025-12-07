@@ -139,26 +139,31 @@ export default function Expenses() {
                 </div>
                 <button
                     onClick={handleAdd}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-violet-600 text-white rounded-xl hover:bg-violet-700 shadow-md shadow-violet-200 transition-all font-medium"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-brand-600 text-white rounded-xl hover:bg-brand-700 shadow-md shadow-brand-200 transition-all font-medium active:scale-95"
                 >
-                    <Plus size={20} />
-                    Add Expense
+                    <Plus size={20} className="stroke-2" />
+                    <span className="hidden sm:inline">Add Expense</span>
+                    <span className="sm:hidden">Add</span>
                 </button>
             </div>
 
             <ExpenseFilters filters={filters} onChange={setFilters} categories={categories} />
 
             {loading ? (
-                <div className="text-center py-20 text-slate-400">Loading expenses...</div>
+                <div className="text-center py-20 text-slate-400 animate-pulse">Loading expenses...</div>
             ) : expenses.length === 0 ? (
                 <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-200">
-                    <p className="text-slate-500 mb-4">No expenses found</p>
-                    <button onClick={handleAdd} className="text-violet-600 font-medium hover:underline">
+                    <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
+                        <Plus size={24} />
+                    </div>
+                    <p className="text-slate-500 mb-2 font-medium">No expenses found</p>
+                    <p className="text-slate-400 text-sm mb-6">Start tracking your spending</p>
+                    <button onClick={handleAdd} className="text-brand-600 font-medium hover:underline">
                         Add your first expense
                     </button>
                 </div>
             ) : (
-                <div className="space-y-3">
+                <div className="space-y-3 pb-8">
                     {expenses.map((expense, index) => {
                         if (expenses.length === index + 1) {
                             return (
@@ -183,7 +188,9 @@ export default function Expenses() {
                     })}
                     {loading && <div className="text-center py-4 text-slate-400">Loading more...</div>}
                     {!hasMore && expenses.length > 0 && (
-                        <div className="text-center py-4 text-slate-400 text-sm">No more expenses</div>
+                        <div className="text-center py-6">
+                            <span className="px-3 py-1 bg-slate-100 text-slate-400 text-xs rounded-full font-medium">End of list</span>
+                        </div>
                     )}
                 </div>
             )}

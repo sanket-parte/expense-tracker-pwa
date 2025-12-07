@@ -43,95 +43,92 @@ export default function ExpenseFilters({ filters, onChange, categories }) {
                 {/* Filter Toggle Button */}
                 <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className={`px-4 py-2 border rounded-xl flex items-center gap-2 font-medium transition-colors ${isOpen || hasActiveFilters
-                        ? 'bg-violet-50 border-violet-200 text-violet-700'
+                    className={`px-4 py-2 border rounded-xl flex items-center gap-2 font-medium transition-all active:scale-95 ${isOpen || hasActiveFilters
+                        ? 'bg-brand-50 border-brand-200 text-brand-700'
                         : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                         }`}
                 >
                     <Filter size={20} />
                     Filters
                     {hasActiveFilters && (
-                        <span className="w-2 h-2 bg-violet-600 rounded-full" />
+                        <span className="w-2 h-2 bg-brand-600 rounded-full" />
                     )}
                 </button>
             </div>
 
             {/* Advanced Filters Panel */}
+            {/* Advanced Filters Panel */}
             {isOpen && (
                 <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-top-2">
-                    <div className="flex justify-between items-center mb-4">
+                    <div className="flex justify-between items-center mb-6">
                         <h3 className="font-semibold text-slate-800">Advanced Filters</h3>
                         <button
                             onClick={clearFilters}
-                            className="text-sm text-slate-500 hover:text-red-500 flex items-center gap-1"
+                            className="text-sm font-medium text-slate-500 hover:text-red-500 flex items-center gap-1 transition-colors px-2 py-1 rounded-lg hover:bg-red-50"
                         >
                             <X size={14} /> Clear All
                         </button>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div>
-                            <label className="block text-xs font-medium text-slate-500 mb-1">Date Range</label>
-                            <div className="flex gap-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                        {/* Date Range Group */}
+                        <div className="md:col-span-2 lg:col-span-2 space-y-2">
+                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Date Range</label>
+                            <div className="flex items-center gap-3">
                                 <input
                                     type="date"
                                     value={filters.start_date || ''}
                                     onChange={(e) => handleChange('start_date', e.target.value)}
-                                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm"
+                                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium text-slate-700"
                                 />
+                                <span className="text-slate-300 font-medium">to</span>
                                 <input
                                     type="date"
                                     value={filters.end_date || ''}
                                     onChange={(e) => handleChange('end_date', e.target.value)}
-                                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm"
+                                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium text-slate-700"
                                 />
                             </div>
                         </div>
 
-                        <div>
-                            <label className="block text-xs font-medium text-slate-500 mb-1">Category</label>
-                            <select
-                                value={filters.category_id || ''}
-                                onChange={(e) => handleChange('category_id', e.target.value)}
-                                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm"
-                            >
-                                <option value="">All Categories</option>
-                                {categories.map((cat) => (
-                                    <option key={cat.id} value={cat.id}>{cat.name}</option>
-                                ))}
-                            </select>
+                        <div className="space-y-2">
+                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Category</label>
+                            <div className="relative">
+                                <select
+                                    value={filters.category_id || ''}
+                                    onChange={(e) => handleChange('category_id', e.target.value)}
+                                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all appearance-none font-medium text-slate-700"
+                                >
+                                    <option value="">All Categories</option>
+                                    {categories.map((cat) => (
+                                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                    ))}
+                                </select>
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M2.5 3.5L5 6L7.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
 
-                        <div>
-                            <label className="block text-xs font-medium text-slate-500 mb-1">Type</label>
-                            <select
-                                value={filters.type || ''}
-                                onChange={(e) => handleChange('type', e.target.value)}
-                                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm"
-                            >
-                                <option value="">All Types</option>
-                                <option value="expense">Expense</option>
-                                <option value="income">Income</option>
-                            </select>
-                        </div>
-
-                        <div className="col-span-1 md:col-span-2 lg:col-span-3">
-                            <label className="block text-xs font-medium text-slate-500 mb-1">Amount Range</label>
-                            <div className="flex gap-2 items-center">
+                        <div className="space-y-2">
+                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount Range</label>
+                            <div className="flex items-center gap-2">
                                 <input
                                     type="number"
                                     placeholder="Min"
                                     value={filters.min_amount || ''}
                                     onChange={(e) => handleChange('min_amount', e.target.value)}
-                                    className="w-32 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm"
+                                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium"
                                 />
-                                <span className="text-slate-400">-</span>
+                                <span className="text-slate-300">-</span>
                                 <input
                                     type="number"
                                     placeholder="Max"
                                     value={filters.max_amount || ''}
                                     onChange={(e) => handleChange('max_amount', e.target.value)}
-                                    className="w-32 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm"
+                                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium"
                                 />
                             </div>
                         </div>

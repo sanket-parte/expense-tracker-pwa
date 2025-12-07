@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Download, Upload, AlertCircle, CheckCircle2 } from 'lucide-react';
 import api from '../lib/api';
 import CategorySettings from '../components/CategorySettings';
+import { cn } from '../lib/utils';
 
 export default function Settings() {
     const [importing, setImporting] = useState(false);
@@ -44,27 +45,27 @@ export default function Settings() {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8 animate-in fade-in duration-500">
             <div>
-                <h2 className="text-3xl font-bold text-slate-800">Settings</h2>
-                <p className="text-slate-500">Manage your application data</p>
+                <h2 className="text-3xl font-bold text-slate-800 tracking-tight">Settings</h2>
+                <p className="text-slate-500 mt-1">Manage your application preferences and data</p>
             </div>
 
             <CategorySettings />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Export Section */}
-                <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                    <div className="w-12 h-12 bg-violet-100 text-violet-600 rounded-full flex items-center justify-center mb-4">
+                <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm transition-all hover:shadow-md group">
+                    <div className="w-12 h-12 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                         <Download size={24} />
                     </div>
                     <h3 className="text-lg font-bold text-slate-800 mb-2">Export Data</h3>
-                    <p className="text-slate-500 mb-6 text-sm">
+                    <p className="text-slate-500 mb-6 text-sm leading-relaxed">
                         Download all your expenses as a CSV file for backup or analysis in other tools.
                     </p>
                     <button
                         onClick={handleExport}
-                        className="w-full py-2.5 bg-white border border-slate-200 text-slate-700 font-medium rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center justify-center gap-2"
+                        className="w-full py-3 bg-white border border-slate-200 text-slate-700 font-semibold rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center justify-center gap-2 active:scale-95"
                     >
                         <Download size={18} />
                         Download CSV
@@ -72,12 +73,12 @@ export default function Settings() {
                 </div>
 
                 {/* Import Section */}
-                <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                    <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4">
+                <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm transition-all hover:shadow-md group">
+                    <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                         <Upload size={24} />
                     </div>
                     <h3 className="text-lg font-bold text-slate-800 mb-2">Import Data</h3>
-                    <p className="text-slate-500 mb-6 text-sm">
+                    <p className="text-slate-500 mb-6 text-sm leading-relaxed">
                         Upload a CSV file to bulk import expenses. Duplicate handling depends on your data.
                     </p>
                     <div className="relative">
@@ -86,11 +87,11 @@ export default function Settings() {
                             accept=".csv"
                             onChange={handleImport}
                             disabled={importing}
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed z-10"
                         />
                         <button
                             disabled={importing}
-                            className="w-full py-2.5 bg-slate-900 text-white font-medium rounded-xl hover:bg-slate-800 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+                            className="w-full py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 transition-all flex items-center justify-center gap-2 disabled:opacity-70 active:scale-95"
                         >
                             <Upload size={18} />
                             {importing ? 'Importing...' : 'Upload CSV'}
@@ -100,8 +101,10 @@ export default function Settings() {
             </div>
 
             {message && (
-                <div className={`p-4 rounded-xl flex items-center gap-3 ${message.type === 'success' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'
-                    }`}>
+                <div className={cn(
+                    "p-4 rounded-xl flex items-center gap-3 animate-in slide-in-from-bottom-2",
+                    message.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-red-50 text-red-700 border border-red-100'
+                )}>
                     {message.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
                     <span className="font-medium">{message.text}</span>
                 </div>

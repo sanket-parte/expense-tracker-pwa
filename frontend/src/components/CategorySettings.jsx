@@ -150,7 +150,7 @@ export default function CategorySettings() {
 
                         <form onSubmit={handleAdd} className="space-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">
                                     Name
                                 </label>
                                 <input
@@ -158,25 +158,25 @@ export default function CategorySettings() {
                                     placeholder="e.g., Groceries, Rent"
                                     value={newCategory.name}
                                     onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 focus:bg-white transition-all text-slate-800"
+                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-slate-800 placeholder:text-slate-400 font-medium"
                                     autoFocus
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-3">
+                                <label className="block text-sm font-semibold text-slate-700 mb-3">
                                     Color Tag
                                 </label>
-                                <div className="grid grid-cols-5 gap-3">
+                                <div className="grid grid-cols-5 gap-4">
                                     {colors.map(c => (
                                         <button
                                             key={c}
                                             type="button"
                                             onClick={() => setNewCategory({ ...newCategory, color: c })}
-                                            className={`w-10 h-10 rounded-full flex items-center justify-center transition-transform hover:scale-110 ${newCategory.color === c ? 'ring-2 ring-offset-2 ring-slate-900 scale-110' : ''}`}
+                                            className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${newCategory.color === c ? 'ring-2 ring-offset-2 ring-slate-900 scale-110 shadow-md' : 'hover:scale-105'}`}
                                             style={{ backgroundColor: c }}
                                         >
-                                            {newCategory.color === c && <Check size={16} className="text-white" />}
+                                            {newCategory.color === c && <Check size={16} className="text-white stroke-[3]" />}
                                         </button>
                                     ))}
                                 </div>
@@ -185,30 +185,30 @@ export default function CategorySettings() {
                             {/* Preview Badge */}
                             <div className="bg-slate-50 p-4 rounded-xl flex items-center justify-center gap-2 border border-slate-100">
                                 <span className="text-xs text-slate-400 uppercase font-bold tracking-wider mr-2">Preview:</span>
-                                <div className="px-3 py-1 rounded-full text-white text-sm font-medium flex items-center gap-2 shadow-sm" style={{ backgroundColor: newCategory.color }}>
+                                <div className="px-3 py-1.5 rounded-full text-white text-sm font-bold flex items-center gap-2 shadow-sm" style={{ backgroundColor: newCategory.color }}>
                                     <span>{newCategory.name || 'Category Name'}</span>
                                 </div>
                             </div>
 
                             {error && (
-                                <div className="p-3 bg-red-50 text-red-600 text-sm rounded-xl flex items-center gap-2">
+                                <div className="p-3 bg-red-50 text-red-600 text-sm rounded-xl flex items-center gap-2 border border-red-100 font-medium">
                                     <AlertCircle size={16} />
                                     {error}
                                 </div>
                             )}
 
-                            <div className="flex gap-3 pt-2">
+                            <div className="flex gap-4 pt-2">
                                 <button
                                     type="button"
                                     onClick={() => setIsModalOpen(false)}
-                                    className="flex-1 py-2.5 text-slate-600 font-medium hover:bg-slate-50 rounded-xl border border-transparent hover:border-slate-200 transition-all"
+                                    className="flex-1 py-3 text-slate-600 font-semibold hover:bg-slate-50 rounded-xl border border-transparent hover:border-slate-200 transition-all"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={!newCategory.name.trim()}
-                                    className="flex-1 py-2.5 bg-slate-900 text-white font-medium rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-slate-900/20"
+                                    className="flex-1 py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-slate-900/20 active:scale-95"
                                 >
                                     Create Category
                                 </button>
