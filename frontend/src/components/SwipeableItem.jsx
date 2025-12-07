@@ -53,7 +53,7 @@ export default function SwipeableItem({ children, onDelete, onEdit, id }) {
                 onDragEnd={handleDragEnd}
                 animate={controls}
                 style={{ x }}
-                className="relative z-10 bg-white dark:bg-slate-900"
+                className="relative z-10 bg-white dark:bg-slate-900 touch-pan-y"
             >
                 {children}
             </motion.div>

@@ -7,17 +7,13 @@ import BudgetForm from '../components/BudgetForm';
 import Loading from '../components/Loading';
 import SwipeableItem from '../components/SwipeableItem';
 
+import { useBudgets } from '../hooks/useQueries';
+
 export default function Budgets() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const queryClient = useQueryClient();
 
-    const { data: budgets, isLoading, error } = useQuery({
-        queryKey: ['budgets'],
-        queryFn: async () => {
-            const res = await api.get('/budgets/');
-            return res.data;
-        }
-    });
+    const { data: budgets, isLoading, error } = useBudgets();
 
     const deleteMutation = useMutation({
         mutationFn: async (id) => {

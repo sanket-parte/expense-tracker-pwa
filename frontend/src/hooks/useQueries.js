@@ -53,6 +53,19 @@ export const useDashboardStats = () => {
     });
 };
 
+const fetchBudgets = async () => {
+    const { data } = await api.get('/budgets/');
+    return data;
+};
+
+export const useBudgets = () => {
+    return useQuery({
+        queryKey: ['budgets'], // Should ideally match QUERY_KEYS
+        queryFn: fetchBudgets,
+        staleTime: 1000 * 60 * 5, // 5 minutes
+    });
+};
+
 export const useExpenses = (filters) => {
     return useInfiniteQuery({
         queryKey: [QUERY_KEYS.expenses, filters],
