@@ -13,7 +13,7 @@ const InstallPrompt = () => {
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
         if (isIosDevice && !isStandalone) {
-            setIsIOS(true);
+            setTimeout(() => setIsIOS(true), 0);
             // Give users a moment before showing the prompt on iOS
             const timer = setTimeout(() => {
                 setShowPrompt(true);

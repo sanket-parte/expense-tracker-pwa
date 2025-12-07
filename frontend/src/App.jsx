@@ -1,6 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import InstallPrompt from './components/InstallPrompt';
@@ -17,31 +20,40 @@ const Profile = React.lazy(() => import('./pages/Profile'));
 const Budgets = React.lazy(() => import('./pages/Budgets'));
 const Recurring = React.lazy(() => import('./pages/Recurring'));
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient(); // Initialize QueryClient
+
 export default function App() {
   return (
-    <AuthProvider>
-      <InstallPrompt />
-      <Router>
-        <React.Suspense fallback={<Loading />}>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-
-            <Route element={<ProtectedRoute />}>
-              <Route element={<Layout />}>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/expenses" element={<Expenses />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/budgets" element={<Budgets />} />
-                <Route path="/recurring" element={<Recurring />} />
-                <Route path="/profile" element={<Profile />} />
-              </Route>
-            </Route>
-
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </React.Suspense>
-      </Router>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <ThemeProvider>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <Router>
+              <InstallPrompt />
+              <React.Suspense fallback={<Loading />}>
+                <Routes>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route element={<ProtectedRoute />}>
+                    <Route element={<Layout />}>
+                      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/expenses" element={<Expenses />} />
+                      <Route path="/settings" element={<Settings />} />
+                      <Route path="/budgets" element={<Budgets />} />
+                      <Route path="/recurring" element={<Recurring />} />
+                      <Route path="/profile" element={<Profile />} />
+                    </Route >
+                  </Route >
+                  <Route path="*" element={<NotFound />} />
+                </Routes >
+              </React.Suspense >
+            </Router >
+          </LocalizationProvider>
+        </ThemeProvider>
+      </AuthProvider >
+    </QueryClientProvider>
   );
 }

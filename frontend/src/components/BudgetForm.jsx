@@ -49,10 +49,10 @@ export default function BudgetForm({ onSuccess, onClose }) {
             )}
 
             <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2">Category</label>
+                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Category</label>
                 <select
                     {...register('category_id', { required: 'Category is required' })}
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-brand-500 font-semibold text-slate-700"
+                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-brand-500 font-semibold text-slate-700 dark:text-white"
                 >
                     <option value="">Select Category</option>
                     {categories.map(cat => (
@@ -63,14 +63,14 @@ export default function BudgetForm({ onSuccess, onClose }) {
             </div>
 
             <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2">Monthly Limit</label>
+                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Monthly Limit</label>
                 <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
                     <input
                         type="number"
                         step="0.01"
                         {...register('amount', { required: 'Amount is required', min: 1 })}
-                        className="w-full pl-8 pr-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-brand-500 font-bold text-slate-700"
+                        className="w-full pl-8 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-brand-500 font-bold text-slate-700 dark:text-white"
                         placeholder="0.00"
                     />
                 </div>

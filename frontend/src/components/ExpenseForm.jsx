@@ -17,9 +17,9 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
     // Set default category when categories load
     useEffect(() => {
         if (!initialData && categories.length > 0 && !formData.category_id) {
-            setFormData(prev => ({ ...prev, category_id: categories[0].id }));
+            setTimeout(() => setFormData(prev => ({ ...prev, category_id: categories[0].id })), 0);
         }
-    }, [categories, initialData, formData.category_id]);
+    }, [categories, initialData]); // Removed formData.category_id to avoid loop
 
     useEffect(() => {
         if (initialData) {
@@ -35,12 +35,13 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
                 }
             }
 
-            setFormData({
+            setTimeout(() => setFormData(prev => ({
+                ...prev,
                 title: initialData.title,
                 amount: initialData.amount,
                 category_id: categoryId,
                 date: initialData.date ? initialData.date.split('T')[0] : new Date().toISOString().split('T')[0],
-            });
+            })), 0);
         }
     }, [initialData, categories]);
 
@@ -74,20 +75,20 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">What is this for?</label>
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">What is this for?</label>
                 <input
                     type="text"
                     required
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium text-slate-900 placeholder:text-slate-400"
+                    className="w-full px-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium text-slate-900 dark:text-white placeholder:text-slate-400"
                     placeholder="e.g. Grocery Shopping"
                 />
             </div>
 
             <div className="grid grid-cols-2 gap-5">
                 <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">Amount</label>
+                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Amount</label>
                     <div className="relative">
                         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
                         <input
@@ -96,31 +97,31 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
                             step="0.01"
                             value={formData.amount}
                             onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                            className="w-full pl-8 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-bold text-slate-900 placeholder:text-slate-400"
+                            className="w-full pl-8 pr-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-bold text-slate-900 dark:text-white placeholder:text-slate-400"
                             placeholder="0.00"
                         />
                     </div>
                 </div>
 
                 <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">Date</label>
+                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Date</label>
                     <input
                         type="date"
                         required
                         value={formData.date}
                         onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                        className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium text-slate-900"
+                        className="w-full px-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium text-slate-900 dark:text-white"
                     />
                 </div>
             </div>
 
             <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Category</label>
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Category</label>
                 <div className="relative">
                     <select
                         value={formData.category_id}
                         onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
-                        className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all appearance-none font-medium text-slate-900"
+                        className="w-full px-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all appearance-none font-medium text-slate-900 dark:text-white"
                     >
                         {categories.map(c => (
                             <option key={c.id} value={c.id}>{c.name}</option>
@@ -138,7 +139,7 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
                 <button
                     type="button"
                     onClick={onClose}
-                    className="flex-1 px-6 py-3.5 border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 font-bold transition-colors active:scale-95"
+                    className="flex-1 px-6 py-3.5 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-bold transition-colors active:scale-95"
                 >
                     Cancel
                 </button>

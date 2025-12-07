@@ -8,6 +8,13 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [loading, setLoading] = useState(true);
 
+    const logout = () => {
+        localStorage.removeItem('token');
+        setToken(null);
+        setUser(null);
+        delete api.defaults.headers.common['Authorization'];
+    };
+
     useEffect(() => {
         const loadUser = async () => {
             if (token) {
@@ -52,12 +59,7 @@ export const AuthProvider = ({ children }) => {
         await login(email, password);
     };
 
-    const logout = () => {
-        localStorage.removeItem('token');
-        setToken(null);
-        setUser(null);
-        delete api.defaults.headers.common['Authorization'];
-    };
+
 
     const updateProfile = async (data) => {
         const res = await api.put('/auth/me', data);

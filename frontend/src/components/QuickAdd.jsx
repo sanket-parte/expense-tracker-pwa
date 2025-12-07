@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Send, Zap } from 'lucide-react';
-import api from '../lib/api';
+
 import { cn } from '../lib/utils';
 
 export default function QuickAdd({ onQuickAdd }) {
@@ -58,9 +58,9 @@ export default function QuickAdd({ onQuickAdd }) {
                 "absolute -inset-0.5 bg-gradient-to-r from-brand-500 via-purple-500 to-indigo-500 rounded-3xl blur opacity-20 group-hover:opacity-60 transition duration-700",
                 isFocused ? "opacity-80 blur-md" : ""
             )}></div>
-            <div className="relative bg-white/80 backdrop-blur-xl rounded-3xl p-2 shadow-glass border border-white/60">
+            <div className="relative bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl p-2 shadow-glass border border-white/60 dark:border-slate-800">
                 <form onSubmit={handleSubmit} className="flex items-center gap-2">
-                    <div className="pl-4 pr-2 text-brand-600">
+                    <div className="pl-4 pr-2 text-brand-600 dark:text-brand-400">
                         <Zap size={24} fill="currentColor" className={cn("transition-all duration-300", isFocused ? "scale-110 drop-shadow-[0_0_8px_rgba(99,102,241,0.6)]" : "opacity-70")} />
                     </div>
                     <input
@@ -70,7 +70,7 @@ export default function QuickAdd({ onQuickAdd }) {
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
                         placeholder="Quick add: 'Lunch 150'"
-                        className="flex-1 py-4 text-lg bg-transparent border-none focus:ring-0 placeholder-slate-400 text-slate-800 font-medium"
+                        className="flex-1 py-4 text-lg bg-transparent border-none focus:ring-0 placeholder-slate-400 dark:placeholder-slate-500 text-slate-800 dark:text-slate-100 font-medium"
                     />
                     <button
                         type="submit"
@@ -82,8 +82,8 @@ export default function QuickAdd({ onQuickAdd }) {
                 </form>
             </div>
             {isFocused && (
-                <p className="absolute left-6 -bottom-8 text-xs text-slate-500 font-medium animate-in fade-in slide-in-from-top-1 bg-white/50 backdrop-blur-md px-3 py-1 rounded-full border border-white/40">
-                    Try: <span className="text-brand-700 font-bold">"Coffee 50"</span> or <span className="text-brand-700 font-bold">"Taxi 200rs"</span>
+                <p className="absolute left-6 -bottom-8 text-xs text-slate-500 dark:text-slate-400 font-medium animate-in fade-in slide-in-from-top-1 bg-white/50 dark:bg-slate-800/50 backdrop-blur-md px-3 py-1 rounded-full border border-white/40 dark:border-slate-700">
+                    Try: <span className="text-brand-700 dark:text-brand-400 font-bold">"Coffee 50"</span> or <span className="text-brand-700 dark:text-brand-400 font-bold">"Taxi 200rs"</span>
                 </p>
             )}
         </div>

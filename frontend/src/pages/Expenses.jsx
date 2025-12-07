@@ -76,8 +76,8 @@ export default function Expenses() {
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Expenses</h2>
-                    <p className="text-slate-500 font-medium">Manage your transactions</p>
+                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Expenses</h2>
+                    <p className="text-slate-500 dark:text-slate-400 font-medium">Manage your transactions</p>
                 </div>
                 <button
                     onClick={handleAdd}
@@ -101,13 +101,13 @@ export default function Expenses() {
                     Error loading expenses. Please try again.
                 </div>
             ) : expenses.length === 0 ? (
-                <div className="text-center py-24 bg-white/60 backdrop-blur-xl rounded-3xl border border-dashed border-slate-300 shadow-sm flex flex-col items-center">
-                    <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6 text-slate-300 ring-8 ring-slate-50/50">
+                <div className="text-center py-24 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-dashed border-slate-300 dark:border-slate-700 shadow-sm flex flex-col items-center">
+                    <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 text-slate-300 dark:text-slate-600 ring-8 ring-slate-50/50 dark:ring-slate-800/50">
                         <Plus size={32} />
                     </div>
-                    <p className="text-slate-600 text-lg font-semibold mb-2">No expenses found</p>
-                    <p className="text-slate-400 mb-8 max-w-xs mx-auto">Your expense history is empty. Start tracking your spending now!</p>
-                    <button onClick={handleAdd} className="text-brand-600 font-bold hover:text-brand-700 hover:underline decoration-2 underline-offset-4">
+                    <p className="text-slate-600 dark:text-slate-400 text-lg font-semibold mb-2">No expenses found</p>
+                    <p className="text-slate-400 dark:text-slate-500 mb-8 max-w-xs mx-auto">Your expense history is empty. Start tracking your spending now!</p>
+                    <button onClick={handleAdd} className="text-brand-600 dark:text-brand-400 font-bold hover:text-brand-700 dark:hover:text-brand-300 hover:underline decoration-2 underline-offset-4">
                         Add your first expense
                     </button>
                 </div>
@@ -137,7 +137,7 @@ export default function Expenses() {
                     )}
                     {!hasNextPage && expenses.length > 5 && (
                         <div className="text-center py-8">
-                            <span className="px-4 py-1.5 bg-slate-100 text-slate-400 text-xs rounded-full font-bold uppercase tracking-wider">End of list</span>
+                            <span className="px-4 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 text-xs rounded-full font-bold uppercase tracking-wider">End of list</span>
                         </div>
                     )}
                 </div>

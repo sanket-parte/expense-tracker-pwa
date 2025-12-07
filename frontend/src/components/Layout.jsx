@@ -1,13 +1,17 @@
 // ... (imports remain)
-import React from 'react';
-import { NavLink, Outlet, useLocation, Link } from 'react-router-dom';
-import { Home, Receipt, Settings, PieChart, LogOut, UserCircle, Plus, Wallet, RefreshCcw } from 'lucide-react';
-import { cn } from '../lib/utils';
+import React, { useState } from 'react';
+import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Home, Receipt, Settings, LogOut, Menu, X, UserCircle, Wallet, RefreshCcw, Moon, Sun } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
+import { cn } from '../lib/utils';
 
 export default function Layout() {
     const { logout, user } = useAuth();
+    const { theme, setTheme } = useTheme();
+    const navigate = useNavigate();
     const location = useLocation();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const navItems = [
         { to: "/", icon: Home, label: "Home" },
@@ -18,122 +22,186 @@ export default function Layout() {
         { to: "/profile", icon: UserCircle, label: "Profile" },
     ];
 
+    const toggleTheme = () => {
+        setTheme(theme === 'dark' ? 'light' : 'dark');
+    };
+
     const handleLogout = () => {
         logout();
+        navigate('/login');
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row text-slate-900 font-sans selection:bg-brand-100 selection:text-brand-900">
-            {/* Desktop Sidebar - Enhanced */}
-            <aside className="hidden md:flex flex-col w-72 bg-white/80 backdrop-blur-xl border-r border-white/20 h-screen sticky top-0 shadow-lg z-30 relative overflow-hidden">
-                <div className="absolute inset-0 z-0 opacity-30 pointer-events-none bg-gradient-to-b from-brand-50/50 to-transparent" />
+        <div className="flex min-h-[100dvh] bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+            {/* Desktop Sidebar */}
+            <aside className="hidden lg:flex w-72 flex-col fixed inset-y-0 left-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-r border-slate-200 dark:border-slate-800 z-50 transition-all duration-300">
+                <div className="p-8 pb-4">
+                    <div className="flex items-center gap-3 px-2 mb-8">
+                        <div className="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/20">
+                            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-400">
+                            Flow
+                        </span>
+                    </div>
 
-                <div className="p-8 border-b border-slate-100/50 relative z-10">
-                    <h1 className="text-3xl font-bold bg-gradient-to-tr from-brand-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent flex items-center gap-2">
-                        <span className="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white text-lg shadow-lg shadow-brand-500/30">P</span>
-                        PennyWise
-                    </h1>
+                    <nav className="space-y-1.5">
+                        {navItems.map((item) => (
+                            <NavLink
+                                key={item.to}
+                                to={item.to}
+                                className={({ isActive }) => cn(
+                                    "flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-[15px] font-semibold transition-all duration-300 group relative overflow-hidden",
+                                    isActive
+                                        ? "text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-500/10 shadow-sm"
+                                        : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                                )}
+                            >
+                                <item.icon size={22} className="transition-transform duration-300 group-hover:scale-110" strokeWidth={2} />
+                                {item.label}
+                            </NavLink>
+                        ))}
+                    </nav>
                 </div>
 
-                <nav className="flex-1 p-6 space-y-2 relative z-10">
-                    {navItems.map((item) => (
-                        <NavLink
-                            key={item.to}
-                            to={item.to}
-                            end={item.to === "/"}
-                            className={({ isActive }) =>
-                                cn(
-                                    "flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 font-medium group relative overflow-hidden",
-                                    isActive
-                                        ? "bg-brand-50 text-brand-700 shadow-sm ring-1 ring-brand-100/50"
-                                        : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-                                )
-                            }
-                        >
-                            {({ isActive }) => (
-                                <>
-                                    {isActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-600 rounded-r-full" />}
-                                    <item.icon size={22} className={cn("transition-all duration-300", isActive ? "text-brand-600 scale-110" : "text-slate-400 group-hover:text-slate-600")} />
-                                    {item.label}
-                                </>
-                            )}
-                        </NavLink>
-                    ))}
-                </nav>
+                <div className="mt-auto p-6 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 space-y-3">
+                    {/* Theme Toggle */}
+                    <button
+                        onClick={toggleTheme}
+                        className="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-[15px] font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-white dark:hover:bg-slate-800 transition-all shadow-sm border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
+                    >
+                        {theme === 'dark' ? <Sun size={22} /> : <Moon size={22} />}
+                        {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                    </button>
 
-                <div className="p-6 border-t border-slate-100/50 relative z-10">
-                    <Link to="/profile" className="flex items-center gap-3 mb-4 p-3 -mx-2 rounded-2xl hover:bg-white/60 transition-all group border border-transparent hover:border-slate-100 shadow-sm hover:shadow-md">
-                        <div className="w-10 h-10 bg-gradient-to-br from-brand-100 to-indigo-100 text-brand-700 rounded-full flex items-center justify-center font-bold text-lg shadow-inner ring-2 ring-white">
-                            {user?.full_name?.[0]?.toUpperCase() || 'U'}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-slate-800 group-hover:text-brand-700 transition-colors truncate">{user?.full_name}</p>
-                            <p className="text-xs text-slate-500 truncate">{user?.email}</p>
-                        </div>
-                    </Link>
                     <button
                         onClick={handleLogout}
-                        className="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-red-50 hover:text-red-600 transition-all font-medium hover:shadow-sm"
+                        className="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-[15px] font-semibold text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all"
                     >
-                        <LogOut size={20} />
-                        Logout
+                        <LogOut size={22} strokeWidth={2} />
+                        Sign Out
                     </button>
+
+                    <div className="flex items-center gap-3 px-2 pt-2">
+                        <div className="w-9 h-9 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-sm">
+                            {user?.full_name?.charAt(0) || 'U'}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">{user?.full_name}</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-500 truncate">{user?.email}</p>
+                        </div>
+                    </div>
                 </div>
             </aside>
 
-            {/* Main Content Area */}
-            <main className="flex-1 overflow-auto bg-slate-50/50 relative">
-                {/* Background Decorative Blobs */}
-                <div className="fixed top-0 left-0 right-0 h-96 bg-gradient-to-b from-brand-50/40 to-transparent pointer-events-none z-0" />
-                <div className="fixed top-[-10%] right-[-10%] w-[500px] h-[500px] bg-brand-200/20 rounded-full blur-3xl pointer-events-none z-0" />
-                <div className="fixed bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-200/20 rounded-full blur-3xl pointer-events-none z-0" />
+            {/* Mobile Header - Update bg and border */}
+            <header className="lg:hidden fixed top-0 inset-x-0 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 z-40 px-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
+                        <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <span className="text-xl font-bold text-slate-900 dark:text-white">Flow</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={toggleTheme}
+                        className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl"
+                    >
+                        {theme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
+                    </button>
+                    <button
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl"
+                    >
+                        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
+                </div>
+            </header>
 
-                <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-8 relative z-10 pb-32 md:pb-8">
+            {/* Mobile Menu - Update bg/text */}
+            {isMobileMenuOpen && (
+                <div className="lg:hidden fixed inset-0 z-30 pt-16 bg-slate-50 dark:bg-slate-950">
+                    <nav className="p-4 space-y-2">
+                        {navItems.map((item) => (
+                            <NavLink
+                                key={item.to}
+                                to={item.to}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className={({ isActive }) => cn(
+                                    "flex items-center gap-3 px-4 py-4 rounded-xl text-lg font-medium transition-colors",
+                                    isActive
+                                        ? "bg-brand-600 text-white shadow-lg shadow-brand-500/20"
+                                        : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-100 dark:border-slate-800"
+                                )}
+                            >
+                                <item.icon size={24} />
+                                {item.label}
+                            </NavLink>
+                        ))}
+                        <button
+                            onClick={handleLogout}
+                            className="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-lg font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 mt-8"
+                        >
+                            <LogOut size={24} />
+                            Sign Out
+                        </button>
+                    </nav>
+                </div>
+            )}
+
+            {/* Main Content Area - Update bg */}
+            <main className={cn(
+                "flex-1 min-w-0 transition-all duration-300 lg:pl-72",
+                location.pathname === '/' ? "p-4 pb-24 lg:p-8" : "p-4 pb-24 lg:p-8"
+            )}>
+                <div className="pt-16 lg:pt-0 max-w-7xl mx-auto w-full">
                     <Outlet />
                 </div>
             </main>
 
-            {/* Mobile Bottom Navigation - Glassmorphism Dock */}
-            <nav className="md:hidden fixed bottom-6 left-4 right-4 h-[72px] glass rounded-2xl flex justify-between items-center px-2 shadow-2xl shadow-brand-900/10 z-50 safe-area-bottom ring-1 ring-white/50">
-                {navItems.map((item) => (
+            {/* Mobile Bottom Nav - Update bg/border */}
+            <nav className="lg:hidden fixed bottom-0 inset-x-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 z-40 safe-area-bottom">
+                <div className="flex justify-around items-center p-2">
+                    {navItems.slice(0, 4).map((item) => (
+                        <NavLink
+                            key={item.to}
+                            to={item.to}
+                            className={({ isActive }) => cn(
+                                "flex flex-col items-center gap-1 p-2 rounded-xl transition-all",
+                                isActive
+                                    ? "text-brand-600 dark:text-brand-400"
+                                    : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
+                            )}
+                        >
+                            {({ isActive }) => (
+                                <>
+                                    <item.icon size={24} strokeWidth={isActive ? 2.5 : 2} />
+                                    <span className="text-[10px] font-medium">{item.label}</span>
+                                </>
+                            )}
+                        </NavLink>
+                    ))}
                     <NavLink
-                        key={item.to}
-                        to={item.to}
-                        end={item.to === "/"}
-                        className={({ isActive }) =>
-                            cn(
-                                "flex flex-1 flex-col items-center justify-center gap-1 h-full relative group",
-                                isActive ? "text-brand-600" : "text-slate-400"
-                            )
-                        }
+                        to="/settings"
+                        className={({ isActive }) => cn(
+                            "flex flex-col items-center gap-1 p-2 rounded-xl transition-all",
+                            isActive
+                                ? "text-brand-600 dark:text-brand-400"
+                                : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
+                        )}
                     >
                         {({ isActive }) => (
                             <>
-                                <div className={cn(
-                                    "relative p-2 rounded-xl transition-all duration-300 ease-out",
-                                    isActive ? "bg-brand-50/80 -translate-y-6 shadow-lg shadow-brand-500/20 ring-4 ring-white" : "group-active:scale-95"
-                                )}>
-                                    <item.icon
-                                        size={24}
-                                        strokeWidth={isActive ? 2.5 : 2}
-                                        className={cn("transition-transform duration-300", isActive && "scale-110")}
-                                    />
-                                </div>
-
-                                <span className={cn(
-                                    "absolute bottom-2 text-[10px] font-bold tracking-wide transition-all duration-300",
-                                    isActive ? "opacity-100 translate-y-0 text-brand-700" : "opacity-0 translate-y-2 pointer-events-none"
-                                )}>
-                                    {item.label}
-                                </span>
-
-                                {isActive && (
-                                    <span className="absolute -bottom-[-18px] left-1/2 -translate-x-1/2 w-1 h-1 bg-brand-400 rounded-full opacity-50" />
-                                )}
+                                <Settings size={24} strokeWidth={isActive ? 2.5 : 2} />
+                                <span className="text-[10px] font-medium">Settings</span>
                             </>
                         )}
                     </NavLink>
-                ))}
+                </div>
             </nav>
         </div>
     );

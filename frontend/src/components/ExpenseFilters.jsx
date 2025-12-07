@@ -36,7 +36,7 @@ export default function ExpenseFilters({ filters, onChange, categories }) {
                         placeholder="Search expenses..."
                         value={filters.search || ''}
                         onChange={(e) => handleChange('search', e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 shadow-sm"
+                        className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 shadow-sm text-slate-900 dark:text-white placeholder:text-slate-400"
                     />
                 </div>
 
@@ -44,8 +44,8 @@ export default function ExpenseFilters({ filters, onChange, categories }) {
                 <button
                     onClick={() => setIsOpen(!isOpen)}
                     className={`px-4 py-2 border rounded-xl flex items-center gap-2 font-medium transition-all active:scale-95 ${isOpen || hasActiveFilters
-                        ? 'bg-brand-50 border-brand-200 text-brand-700'
-                        : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                        ? 'bg-brand-50 dark:bg-brand-500/10 border-brand-200 dark:border-brand-500/20 text-brand-700 dark:text-brand-400'
+                        : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700'
                         }`}
                 >
                     <Filter size={20} />
@@ -59,9 +59,9 @@ export default function ExpenseFilters({ filters, onChange, categories }) {
             {/* Advanced Filters Panel */}
             {/* Advanced Filters Panel */}
             {isOpen && (
-                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-top-2">
+                <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm animate-in fade-in slide-in-from-top-2">
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="font-semibold text-slate-800">Advanced Filters</h3>
+                        <h3 className="font-semibold text-slate-800 dark:text-white">Advanced Filters</h3>
                         <button
                             onClick={clearFilters}
                             className="text-sm font-medium text-slate-500 hover:text-red-500 flex items-center gap-1 transition-colors px-2 py-1 rounded-lg hover:bg-red-50"
@@ -79,14 +79,14 @@ export default function ExpenseFilters({ filters, onChange, categories }) {
                                     type="date"
                                     value={filters.start_date || ''}
                                     onChange={(e) => handleChange('start_date', e.target.value)}
-                                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium text-slate-700"
+                                    className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium text-slate-700 dark:text-white"
                                 />
                                 <span className="text-slate-300 font-medium">to</span>
                                 <input
                                     type="date"
                                     value={filters.end_date || ''}
                                     onChange={(e) => handleChange('end_date', e.target.value)}
-                                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium text-slate-700"
+                                    className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium text-slate-700 dark:text-white"
                                 />
                             </div>
                         </div>
@@ -97,7 +97,7 @@ export default function ExpenseFilters({ filters, onChange, categories }) {
                                 <select
                                     value={filters.category_id || ''}
                                     onChange={(e) => handleChange('category_id', e.target.value)}
-                                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all appearance-none font-medium text-slate-700"
+                                    className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all appearance-none font-medium text-slate-700 dark:text-white"
                                 >
                                     <option value="">All Categories</option>
                                     {categories.map((cat) => (
@@ -120,7 +120,7 @@ export default function ExpenseFilters({ filters, onChange, categories }) {
                                     placeholder="Min"
                                     value={filters.min_amount || ''}
                                     onChange={(e) => handleChange('min_amount', e.target.value)}
-                                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium"
+                                    className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium text-slate-700 dark:text-white"
                                 />
                                 <span className="text-slate-300">-</span>
                                 <input
@@ -128,7 +128,7 @@ export default function ExpenseFilters({ filters, onChange, categories }) {
                                     placeholder="Max"
                                     value={filters.max_amount || ''}
                                     onChange={(e) => handleChange('max_amount', e.target.value)}
-                                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium"
+                                    className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all font-medium text-slate-700 dark:text-white"
                                 />
                             </div>
                         </div>

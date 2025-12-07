@@ -13,24 +13,24 @@ const COLORS = ['#6366f1', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6'
 
 const StatCard = ({ title, amount, icon: Icon, trend, color, labelColor, delay }) => (
     <div
-        className="relative overflow-hidden bg-white/80 backdrop-blur-xl p-6 rounded-3xl border border-white/40 shadow-glass transition-all hover:translate-y-[-2px] hover:shadow-xl group"
+        className="relative overflow-hidden bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-6 rounded-3xl border border-white/40 dark:border-slate-800 shadow-glass transition-all hover:translate-y-[-2px] hover:shadow-xl group"
         style={{ animationDelay: `${delay}ms` }}
     >
         <div className={cn("absolute -right-6 -top-6 w-32 h-32 rounded-full opacity-10 transition-transform duration-500 group-hover:scale-150 blur-2xl", color)}></div>
         <div className="flex justify-between items-start mb-4 relative z-10">
-            <div className={cn("p-3.5 rounded-2xl shadow-sm ring-1 ring-black/5", color.replace('bg-', 'bg-opacity-10 text-'))}>
+            <div className={cn("p-3.5 rounded-2xl shadow-sm ring-1 ring-black/5 dark:ring-white/10", color.replace('bg-', 'bg-opacity-10 text-'))}>
                 <Icon size={26} className={labelColor} />
             </div>
             {trend && (
-                <div className={cn("flex items-center gap-1 text-xs font-bold px-2.5 py-1.5 rounded-full border border-black/5", trend > 0 ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600")}>
+                <div className={cn("flex items-center gap-1 text-xs font-bold px-2.5 py-1.5 rounded-full border border-black/5 dark:border-white/10", trend > 0 ? "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400" : "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400")}>
                     {trend > 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
                     {Math.abs(trend)}%
                 </div>
             )}
         </div>
         <div className="relative z-10">
-            <p className="text-sm font-semibold text-slate-500 mb-1">{title}</p>
-            <h3 className="text-3xl font-extrabold text-slate-800 tracking-tight">₹{amount.toFixed(2)}</h3>
+            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-1">{title}</p>
+            <h3 className="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight">₹{amount.toFixed(2)}</h3>
         </div>
     </div>
 );
@@ -80,10 +80,10 @@ export default function Dashboard() {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Financial Overview</h2>
-                    <p className="text-slate-500 font-medium mt-1">Track your spending and savings in real-time</p>
+                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Financial Overview</h2>
+                    <p className="text-slate-500 dark:text-slate-400 font-medium mt-1">Track your spending and savings in real-time</p>
                 </div>
-                <div className="text-sm font-bold text-brand-700 bg-white/80 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/50 shadow-sm">
+                <div className="text-sm font-bold text-brand-700 dark:text-brand-300 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/50 dark:border-slate-700 shadow-sm">
                     {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                 </div>
             </div>
@@ -122,13 +122,13 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Spending Trend Chart */}
-                <div className="bg-white/80 backdrop-blur-xl p-6 rounded-3xl border border-white/40 shadow-glass">
+                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-6 rounded-3xl border border-white/40 dark:border-slate-800 shadow-glass">
                     <div className="flex justify-between items-center mb-8">
                         <div>
-                            <h3 className="text-lg font-bold text-slate-800">Spending Trend</h3>
-                            <p className="text-xs text-slate-400 font-medium">Last 30 Days</p>
+                            <h3 className="text-lg font-bold text-slate-800 dark:text-white">Spending Trend</h3>
+                            <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">Last 30 Days</p>
                         </div>
-                        <select className="text-sm bg-slate-50/50 border-none rounded-xl text-slate-600 font-medium focus:ring-brand-500 cursor-pointer py-2 px-3 hover:bg-slate-100 transition-colors">
+                        <select className="text-sm bg-slate-50/50 dark:bg-slate-800/50 border-none rounded-xl text-slate-600 dark:text-slate-400 font-medium focus:ring-brand-500 cursor-pointer py-2 px-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                             <option>Daily</option>
                             <option>Weekly</option>
                         </select>
@@ -176,9 +176,9 @@ export default function Dashboard() {
                 </div>
 
                 {/* Categories Pie Chart */}
-                <div className="bg-white/80 backdrop-blur-xl p-6 rounded-3xl border border-white/40 shadow-glass flex flex-col">
-                    <h3 className="text-lg font-bold text-slate-800 mb-1">Expense By Category</h3>
-                    <p className="text-xs text-slate-400 font-medium mb-6">Distribution across top categories</p>
+                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-6 rounded-3xl border border-white/40 dark:border-slate-800 shadow-glass flex flex-col">
+                    <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-1">Expense By Category</h3>
+                    <p className="text-xs text-slate-400 dark:text-slate-500 font-medium mb-6">Distribution across top categories</p>
 
                     <div className="flex-1 min-h-[300px] flex flex-col md:flex-row items-center justify-center gap-8">
                         {data.category_breakdown.length > 0 ? (
@@ -211,18 +211,18 @@ export default function Dashboard() {
                                         </PieChart>
                                     </ResponsiveContainer>
                                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                        <p className="text-2xl font-bold text-slate-700">₹{data.total_expense.toLocaleString()}</p>
+                                        <p className="text-2xl font-bold text-slate-700 dark:text-white">₹{data.total_expense.toLocaleString()}</p>
                                         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total</p>
                                     </div>
                                 </div>
                                 <div className="w-full md:w-1/2 flex flex-col gap-3 justify-center">
                                     {data.category_breakdown.map((item, index) => (
-                                        <div key={item.name} className="flex items-center justify-between group cursor-pointer p-2 rounded-xl hover:bg-white/50 transition-all">
+                                        <div key={item.name} className="flex items-center justify-between group cursor-pointer p-2 rounded-xl hover:bg-white/50 dark:hover:bg-slate-800/50 transition-all">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: COLORS[index % COLORS.length], boxShadow: `0 0 8px ${COLORS[index % COLORS.length]}60` }} />
-                                                <span className="text-sm font-semibold text-slate-600 group-hover:text-slate-900">{item.name}</span>
+                                                <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white">{item.name}</span>
                                             </div>
-                                            <span className="text-sm text-slate-500 font-mono font-bold">{(item.value / data.total_expense * 100).toFixed(0)}%</span>
+                                            <span className="text-sm text-slate-500 dark:text-slate-400 font-mono font-bold">{(item.value / data.total_expense * 100).toFixed(0)}%</span>
                                         </div>
                                     ))}
                                 </div>
