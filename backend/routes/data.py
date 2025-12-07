@@ -33,42 +33,75 @@ async def import_expenses(
     
     # 1. Identify unique categories in import
     import_categories = {row.get('category', 'Uncategorized').strip() for row in rows}
-    
-    # 2. Get existing categories (User + Default)
-    existing_cats_query = select(Category.name).where(
+    if '' in import_categories:
+        import_categories.remove('')
+    if 'Uncategorized' not in import_categories: # Ensure Uncategorized exists if needed
+        import_categories.add('Uncategorized')
+
+    # 2. Get existing categories for this user
+    existing_cats_query = select(Category).where(
          or_(Category.user_id == None, Category.user_id == current_user.id)
     )
-    existing_category_names = set(session.exec(existing_cats_query).all())
+    existing_categories = session.exec(existing_cats_query).all()
+    
+    # Map name -> id
+    category_map = {cat.name.lower(): cat.id for cat in existing_categories}
     
     # 3. Create missing categories
     new_categories_count = 0
     for cat_name in import_categories:
-        if cat_name and cat_name not in existing_category_names:
+        clean_name = cat_name.strip()
+        if clean_name.lower() not in category_map:
             new_cat = Category(
-                name=cat_name, 
+                name=clean_name, 
                 user_id=current_user.id, 
                 color="#64748b" # Default color
             )
             session.add(new_cat)
-            existing_category_names.add(cat_name) # Add to set to avoid dups if dup in csv (set handles it)
+            session.flush() # Flush to get ID
+            session.refresh(new_cat)
+            category_map[clean_name.lower()] = new_cat.id
             new_categories_count += 1
             
-    # Commit categories first so they exist if needed (though not strictly required for foreign keys since we use string for now)
     try:
         session.commit()
     except Exception as e:
         print(f"Error creating categories: {e}")
         session.rollback()
+        # Re-fetch map if commit failed? Or just error out. 
+        # For simplicity, if category creation fails, we might fail hard or partial imports.
+        # Let's assume commit succeeded for now or we will error later on FK.
 
     # 4. Create Expenses
     count = 0
     for row in rows:
         try:
             date_str = row.get('date', datetime.utcnow().strftime('%Y-%m-%d'))
+            
+            # Helper to parse amount safely
+            amount_str = row.get('amount', '0').replace(',', '')
+            try:
+                 amount = float(amount_str)
+            except ValueError:
+                 amount = 0.0
+
+            cat_name = row.get('category', 'Uncategorized').strip()
+            cat_id = category_map.get(cat_name.lower())
+            
+            # Fallback to Uncategorized if for some reason not found (shouldn't happen due to step 3)
+            if not cat_id:
+                 # Find ID of "Uncategorized" or take any
+                 cat_id = list(category_map.values())[0] if category_map else None
+
+            # Check if category_id is valid
+            if not cat_id:
+                print("No category ID found, skipping row")
+                continue
+
             expense = Expense(
                 title=row.get('title', 'Untitled'),
-                amount=float(row.get('amount', 0)),
-                category=row.get('category', 'Uncategorized').strip(),
+                amount=amount,
+                category_id=cat_id,
                 type=row.get('type', 'expense'),
                 date=datetime.strptime(date_str, '%Y-%m-%d'),
                 user_id=current_user.id
@@ -100,11 +133,12 @@ def export_expenses(
     writer.writerow(['id', 'title', 'amount', 'category', 'type', 'date', 'created_at'])
     
     for expense in expenses:
+        category_name = expense.category.name if expense.category else "Uncategorized"
         writer.writerow([
             expense.id,
             expense.title,
             expense.amount,
-            expense.category,
+            category_name,
             expense.type,
             expense.date.strftime('%Y-%m-%d'),
             expense.created_at.isoformat()
