@@ -1,32 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { Plus } from 'lucide-react';
-import api from '../lib/api';
 import ExpenseItem from '../components/ExpenseItem';
 import Modal from '../components/Modal';
 import ExpenseForm from '../components/ExpenseForm';
 import ExpenseFilters from '../components/ExpenseFilters';
+import { useExpenses, useCategories } from '../hooks/useQueries';
+import { useDeleteExpense } from '../hooks/useMutations';
 
 export default function Expenses() {
-    const [expenses, setExpenses] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingExpense, setEditingExpense] = useState(null);
-    const [hasMore, setHasMore] = useState(true);
-    const [page, setPage] = useState(0);
-    const observer = React.useRef();
-    const LIMIT = 20;
-
-    const lastExpenseElementRef = React.useCallback(node => {
-        if (loading) return;
-        if (observer.current) observer.current.disconnect();
-        observer.current = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting && hasMore) {
-                setPage(prevPage => prevPage + 1);
-            }
-        });
-        if (node) observer.current.observe(node);
-    }, [loading, hasMore]);
     const [filters, setFilters] = useState({
         search: '',
         category_id: '',
@@ -37,69 +18,32 @@ export default function Expenses() {
         max_amount: ''
     });
 
-    // Reset on filter change
-    useEffect(() => {
-        setExpenses([]);
-        setPage(0);
-        setHasMore(true);
-        // We don't fetch here immediately if we rely on the page effect, 
-        // but we need to debounce.
-        const timer = setTimeout(() => {
-            // We can just reset page to 0, and let the page effect handle it?
-            // Or explicitly call fetch with reset.
-            fetchData(0, true);
-        }, 500);
-        return () => clearTimeout(timer);
-    }, [filters]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingExpense, setEditingExpense] = useState(null);
 
-    // Fetch on page change (except initial 0 which is handled by filter effect mostly, 
-    // but to avoid double fetch we need to be careful. 
-    // Simplified: Filter effect calls fetchData(0), scroll calls setPage(prev+1) -> fetchData(page)
-    useEffect(() => {
-        if (page > 0) fetchData(page, false);
-    }, [page]);
+    const {
+        data,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        isLoading,
+        error
+    } = useExpenses(filters);
 
-    const fetchData = async (pageNumber = 0, isReset = false) => {
-        setLoading(true);
-        try {
-            const params = new URLSearchParams();
-            Object.entries(filters).forEach(([key, value]) => {
-                if (value) params.append(key, value);
-            });
+    const { data: categories = [] } = useCategories();
+    const deleteExpenseMutation = useDeleteExpense();
 
-            // Add Pagination params
-            params.append('offset', pageNumber * LIMIT);
-            params.append('limit', LIMIT);
-
-            // Fetch categories only once if needed, or check if we have them
-            const promises = [api.get(`/expenses/?${params.toString()}`)];
-            if (categories.length === 0) {
-                promises.push(api.get('/categories/'));
+    const observer = useRef();
+    const lastExpenseElementRef = useCallback(node => {
+        if (isLoading || isFetchingNextPage) return;
+        if (observer.current) observer.current.disconnect();
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasNextPage) {
+                fetchNextPage();
             }
-
-            const [expRes, catRes] = await Promise.all(promises);
-
-            const newExpenses = expRes.data;
-            setHasMore(newExpenses.length === LIMIT);
-
-            if (isReset) {
-                setExpenses(newExpenses);
-            } else {
-                setExpenses(prev => [...prev, ...newExpenses]);
-            }
-
-            if (catRes) {
-                setCategories(catRes.data);
-            }
-        } catch (error) {
-            console.error("Failed to load data", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-
-
+        });
+        if (node) observer.current.observe(node);
+    }, [isLoading, isFetchingNextPage, hasNextPage, fetchNextPage]);
 
     const handleAdd = () => {
         setEditingExpense(null);
@@ -114,10 +58,8 @@ export default function Expenses() {
     const handleDelete = async (id) => {
         if (confirm('Are you sure you want to delete this expense?')) {
             try {
-                await api.delete(`/expenses/${id}`);
-                await api.delete(`/expenses/${id}`);
-                // Refresh cleanly to keep state consistent
-                fetchData(0, true);
+                await deleteExpenseMutation.mutateAsync(id);
+                // React Query handles refetch/invalidation
             } catch (error) {
                 console.error("Failed to delete", error);
             }
@@ -125,10 +67,11 @@ export default function Expenses() {
     };
 
     const handleSuccess = () => {
-        // Refresh list from top
-        fetchData(0, true);
         setIsModalOpen(false);
     };
+
+    // Flatten pages into a single array
+    const expenses = data ? data.pages.flatMap(page => page) : [];
 
     return (
         <div className="space-y-6">
@@ -149,8 +92,10 @@ export default function Expenses() {
 
             <ExpenseFilters filters={filters} onChange={setFilters} categories={categories} />
 
-            {loading ? (
+            {isLoading ? (
                 <div className="text-center py-20 text-slate-400 animate-pulse">Loading expenses...</div>
+            ) : error ? (
+                <div className="text-center py-20 text-red-400">Error loading expenses</div>
             ) : expenses.length === 0 ? (
                 <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-200">
                     <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
@@ -186,8 +131,8 @@ export default function Expenses() {
                             );
                         }
                     })}
-                    {loading && <div className="text-center py-4 text-slate-400">Loading more...</div>}
-                    {!hasMore && expenses.length > 0 && (
+                    {isFetchingNextPage && <div className="text-center py-4 text-slate-400">Loading more...</div>}
+                    {!hasNextPage && expenses.length > 0 && (
                         <div className="text-center py-6">
                             <span className="px-3 py-1 bg-slate-100 text-slate-400 text-xs rounded-full font-medium">End of list</span>
                         </div>

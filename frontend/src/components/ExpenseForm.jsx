@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import api from '../lib/api';
+import { useCategories } from '../hooks/useQueries';
+import { useCreateExpense, useUpdateExpense } from '../hooks/useMutations';
 
 export default function ExpenseForm({ initialData, onSuccess, onClose }) {
-    const [loading, setLoading] = useState(false);
+    const { data: categories = [] } = useCategories();
+    const createExpenseMutation = useCreateExpense();
+    const updateExpenseMutation = useUpdateExpense();
+
     const [formData, setFormData] = useState({
         title: '',
         amount: '',
@@ -10,22 +14,12 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
         date: new Date().toISOString().split('T')[0],
     });
 
-    const [categories, setCategories] = useState([]);
-
+    // Set default category when categories load
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const res = await api.get('/categories/');
-                setCategories(res.data);
-                if (!initialData && res.data.length > 0) {
-                    setFormData(prev => ({ ...prev, category_id: res.data[0].id }));
-                }
-            } catch (error) {
-                console.error("Failed to load categories", error);
-            }
-        };
-        fetchCategories();
-    }, [initialData]);
+        if (!initialData && categories.length > 0 && !formData.category_id) {
+            setFormData(prev => ({ ...prev, category_id: categories[0].id }));
+        }
+    }, [categories, initialData, formData.category_id]);
 
     useEffect(() => {
         if (initialData) {
@@ -40,7 +34,7 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
+
         try {
             const payload = {
                 title: formData.title,
@@ -50,19 +44,20 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
             };
 
             if (initialData?.id) {
-                await api.patch(`/expenses/${initialData.id}`, payload);
+                await updateExpenseMutation.mutateAsync({ id: initialData.id, data: payload });
             } else {
-                await api.post('/expenses/', payload);
+                await createExpenseMutation.mutateAsync(payload);
             }
             onSuccess();
             onClose();
         } catch (error) {
             console.error("Failed to save expense", error);
             alert("Failed to save expense");
-        } finally {
-            setLoading(false);
         }
     };
+
+    // Loading state derived from mutations
+    const loading = createExpenseMutation.isPending || updateExpenseMutation.isPending;
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">

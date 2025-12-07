@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Wallet, TrendingDown, TrendingUp, ArrowUpRight, ArrowDownRight, PieChart as PieChartIcon } from 'lucide-react';
 import QuickAdd from '../components/QuickAdd';
 import Modal from '../components/Modal';
 import ExpenseForm from '../components/ExpenseForm';
-import api from '../lib/api';
 import { cn } from '../lib/utils';
+import { useDashboardStats } from '../hooks/useQueries';
 
 const COLORS = ['#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#6366f1'];
 
@@ -31,25 +31,9 @@ const StatCard = ({ title, amount, icon: Icon, trend, color, subValue, labelColo
 );
 
 export default function Dashboard() {
-    const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const { data, isLoading: loading, error } = useDashboardStats();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [quickAddData, setQuickAddData] = useState(null);
-
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    const loadData = async () => {
-        try {
-            const res = await api.get('/analytics/dashboard');
-            setData(res.data);
-        } catch (error) {
-            console.error("Failed to load dashboard data", error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleQuickAdd = (parsedData) => {
         setQuickAddData(parsedData);
@@ -57,7 +41,7 @@ export default function Dashboard() {
     };
 
     const handleSuccess = () => {
-        loadData();
+        // Refetching is handled automatically by React Query invalidation in mutations
         setIsModalOpen(false);
     };
 
@@ -70,7 +54,7 @@ export default function Dashboard() {
         </div>
     );
 
-    if (!data) return <div className="p-8 text-center text-slate-500">Failed to load data</div>;
+    if (error) return <div className="p-8 text-center text-slate-500">Failed to load data</div>;
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">

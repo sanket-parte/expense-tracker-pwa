@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Plus, X, Trash2, Check, AlertCircle, Search } from 'lucide-react';
-import api from '../lib/api';
+import { useCategories } from '../hooks/useQueries';
+import { useCreateCategory, useDeleteCategory } from '../hooks/useMutations';
 
 export default function CategorySettings() {
-    const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const { data: categories = [], isLoading: loading } = useCategories();
+    const createCategoryMutation = useCreateCategory();
+    const deleteCategoryMutation = useDeleteCategory();
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newCategory, setNewCategory] = useState({ name: '', color: '#64748b' });
     const [error, setError] = useState(null);
@@ -23,21 +26,6 @@ export default function CategorySettings() {
         '#ec4899', // Pink
     ];
 
-    const fetchCategories = async () => {
-        try {
-            const res = await api.get('/categories/');
-            setCategories(res.data);
-        } catch (error) {
-            console.error("Failed to fetch categories", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchCategories();
-    }, []);
-
     const openModal = () => {
         setError(null);
         setNewCategory({ name: '', color: '#64748b' });
@@ -50,10 +38,9 @@ export default function CategorySettings() {
         setError(null);
 
         try {
-            await api.post('/categories/', newCategory);
+            await createCategoryMutation.mutateAsync(newCategory);
             setNewCategory({ name: '', color: '#64748b' });
             setIsModalOpen(false);
-            fetchCategories();
         } catch (error) {
             setError("Failed to add category. Name might be duplicate.");
         }
@@ -62,8 +49,7 @@ export default function CategorySettings() {
     const handleDelete = async (id) => {
         if (confirm('Delete this category? Linked expenses will remain but lose color mapping.')) {
             try {
-                await api.delete(`/categories/${id}`);
-                fetchCategories();
+                await deleteCategoryMutation.mutateAsync(id);
             } catch (error) {
                 console.error("Failed to delete", error);
             }
