@@ -17,6 +17,8 @@ def init_categories():
             session.add_all(defaults)
             session.commit()
             print("Initialized default master categories.")
+        else:
+            print("Categories already exist. Skipping initialization.")
 
 if __name__ == "__main__":
     create_db_and_tables()
