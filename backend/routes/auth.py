@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
@@ -13,6 +14,10 @@ class UserCreate(BaseModel):
     email: str
     password: str
     full_name: str
+
+class UserUpdate(BaseModel):
+    full_name: Optional[str] = None
+    password: Optional[str] = None
 
 class Token(BaseModel):
     access_token: str
@@ -56,4 +61,17 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = D
 
 @router.get("/me", response_model=UserRead)
 def read_users_me(current_user: User = Depends(get_current_user)):
+    return current_user
+
+@router.put("/me", response_model=UserRead)
+def update_user_me(user_update: UserUpdate, current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
+    if user_update.full_name:
+        current_user.full_name = user_update.full_name
+    
+    if user_update.password:
+        current_user.password_hash = get_password_hash(user_update.password)
+        
+    session.add(current_user)
+    session.commit()
+    session.refresh(current_user)
     return current_user

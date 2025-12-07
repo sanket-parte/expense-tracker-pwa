@@ -59,8 +59,14 @@ export const AuthProvider = ({ children }) => {
         delete api.defaults.headers.common['Authorization'];
     };
 
+    const updateProfile = async (data) => {
+        const res = await api.put('/auth/me', data);
+        setUser(res.data);
+        return res.data;
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, register, logout, loading, isAuthenticated: !!user }}>
+        <AuthContext.Provider value={{ user, login, register, logout, updateProfile, loading, isAuthenticated: !!user }}>
             {children}
         </AuthContext.Provider>
     );

@@ -1,6 +1,6 @@
 import React from 'react';
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Receipt, Settings, PieChart, LogOut } from 'lucide-react';
+import { NavLink, Outlet, useLocation, Link } from 'react-router-dom';
+import { LayoutDashboard, Receipt, Settings, PieChart, LogOut, UserCircle } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useAuth } from '../context/AuthContext';
 
@@ -12,6 +12,7 @@ export default function Layout() {
         { to: "/", icon: LayoutDashboard, label: "Dashboard" },
         { to: "/expenses", icon: Receipt, label: "Expenses" },
         { to: "/settings", icon: Settings, label: "Settings" },
+        { to: "/profile", icon: UserCircle, label: "Profile" },
     ];
 
     const handleLogout = () => {
@@ -47,12 +48,16 @@ export default function Layout() {
                     ))}
                 </nav>
 
-                {/* Logout Section */}
                 <div className="pt-6 border-t border-slate-100 p-4">
-                    <div className="mb-4">
-                        <p className="text-sm font-medium text-slate-800">{user?.full_name}</p>
-                        <p className="text-xs text-slate-500 truncate">{user?.email}</p>
-                    </div>
+                    <Link to="/profile" className="flex items-center gap-3 mb-4 p-2 -mx-2 rounded-lg hover:bg-slate-50 transition-colors group">
+                        <div className="w-10 h-10 bg-violet-100 text-violet-600 rounded-full flex items-center justify-center">
+                            <UserCircle size={24} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-slate-800 group-hover:text-violet-700 transition-colors truncate">{user?.full_name}</p>
+                            <p className="text-xs text-slate-500 truncate">{user?.email}</p>
+                        </div>
+                    </Link>
                     <button
                         onClick={handleLogout}
                         className="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 transition-all font-medium"
