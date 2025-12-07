@@ -1,15 +1,38 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient } from '@tanstack/react-query'
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
+import { get, set, del } from 'idb-keyval'
 import './index.css'
 import App from './App.jsx'
+
+function createIDBPersister(idbValidKey = "reactQuery") {
+  return {
+    persistClient: async (client) => {
+      await set(idbValidKey, client)
+    },
+    restoreClient: async () => {
+      return await get(idbValidKey)
+    },
+    removeClient: async () => {
+      await del(idbValidKey)
+    },
+  }
+}
+
+const persister = createIDBPersister()
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes by default
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      gcTime: 1000 * 60 * 60 * 24, // 24 hours
       retry: 1,
+      networkMode: 'offlineFirst',
     },
+    mutations: {
+      networkMode: 'offlineFirst',
+    }
   },
 })
 
@@ -19,9 +42,9 @@ import ErrorFallback from './components/ErrorFallback'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => window.location.replace('/')}>
-      <QueryClientProvider client={queryClient}>
+      <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
         <App />
-      </QueryClientProvider>
+      </PersistQueryClientProvider>
     </ErrorBoundary>
   </StrictMode>,
 )

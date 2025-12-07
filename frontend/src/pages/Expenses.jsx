@@ -97,7 +97,7 @@ export default function Expenses() {
                     <div className="w-10 h-10 border-4 border-brand-100 border-t-brand-600 rounded-full animate-spin" />
                     <p className="text-slate-400 font-medium animate-pulse">Loading transaction history...</p>
                 </div>
-            ) : error ? (
+            ) : error && expenses.length === 0 ? (
                 <div className="text-center py-20 bg-red-50 rounded-3xl border border-red-100 text-red-500 font-medium">
                     Error loading expenses. Please try again.
                 </div>

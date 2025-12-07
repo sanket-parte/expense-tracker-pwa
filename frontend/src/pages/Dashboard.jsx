@@ -79,7 +79,7 @@ export default function Dashboard() {
         </div>
     );
 
-    if (error) return (
+    if (error && !data) return (
         <PullToRefresh onRefresh={handleRefresh}>
             <div className="p-8 text-center bg-red-50 rounded-2xl border border-red-100 text-red-600 font-medium">
                 Failed to load data. Use Pull to Refresh to try again.

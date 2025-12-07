@@ -7,7 +7,16 @@ export const useCreateCategory = () => {
 
     return useMutation({
         mutationFn: (newCategory) => api.post('/categories/', newCategory),
-        onSuccess: () => {
+        onMutate: async (newCategory) => {
+            await queryClient.cancelQueries({ queryKey: [QUERY_KEYS.categories] });
+            const previousCategories = queryClient.getQueryData([QUERY_KEYS.categories]);
+            queryClient.setQueryData([QUERY_KEYS.categories], (old) => [...(old || []), { ...newCategory, id: Date.now() }]); // Temp ID
+            return { previousCategories };
+        },
+        onError: (err, newCategory, context) => {
+            queryClient.setQueryData([QUERY_KEYS.categories], context.previousCategories);
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.categories] });
         },
     });
@@ -18,7 +27,16 @@ export const useDeleteCategory = () => {
 
     return useMutation({
         mutationFn: (id) => api.delete(`/categories/${id}`),
-        onSuccess: () => {
+        onMutate: async (id) => {
+            await queryClient.cancelQueries({ queryKey: [QUERY_KEYS.categories] });
+            const previousCategories = queryClient.getQueryData([QUERY_KEYS.categories]);
+            queryClient.setQueryData([QUERY_KEYS.categories], (old) => old?.filter(c => c.id !== id));
+            return { previousCategories };
+        },
+        onError: (err, id, context) => {
+            queryClient.setQueryData([QUERY_KEYS.categories], context.previousCategories);
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.categories] });
         },
     });
@@ -29,7 +47,35 @@ export const useCreateExpense = () => {
 
     return useMutation({
         mutationFn: (newExpense) => api.post('/expenses/', newExpense),
-        onSuccess: () => {
+        onMutate: async (newExpense) => {
+            await queryClient.cancelQueries({ queryKey: [QUERY_KEYS.expenses] });
+            await queryClient.cancelQueries({ queryKey: [QUERY_KEYS.dashboard] });
+
+            const previousExpenses = queryClient.getQueriesData({ queryKey: [QUERY_KEYS.expenses] });
+
+            // Optimistically update Infinite Query
+            queryClient.setQueriesData({ queryKey: [QUERY_KEYS.expenses] }, (old) => {
+                if (!old) return old;
+                // Add to the first page
+                const newPages = [...old.pages];
+                if (newPages.length > 0) {
+                    newPages[0] = [
+                        { ...newExpense, id: Date.now(), created_at: new Date().toISOString() }, // Temp ID & date
+                        ...newPages[0]
+                    ];
+                }
+                return { ...old, pages: newPages };
+            });
+
+            return { previousExpenses };
+        },
+        onError: (err, newExpense, context) => {
+            // Restore all modified queries
+            context.previousExpenses.forEach(([queryKey, data]) => {
+                queryClient.setQueryData(queryKey, data);
+            });
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.expenses] });
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.dashboard] });
         },
@@ -41,7 +87,30 @@ export const useUpdateExpense = () => {
 
     return useMutation({
         mutationFn: ({ id, data }) => api.put(`/expenses/${id}`, data),
-        onSuccess: () => {
+        onMutate: async ({ id, data }) => {
+            await queryClient.cancelQueries({ queryKey: [QUERY_KEYS.expenses] });
+            await queryClient.cancelQueries({ queryKey: [QUERY_KEYS.dashboard] });
+
+            const previousExpenses = queryClient.getQueriesData({ queryKey: [QUERY_KEYS.expenses] });
+
+            queryClient.setQueriesData({ queryKey: [QUERY_KEYS.expenses] }, (old) => {
+                if (!old) return old;
+                return {
+                    ...old,
+                    pages: old.pages.map(page =>
+                        page.map(expense => expense.id === id ? { ...expense, ...data } : expense)
+                    )
+                };
+            });
+
+            return { previousExpenses };
+        },
+        onError: (err, variables, context) => {
+            context.previousExpenses.forEach(([queryKey, data]) => {
+                queryClient.setQueryData(queryKey, data);
+            });
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.expenses] });
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.dashboard] });
         },
@@ -53,7 +122,28 @@ export const useDeleteExpense = () => {
 
     return useMutation({
         mutationFn: (id) => api.delete(`/expenses/${id}`),
-        onSuccess: () => {
+        onMutate: async (id) => {
+            await queryClient.cancelQueries({ queryKey: [QUERY_KEYS.expenses] });
+            await queryClient.cancelQueries({ queryKey: [QUERY_KEYS.dashboard] });
+
+            const previousExpenses = queryClient.getQueriesData({ queryKey: [QUERY_KEYS.expenses] });
+
+            queryClient.setQueriesData({ queryKey: [QUERY_KEYS.expenses] }, (old) => {
+                if (!old) return old;
+                return {
+                    ...old,
+                    pages: old.pages.map(page => page.filter(expense => expense.id !== id))
+                };
+            });
+
+            return { previousExpenses };
+        },
+        onError: (err, id, context) => {
+            context.previousExpenses.forEach(([queryKey, data]) => {
+                queryClient.setQueryData(queryKey, data);
+            });
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.expenses] });
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.dashboard] });
         },
