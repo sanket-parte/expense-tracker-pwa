@@ -16,8 +16,7 @@ def create_expense(
     expense: ExpenseCreate,
     current_user: User = Depends(get_current_user)
 ):
-    db_expense = Expense.from_orm(expense)
-    db_expense.user_id = current_user.id
+    db_expense = Expense(**expense.model_dump(), user_id=current_user.id)
     session.add(db_expense)
     session.commit()
     session.refresh(db_expense)

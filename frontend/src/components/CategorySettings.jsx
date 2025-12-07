@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, X, Trash2, Check, AlertCircle } from 'lucide-react';
+import { Plus, X, Trash2, Check, AlertCircle, Search } from 'lucide-react';
 import api from '../lib/api';
 
 export default function CategorySettings() {
@@ -8,6 +8,7 @@ export default function CategorySettings() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newCategory, setNewCategory] = useState({ name: '', color: '#64748b' });
     const [error, setError] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const colors = [
         '#64748b', // Slate
@@ -69,9 +70,13 @@ export default function CategorySettings() {
         }
     };
 
+    const filteredCategories = categories.filter(cat =>
+        cat.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
-        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-            <div className="flex items-center justify-between mb-6">
+        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col h-[600px]">
+            <div className="flex items-center justify-between mb-6 shrink-0">
                 <div>
                     <h3 className="text-lg font-bold text-slate-800">Categories</h3>
                     <p className="text-slate-500 text-sm">Manage your expense categories</p>
@@ -85,35 +90,49 @@ export default function CategorySettings() {
                 </button>
             </div>
 
-            {/* Category List */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {categories.map(cat => (
-                    <div key={cat.id} className="group relative flex items-center gap-3 p-3 bg-white border border-slate-100 rounded-xl shadow-sm hover:shadow-md hover:border-slate-200 transition-all">
-                        <div
-                            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shadow-sm"
-                            style={{ backgroundColor: cat.color }}
-                        >
-                            {cat.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-slate-700 truncate">{cat.name}</h4>
-                        </div>
-                        <button
-                            onClick={() => handleDelete(cat.id)}
-                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 focus:opacity-100 transition-all"
-                            title="Delete Category"
-                        >
-                            <Trash2 size={16} />
-                        </button>
-                    </div>
-                ))}
+            {/* Search Bar */}
+            <div className="mb-4 relative shrink-0">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <input
+                    type="text"
+                    placeholder="Search categories..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 transition-all text-sm"
+                />
             </div>
 
-            {categories.length === 0 && !loading && (
-                <div className="text-center py-8 text-slate-400 text-sm bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                    No categories found. Create one to get started.
+            {/* Category List - Scrollable Area */}
+            <div className="flex-1 overflow-y-auto min-h-0 pr-2 -mr-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pb-2">
+                    {filteredCategories.map(cat => (
+                        <div key={cat.id} className="group relative flex items-center gap-3 p-3 bg-white border border-slate-100 rounded-xl shadow-sm hover:shadow-md hover:border-slate-200 transition-all">
+                            <div
+                                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shadow-sm shrink-0"
+                                style={{ backgroundColor: cat.color }}
+                            >
+                                {cat.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <h4 className="font-medium text-slate-700 truncate">{cat.name}</h4>
+                            </div>
+                            <button
+                                onClick={() => handleDelete(cat.id)}
+                                className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 focus:opacity-100 transition-all"
+                                title="Delete Category"
+                            >
+                                <Trash2 size={16} />
+                            </button>
+                        </div>
+                    ))}
                 </div>
-            )}
+
+                {filteredCategories.length === 0 && !loading && (
+                    <div className="text-center py-12 text-slate-400 text-sm bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                        {searchQuery ? 'No categories match your search.' : 'No categories found. Create one to get started.'}
+                    </div>
+                )}
+            </div>
 
             {/* Add Category Modal */}
             {isModalOpen && (
