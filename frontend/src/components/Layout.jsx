@@ -115,51 +115,13 @@ export default function Layout() {
                         {theme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
                     </button>
                     <button
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl active:scale-95 transition-transform"
+                        onClick={() => navigate('/profile')}
+                        className="w-9 h-9 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-sm active:scale-95 transition-transform"
                     >
-                        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        {user?.full_name?.charAt(0) || 'U'}
                     </button>
                 </div>
             </header>
-
-            {/* Mobile Menu */}
-            <AnimatePresence>
-                {isMobileMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="lg:hidden fixed inset-0 z-30 pt-16 bg-slate-50 dark:bg-slate-950"
-                    >
-                        <nav className="p-4 space-y-2">
-                            {navItems.map((item) => (
-                                <NavLink
-                                    key={item.to}
-                                    to={item.to}
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className={({ isActive }) => cn(
-                                        "flex items-center gap-3 px-4 py-4 rounded-xl text-lg font-medium transition-transform active:scale-95",
-                                        isActive
-                                            ? "bg-brand-600 text-white shadow-lg shadow-brand-500/20"
-                                            : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-100 dark:border-slate-800"
-                                    )}
-                                >
-                                    <item.icon size={24} />
-                                    {item.label}
-                                </NavLink>
-                            ))}
-                            <button
-                                onClick={handleLogout}
-                                className="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-lg font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 mt-8 active:scale-95 transition-transform"
-                            >
-                                <LogOut size={24} />
-                                Sign Out
-                            </button>
-                        </nav>
-                    </motion.div>
-                )}
-            </AnimatePresence>
 
             {/* Main Content Area */}
             <main className="flex-1 min-w-0 transition-all duration-300 lg:pl-72 flex flex-col h-[100dvh] overflow-hidden pt-16 lg:pt-0">
@@ -197,8 +159,9 @@ export default function Layout() {
                         <NavLink
                             key={item.to}
                             to={item.to}
+                            end={item.to === '/dashboard'} // exact match for dashboard
                             className={({ isActive }) => cn(
-                                "flex flex-col items-center gap-1 p-2 rounded-xl transition-all relative active:scale-95",
+                                "flex flex-col items-center gap-1 p-2 rounded-xl transition-all relative active:scale-95 touch-manipulation", // touch-manipulation fixes 300ms delay
                                 isActive
                                     ? "text-brand-600 dark:text-brand-400"
                                     : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
@@ -209,7 +172,7 @@ export default function Layout() {
                                     {isActive && (
                                         <motion.div
                                             layoutId="bottomNav"
-                                            className="absolute inset-x-2 -top-2 h-1 bg-brand-500 rounded-full"
+                                            className="absolute inset-x-3 -top-2 h-1 bg-brand-500 rounded-full"
                                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                         />
                                     )}
@@ -222,7 +185,7 @@ export default function Layout() {
                     <NavLink
                         to="/settings"
                         className={({ isActive }) => cn(
-                            "flex flex-col items-center gap-1 p-2 rounded-xl transition-all relative active:scale-95",
+                            "flex flex-col items-center gap-1 p-2 rounded-xl transition-all relative active:scale-95 touch-manipulation",
                             isActive
                                 ? "text-brand-600 dark:text-brand-400"
                                 : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
@@ -233,7 +196,7 @@ export default function Layout() {
                                 {isActive && (
                                     <motion.div
                                         layoutId="bottomNav"
-                                        className="absolute inset-x-2 -top-2 h-1 bg-brand-500 rounded-full"
+                                        className="absolute inset-x-3 -top-2 h-1 bg-brand-500 rounded-full"
                                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                     />
                                 )}
