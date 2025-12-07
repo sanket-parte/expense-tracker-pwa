@@ -52,3 +52,23 @@ class ExpenseUpdate(SQLModel):
     category_id: Optional[int] = None
     type: Optional[str] = None
     date: Optional[datetime] = None
+
+class BudgetBase(SQLModel):
+    category_id: int = Field(foreign_key="category.id")
+    amount: float
+    period: str = "monthly"
+
+class Budget(BudgetBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id")
+    category: Optional[Category] = Relationship()
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class BudgetCreate(BudgetBase):
+    pass
+
+class BudgetRead(BudgetBase):
+    id: int
+    category: Optional[CategoryRead] = None
+    created_at: datetime
+    spent: Optional[float] = 0.0 # Computed field for response

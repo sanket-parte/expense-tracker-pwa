@@ -90,7 +90,7 @@ export default function Dashboard() {
                     trend={12}
                     delay={0}
                 />
-                <StatCard
+                {/* <StatCard
                     title="Total Income"
                     amount={data.total_income}
                     icon={TrendingUp}
@@ -98,15 +98,15 @@ export default function Dashboard() {
                     labelColor="text-emerald-600"
                     trend={8}
                     delay={100}
-                />
-                <StatCard
+                /> */}
+                {/* <StatCard
                     title="Current Balance"
                     amount={data.balance}
                     icon={TrendingDown}
                     color="bg-blue-500"
                     labelColor="text-blue-600"
                     delay={200}
-                />
+                /> */}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

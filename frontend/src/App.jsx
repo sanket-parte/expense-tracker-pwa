@@ -14,6 +14,7 @@ const Settings = React.lazy(() => import('./pages/Settings'));
 const Login = React.lazy(() => import('./pages/Login'));
 const Register = React.lazy(() => import('./pages/Register'));
 const Profile = React.lazy(() => import('./pages/Profile'));
+const Budgets = React.lazy(() => import('./pages/Budgets'));
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/expenses" element={<Expenses />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/budgets" element={<Budgets />} />
                 <Route path="/profile" element={<Profile />} />
               </Route>
             </Route>

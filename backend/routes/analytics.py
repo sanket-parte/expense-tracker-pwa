@@ -19,11 +19,12 @@ def get_dashboard_stats(
         .where(Expense.user_id == current_user.id)
     ).one() or 0
     
-    total_income = session.exec(
-        select(func.sum(Expense.amount))
-        .where(Expense.type == "income")
-        .where(Expense.user_id == current_user.id)
-    ).one() or 0
+    # total_income = session.exec(
+    #     select(func.sum(Expense.amount))
+    #     .where(Expense.type == "income")
+    #     .where(Expense.user_id == current_user.id)
+    # ).one() or 0
+    total_income = 0
     
     balance = total_income - total_expense
     
