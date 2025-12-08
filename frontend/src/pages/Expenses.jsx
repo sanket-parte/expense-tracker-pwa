@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Plus, PlusCircle } from 'lucide-react';
+import { Plus, PlusCircle, Sparkles } from 'lucide-react';
 import ExpenseItem from '../components/ExpenseItem';
 import SwipeableItem from '../components/SwipeableItem';
 import Modal from '../components/Modal';
@@ -11,6 +11,9 @@ import { useDeleteExpense } from '../hooks/useMutations';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import { AnimatePresence, motion } from 'framer-motion';
+import api from '../lib/api';
+import { useQueryClient } from '@tanstack/react-query';
+import { QUERY_KEYS } from '../hooks/useQueries';
 
 export default function Expenses() {
     const [searchParams] = useSearchParams();
@@ -41,6 +44,8 @@ export default function Expenses() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingExpense, setEditingExpense] = useState(null);
+    const [isScanning, setIsScanning] = useState(false);
+    const queryClient = useQueryClient();
 
     const {
         data,
@@ -91,6 +96,25 @@ export default function Expenses() {
         setIsModalOpen(false);
     };
 
+    const handleAutoCategorize = async () => {
+        setIsScanning(true);
+        try {
+            const res = await api.post('/expenses/auto-categorize');
+            if (res.data.processed_count > 0) {
+                alert(`Successfully categorized ${res.data.processed_count} transactions!`);
+                queryClient.invalidateQueries([QUERY_KEYS.expenses]);
+                queryClient.invalidateQueries([QUERY_KEYS.dashboard]);
+            } else {
+                alert("No uncategorized transactions found or AI couldn't match any.");
+            }
+        } catch (err) {
+            console.error("Auto-categorize failed", err);
+            alert("Failed to auto-categorize expenses.");
+        } finally {
+            setIsScanning(false);
+        }
+    };
+
     // Flatten pages into a single array
     const expenses = data ? data.pages.flatMap(page => page) : [];
 
@@ -101,15 +125,30 @@ export default function Expenses() {
                     <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Expenses</h2>
                     <p className="text-slate-500 dark:text-slate-400 font-medium mt-1">Manage your transactions</p>
                 </div>
-                <Button
-                    onClick={handleAdd}
-                    variant="primary"
-                    className="shadow-lg shadow-brand-200 dark:shadow-none"
-                >
-                    <Plus size={22} className="stroke-[3px]" />
-                    <span className="hidden sm:inline">Add Expense</span>
-                    <span className="sm:hidden">Add</span>
-                </Button>
+                <div className="flex gap-2 w-full sm:w-auto">
+                    <Button
+                        onClick={handleAutoCategorize}
+                        variant="outline"
+                        className="border-brand-200 text-brand-600 hover:bg-brand-50 dark:border-brand-800 dark:text-brand-400 dark:hover:bg-brand-900/20"
+                        disabled={isScanning}
+                    >
+                        {isScanning ? (
+                            <div className="w-5 h-5 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                            <Sparkles size={18} className="mr-2" />
+                        )}
+                        {isScanning ? 'Scanning...' : 'Scan Uncategorized'}
+                    </Button>
+                    <Button
+                        onClick={handleAdd}
+                        variant="primary"
+                        className="shadow-lg shadow-brand-200 dark:shadow-none flex-1 sm:flex-none"
+                    >
+                        <Plus size={22} className="stroke-[3px]" />
+                        <span className="hidden sm:inline">Add Expense</span>
+                        <span className="sm:hidden">Add</span>
+                    </Button>
+                </div>
             </div>
 
             <ExpenseFilters filters={filters} onChange={setFilters} categories={categories} />

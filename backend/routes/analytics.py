@@ -178,3 +178,18 @@ def get_monthly_report(
         "category_breakdown": formatted_categories,
         "top_expense": top_expense
     }
+
+@router.post("/ask")
+def ask_ai(
+    query: dict, # expect {"q": "Show me food spend"}
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    from services.ai_service import process_natural_language_query
+    q_text = query.get("q")
+    if not q_text:
+        return {"answer": "Please provide a question."}
+        
+    result = process_natural_language_query(session, current_user.id, q_text)
+    return result
+

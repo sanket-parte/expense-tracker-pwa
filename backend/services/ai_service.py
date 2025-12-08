@@ -467,3 +467,223 @@ def generate_budget_suggestions(session: Session, user_id: int) -> List[Dict[str
         } for s in summaries]
         return attach_names(results)
 
+def auto_categorize_expenses(session: Session, user_id: int) -> int:
+    """Finds uncategorized expenses and uses AI to assign them to existing categories."""
+    from models import Category
+    
+    # 1. Find uncategorized expenses
+    # Check for both NULL category_id OR category_id that links to "Uncategorized" if you have one.
+    # For now, we assume standard "Uncategorized" might be NULL or we look for ID 0 if used.
+    # Best practice: Look for NULL first.
+    expenses = session.exec(
+        select(Expense)
+        .where(Expense.user_id == user_id, Expense.category_id == None)
+        .limit(20) # Process in chunks to avoid timeouts
+    ).all()
+    
+    if not expenses:
+        return 0
+        
+    # 2. Get available categories
+    categories = session.exec(select(Category).where(Category.user_id == user_id)).all()
+    if not categories:
+        return 0
+        
+    cat_map = {c.id: c.name for c in categories}
+    cat_list_str = ", ".join([f"{c.id}:{c.name}" for c in categories])
+    
+    # 3. Prepare Batch Prompt
+    items_to_categorize = [{"id": e.id, "title": e.title, "amount": e.amount} for e in expenses]
+    
+    prompt = f"""
+    You are an intelligent transaction classifier.
+    
+    Categories available (ID:Name):
+    {cat_list_str}
+    
+    Transactions to categorize:
+    {json.dumps(items_to_categorize, indent=2)}
+    
+    Task:
+    Return a JSON object analyzing each transaction.
+    Format:
+    {{
+      "mappings": [
+         {{ "id": <transaction_id>, "category_id": <id_from_list_above> }}
+      ]
+    }}
+    
+    Rules:
+    - Match based on merchant name (e.g. "Uber" -> Transport).
+    - If unsure, do NOT include it in the mapping (leave it alone).
+    - Return JSON ONLY.
+    """
+    
+    settings = session.exec(select(UserSettings).where(UserSettings.user_id == user_id)).first()
+    if not settings or not settings.openai_api_key:
+        return 0
+        
+    client = OpenAI(api_key=settings.openai_api_key)
+    
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            max_tokens=500
+        )
+        content = response.choices[0].message.content.strip()
+        if content.startswith("```json"):
+            content = content[7:]
+        if content.endswith("```"):
+            content = content[:-3]
+            
+        data = json.loads(content.strip())
+        mappings = data.get("mappings", [])
+        
+        count = 0
+        for m in mappings:
+            # Update DB
+            exp_id = m.get("id")
+            cat_id = m.get("category_id")
+            if exp_id and cat_id and cat_id in cat_map:
+                expense = session.get(Expense, exp_id)
+                if expense and expense.user_id == user_id:
+                    expense.category_id = cat_id
+                    session.add(expense)
+                    count += 1
+        
+        session.commit()
+        return count
+        
+    except Exception as e:
+        print(f"Error auto-categorizing: {e}")
+        return 0
+
+def process_natural_language_query(session: Session, user_id: int, query_text: str) -> Dict[str, Any]:
+    """
+    Translates natural language questions into structured database queries.
+    Strategy: Text -> SQLModel parameters (NOT raw SQL) to be safe.
+    """
+    from models import Category
+    from sqlalchemy import func
+    
+    # 1. Get Categories for context
+    categories = session.exec(select(Category).where(Category.user_id == user_id)).all()
+    cat_list_str = ", ".join([c.name for c in categories])
+    
+    current_date = datetime.now().strftime("%Y-%m-%d")
+
+    # 2. Schema Prompt (Context-Free)
+    prompt = f"""
+    You are a data analyst helper. Translate the user's question into a structured JSON query object.
+    
+    Context:
+    - Current Date: {current_date}
+    - User's Categories: [{cat_list_str}]
+    
+    User Question: "{query_text}"
+    
+    Supported Operations (you must choose one):
+    - "total_spend": Sum of expenses.
+    - "count_transactions": Number of transactions.
+    - "average_spend": Average amount per transaction.
+    
+    Output JSON Format:
+    {{
+        "operation": "total_spend" | "count_transactions" | "average_spend",
+        "filters": {{
+            "category_name": "Food" or null,
+            "start_date": "YYYY-MM-DD" or null,
+            "end_date": "YYYY-MM-DD" or null,
+            "merchant_name": "Uber" or null (partial match)
+        }},
+        "human_readable_answer_template": "You spent {{value}} on Food in November."
+    }}
+    
+    Rules:
+    - If date is "last month", calculate start/end dates relative to {current_date}.
+    - Return JSON ONLY.
+    """
+    
+    settings = session.exec(select(UserSettings).where(UserSettings.user_id == user_id)).first()
+    if not settings or not settings.openai_api_key:
+        return {"error": "API Key missing"}
+        
+    client = OpenAI(api_key=settings.openai_api_key)
+    
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a precise query generator that outputs raw JSON."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0,
+            max_tokens=200
+        )
+        content = response.choices[0].message.content.strip()
+        if content.startswith("```json"):
+            content = content[7:]
+        if content.endswith("```"):
+            content = content[:-3]
+            
+        params = json.loads(content.strip())
+        filters = params.get("filters", {})
+        op = params.get("operation")
+        
+        # 3. Execute Query Safely (Using SQLModel/SQLAlchemy)
+        query = select(Expense).where(Expense.user_id == user_id)
+        
+        # Apply filters
+        if filters.get("category_name"):
+            # Find ID
+            cat = session.exec(select(Category).where(Category.user_id == user_id, Category.name.ilike(filters["category_name"]))).first()
+            if cat:
+                query = query.where(Expense.category_id == cat.id)
+                
+        if filters.get("start_date"):
+            query = query.where(Expense.date >= datetime.strptime(filters["start_date"], "%Y-%m-%d"))
+            
+        if filters.get("end_date"):
+            # inclusive end date? usually we do < next_day, but let's assume end_of_day or just simple date
+            # Let's treat it as <= end_date 23:59:59 if needed, or simple date comparison
+            query = query.where(Expense.date <= datetime.strptime(filters["end_date"], "%Y-%m-%d"))
+            
+        if filters.get("merchant_name"):
+            query = query.where(Expense.title.ilike(f"%{filters['merchant_name']}%"))
+
+        # 4. Compute Result
+        result_value = 0
+        
+        if op == "total_spend":
+            # Sum
+            expenses = session.exec(query).all()
+            result_value = sum(e.amount for e in expenses)
+            formatted_result = f"₹{result_value:.2f}"
+            
+        elif op == "count_transactions":
+            expenses = session.exec(query).all()
+            result_value = len(expenses)
+            formatted_result = str(result_value)
+            
+        elif op == "average_spend":
+            expenses = session.exec(query).all()
+            if expenses:
+                result_value = sum(e.amount for e in expenses) / len(expenses)
+            formatted_result = f"₹{result_value:.2f}"
+        else:
+            return {"answer": "I didn't understand the operation."}
+
+        # 5. Format Answer
+        template = params.get("human_readable_answer_template", "The answer is {value}.")
+        final_answer = template.replace("{value}", formatted_result)
+        
+        return {"answer": final_answer, "debug_query": params}
+
+    except Exception as e:
+        print(f"Error processing NL query: {e}")
+        return {"answer": "Sorry, I couldn't process that question."}
+
+
+

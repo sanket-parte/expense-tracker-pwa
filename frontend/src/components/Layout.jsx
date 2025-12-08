@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import AIChat from './AIChat';
+
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Home, Receipt, Settings, LogOut, Menu, X, UserCircle, Wallet, RefreshCcw, Moon, Sun, Calendar, Search, BarChart2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -253,6 +255,7 @@ export default function Layout() {
                     </NavLink>
                 </div>
             </nav>
+            <AIChat />
         </div>
     );
 }

@@ -111,3 +111,13 @@ def delete_expense(
     session.delete(expense)
     session.commit()
     return {"ok": True}
+
+@router.post("/auto-categorize")
+def auto_categorize(
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    from services.ai_service import auto_categorize_expenses
+    count = auto_categorize_expenses(session, current_user.id)
+    return {"processed_count": count}
+
