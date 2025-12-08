@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { Plus, Trash2, Calendar, RefreshCcw, AlertCircle } from 'lucide-react';
+import { Plus, Trash2, Calendar, RefreshCcw } from 'lucide-react';
 import { useRecurring, useCategories } from '../hooks/useQueries';
 import { useCreateRecurring, useDeleteRecurring } from '../hooks/useMutations';
 import Modal from '../components/Modal';
 import Loading from '../components/Loading';
 import { useForm } from 'react-hook-form';
+import Card from '../components/ui/Card';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 
-import { useSettings } from '../context/SettingsContext';
-
-const RecurringForm = ({ onSuccess, onClose }) => {
+const RecurringForm = ({ onSuccess }) => {
     const { register, handleSubmit, formState: { errors } } = useForm();
-    const queryClient = useQueryClient();
     const [submitError, setSubmitError] = useState('');
-    const { settings } = useSettings();
 
     const { data: categories = [] } = useCategories();
     const createMutation = useCreateRecurring();
@@ -33,7 +31,6 @@ const RecurringForm = ({ onSuccess, onClose }) => {
             }
         });
 
-        // Instant close using optimistic update assumptions
         if (onSuccess) onSuccess();
     };
 
@@ -45,128 +42,140 @@ const RecurringForm = ({ onSuccess, onClose }) => {
                 </div>
             )}
 
-            <div>
-                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Title</label>
-                <input
-                    {...register('title', { required: 'Title is required' })}
-                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-brand-500 font-semibold text-slate-700 dark:text-white"
-                    placeholder="e.g. Netflix Subscription"
-                />
-                {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
-            </div>
+            <Input
+                label="Title"
+                {...register('title', { required: 'Title is required' })}
+                placeholder="e.g. Netflix Subscription"
+                error={errors.title?.message}
+                fullWidth
+            />
 
             <div className="grid grid-cols-2 gap-4">
-                <div>
-                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Amount</label>
-                    <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
-                        <input
-                            type="number"
-                            step="0.01"
-                            {...register('amount', { required: 'Required', min: 1 })}
-                            className="w-full pl-8 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-brand-500 font-bold text-slate-700 dark:text-white"
-                            placeholder="0.00"
-                        />
-                    </div>
-                    {errors.amount && <p className="text-red-500 text-xs mt-1">{errors.amount.message}</p>}
-                </div>
+                <Input
+                    label="Amount"
+                    type="number"
+                    step="0.01"
+                    icon={<span className="text-slate-500 font-bold">₹</span>}
+                    {...register('amount', { required: 'Required', min: 1 })}
+                    placeholder="0.00"
+                    error={errors.amount?.message}
+                    fullWidth
+                />
+
                 <div>
                     <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Category</label>
-                    <select
-                        {...register('category_id', { required: 'Required' })}
-                        className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-brand-500 font-semibold text-slate-700 dark:text-white"
-                    >
-                        <option value="">Select</option>
-                        {categories.map(cat => (
-                            <option key={cat.id} value={cat.id}>{cat.name}</option>
-                        ))}
-                    </select>
-                    {errors.category_id && <p className="text-red-500 text-xs mt-1">{errors.category_id.message}</p>}
+                    <div className="relative">
+                        <select
+                            {...register('category_id', { required: 'Required' })}
+                            className="w-full px-4 py-3.5 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-brand-500 font-semibold text-slate-700 dark:text-white appearance-none"
+                        >
+                            <option value="">Select</option>
+                            {categories.map(cat => (
+                                <option key={cat.id} value={cat.id}>{cat.name}</option>
+                            ))}
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                        </div>
+                    </div>
+                    {errors.category_id && <p className="text-red-500 text-xs mt-1 font-medium">{errors.category_id.message}</p>}
                 </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
                     <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Frequency</label>
-                    <select
-                        {...register('frequency', { required: 'Required' })}
-                        className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-brand-500 font-semibold text-slate-700 dark:text-white"
-                    >
-                        <option value="monthly">Monthly</option>
-                        <option value="weekly">Weekly</option>
-                    </select>
+                    <div className="relative">
+                        <select
+                            {...register('frequency', { required: 'Required' })}
+                            className="w-full px-4 py-3.5 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-brand-500 font-semibold text-slate-700 dark:text-white appearance-none"
+                        >
+                            <option value="monthly">Monthly</option>
+                            <option value="weekly">Weekly</option>
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Next Due</label>
-                    <input
-                        type="date"
-                        {...register('next_due_date', { required: 'Required' })}
-                        className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-brand-500 font-semibold text-slate-700 dark:text-white"
-                    />
-                    {errors.next_due_date && <p className="text-red-500 text-xs mt-1">{errors.next_due_date.message}</p>}
-                </div>
+                <Input
+                    label="Next Due"
+                    type="date"
+                    {...register('next_due_date', { required: 'Required' })}
+                    error={errors.next_due_date?.message}
+                    fullWidth
+                // Input component adds some padding for icon if present, here we might need adjustment or it's fine.
+                />
             </div>
 
-            <button
+            <Button
                 type="submit"
-                disabled={createMutation.isPending}
-                className="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-brand-200 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+                variant="primary"
+                fullWidth
+                isLoading={createMutation.isPending}
+                className="shadow-lg shadow-brand-200 dark:shadow-none"
             >
-                {createMutation.isPending ? 'Saving...' : 'Create Recurring Expense'}
-            </button>
+                Create Recurring Expense
+            </Button>
         </form>
     );
 };
 
 export default function Recurring() {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const queryClient = useQueryClient();
 
     const { data: expenses, isLoading, error } = useRecurring();
     const deleteMutation = useDeleteRecurring();
 
     if (isLoading) return <Loading />;
-    if (error) return <div className="text-red-500">Error loading recurring expenses</div>;
+    if (error) return <div className="text-red-500 p-8 text-center">Error loading recurring expenses</div>;
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
             <div className="flex justify-between items-center">
                 <div>
                     <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Recurring Expenses</h2>
                     <p className="text-slate-500 dark:text-slate-400 font-medium mt-1">Automate your fixed monthly bills</p>
                 </div>
-                <button
+                <Button
                     onClick={() => setIsModalOpen(true)}
-                    className="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-brand-200 active:scale-95"
+                    variant="primary"
+                    className="shadow-lg shadow-brand-200 dark:shadow-none"
                 >
-                    <Plus size={20} />
+                    <Plus size={20} className="mr-2" />
                     New
-                </button>
+                </Button>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {expenses.length === 0 ? (
-                    <div className="col-span-full py-16 text-center text-slate-400 dark:text-slate-500 bg-white/50 dark:bg-slate-900/50 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700">
-                        <RefreshCcw size={48} className="mx-auto mb-4 opacity-50" />
-                        <p className="text-lg font-medium">No recurring expenses</p>
-                        <p className="text-sm">Add rent, subscriptions, or bills to track them automatically</p>
-                    </div>
+                    <Card className="col-span-full py-16 text-center text-slate-400 dark:text-slate-500 border-dashed flex flex-col items-center justify-center gap-4 bg-slate-50/50">
+                        <RefreshCcw size={48} className="opacity-20" />
+                        <div>
+                            <p className="text-lg font-bold text-slate-600 dark:text-slate-400">No recurring expenses</p>
+                            <p className="text-sm">Add rent, subscriptions, or bills to track them automatically</p>
+                        </div>
+                    </Card>
                 ) : (
                     expenses.map((item) => (
-                        <div key={item.id} className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-5 rounded-3xl border border-white/40 dark:border-slate-800 shadow-glass group relative overflow-hidden hover:shadow-lg transition-all">
+                        <Card key={item.id} hover className="group relative overflow-hidden">
                             <div className="flex justify-between items-start mb-3">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold border border-indigo-100 dark:border-indigo-500/20">
+                                    <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold border border-indigo-100 dark:border-indigo-500/20">
                                         <RefreshCcw size={20} />
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-slate-800 dark:text-white line-clamp-1">{item.title}</h3>
-                                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium capitalize">{item.frequency}</p>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">{item.frequency}</p>
                                     </div>
                                 </div>
                                 <button
                                     onClick={() => deleteMutation.mutate(item.id)}
-                                    className="text-slate-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg"
+                                    className="text-slate-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg opacity-0 group-hover:opacity-100 focus:opacity-100"
                                 >
                                     <Trash2 size={18} />
                                 </button>
@@ -185,7 +194,7 @@ export default function Recurring() {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </Card>
                     ))
                 )}
             </div>
@@ -197,7 +206,6 @@ export default function Recurring() {
             >
                 <RecurringForm
                     onSuccess={() => setIsModalOpen(false)}
-                    onClose={() => setIsModalOpen(false)}
                 />
             </Modal>
         </div>

@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Lock, Mail } from 'lucide-react';
+import { Lock, Mail, ArrowRight, Wallet } from 'lucide-react';
+import { motion } from 'framer-motion';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
+import PageTransition from '../components/ui/PageTransition';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -17,8 +21,6 @@ export default function Login() {
         setLoading(true);
         try {
             await login(email, password);
-            // Use a hard navigation or just navigate? 
-            // Navigate should trigger re-render of AuthProvider child
             navigate('/');
         } catch {
             setError('Invalid email or password');
@@ -28,66 +30,112 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-            <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
-                <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-slate-800">Welcome Back</h1>
-                    <p className="text-slate-500 mt-2">Sign in to manage your expenses</p>
-                </div>
+        <PageTransition className="min-h-screen w-full flex bg-slate-50 dark:bg-slate-950">
+            {/* Left Decorative Side - Hidden on Mobile */}
+            <div className="hidden lg:flex w-1/2 relative overflow-hidden bg-brand-900 items-center justify-center p-12">
+                <div className="absolute inset-0 bg-mesh-dark opacity-80" />
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1620641788421-7f1c338e852c?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-20 mix-blend-overlay" />
 
-                {error && (
-                    <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-6">
-                        {error}
-                    </div>
-                )}
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">Email</label>
-                        <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500"
-                                placeholder="john@example.com"
-                                required
-                            />
+                <div className="relative z-10 max-w-lg">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="mb-8"
+                    >
+                        <div className="w-16 h-16 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center mb-6 shadow-neon border border-white/20">
+                            <Wallet className="w-8 h-8 text-white" />
                         </div>
+                        <h1 className="text-5xl font-bold text-white mb-6 leading-tight">
+                            Master your <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 to-accent-300">
+                                financial flow
+                            </span>
+                        </h1>
+                        <p className="text-brand-100 text-lg leading-relaxed">
+                            Experience the future of expense tracking.
+                            Smart insights, beautiful analytics, and complete control over your money.
+                        </p>
+                    </motion.div>
+                </div>
+            </div>
+
+            {/* Right Form Side */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative">
+                {/* Mobile Background Elements */}
+                <div className="absolute inset-0 lg:hidden bg-mesh-light dark:bg-mesh-dark pointer-events-none" />
+
+                <div className="w-full max-w-md space-y-8 relative z-10 sm:bg-white/50 sm:dark:bg-slate-900/50 sm:backdrop-blur-xl sm:p-10 sm:rounded-3xl sm:border sm:border-white/20 sm:shadow-2xl">
+                    <div className="text-center">
+                        <div className="lg:hidden w-12 h-12 bg-brand-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-brand-500/30">
+                            <Wallet className="w-6 h-6 text-white" />
+                        </div>
+                        <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Welcome back</h2>
+                        <p className="text-slate-500 dark:text-slate-400 mt-2">Sign in to continue to Flow</p>
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">Password</label>
-                        <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-                            <input
+                    {error && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 p-4 rounded-xl text-sm font-medium flex items-center gap-2 border border-red-100 dark:border-red-500/20"
+                        >
+                            <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                            {error}
+                        </motion.div>
+                    )}
+
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        <Input
+                            label="Email"
+                            type="email"
+                            icon={Mail}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="john@example.com"
+                            required
+                        />
+
+                        <div className="space-y-1">
+                            <Input
+                                label="Password"
                                 type="password"
+                                icon={Lock}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500"
                                 placeholder="••••••••"
                                 required
                             />
+                            <div className="flex justify-end">
+                                <Link to="/forgot-password" className="text-sm font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors">
+                                    Forgot password?
+                                </Link>
+                            </div>
                         </div>
+
+                        <Button
+                            type="submit"
+                            fullWidth
+                            size="lg"
+                            isLoading={loading}
+                            className="text-lg group"
+                        >
+                            <span className="mr-2">Sign In</span>
+                            <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                        </Button>
+                    </form>
+
+                    <div className="mt-8 text-center">
+                        <p className="text-slate-600 dark:text-slate-400">
+                            Don't have an account?{' '}
+                            <Link to="/register" className="font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors">
+                                Create account
+                            </Link>
+                        </p>
                     </div>
-
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-violet-600 text-white py-3 rounded-xl font-semibold hover:bg-violet-700 transition-colors disabled:opacity-50"
-                    >
-                        {loading ? 'Signing in...' : 'Sign In'}
-                    </button>
-                </form>
-
-                <div className="mt-6 text-center text-sm text-slate-500">
-                    Don't have an account?{' '}
-                    <Link to="/register" className="text-violet-600 font-semibold hover:underline">
-                        Sign up
-                    </Link>
                 </div>
             </div>
-        </div>
+        </PageTransition>
     );
 }
+

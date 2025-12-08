@@ -55,13 +55,13 @@ export default function QuickAdd({ onQuickAdd }) {
     return (
         <div className="relative mb-8 group z-20">
             <div className={cn(
-                "absolute -inset-0.5 bg-gradient-to-r from-brand-500 via-purple-500 to-indigo-500 rounded-3xl blur opacity-20 group-hover:opacity-60 transition duration-700",
+                "absolute -inset-0.5 bg-gradient-to-r from-brand-500 via-violet-500 to-indigo-500 rounded-3xl blur opacity-30 group-hover:opacity-60 transition duration-700",
                 isFocused ? "opacity-80 blur-md" : ""
             )}></div>
-            <div className="relative bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl p-2 shadow-glass border border-white/60 dark:border-slate-800">
+            <div className="relative bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-3xl p-2 shadow-glass border border-white/60 dark:border-white/10">
                 <form onSubmit={handleSubmit} className="flex items-center gap-2">
                     <div className="pl-4 pr-2 text-brand-600 dark:text-brand-400">
-                        <Zap size={24} fill="currentColor" className={cn("transition-all duration-300", isFocused ? "scale-110 drop-shadow-[0_0_8px_rgba(99,102,241,0.6)]" : "opacity-70")} />
+                        <Zap size={24} fill="currentColor" className={cn("transition-all duration-300", isFocused ? "scale-110 drop-shadow-[0_0_8px_rgba(124,58,237,0.6)]" : "opacity-70")} />
                     </div>
                     <input
                         type="text"
@@ -69,8 +69,8 @@ export default function QuickAdd({ onQuickAdd }) {
                         onChange={(e) => setInput(e.target.value)}
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
-                        placeholder="Quick add: 'Lunch 150'"
-                        className="flex-1 py-4 text-lg bg-transparent border-none focus:ring-0 placeholder-slate-400 dark:placeholder-slate-500 text-slate-800 dark:text-slate-100 font-medium"
+                        placeholder="Quick add: 'Lunch 150'..."
+                        className="flex-1 py-4 text-lg bg-transparent border-none focus:ring-0 placeholder-slate-400 dark:placeholder-slate-500 text-slate-800 dark:text-slate-100 font-medium caret-brand-500"
                     />
                     <button
                         type="submit"
@@ -89,3 +89,4 @@ export default function QuickAdd({ onQuickAdd }) {
         </div>
     );
 }
+

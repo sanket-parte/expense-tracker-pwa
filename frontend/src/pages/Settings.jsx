@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Download, Upload, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Download, Upload, AlertCircle, CheckCircle2, RefreshCcw } from 'lucide-react';
 import api from '../lib/api';
 import CategorySettings from '../components/CategorySettings';
 import { cn } from '../lib/utils';
 import { useSettings } from '../context/SettingsContext';
+import Card from '../components/ui/Card';
+import Button from '../components/ui/Button';
 
 export default function Settings() {
     const [importing, setImporting] = useState(false);
@@ -47,60 +49,73 @@ export default function Settings() {
     };
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500">
+        <div className="space-y-8 animate-in fade-in duration-500 pb-20">
             <div>
-                <h2 className="text-3xl font-bold text-slate-800 dark:text-white tracking-tight">Settings</h2>
-                <p className="text-slate-500 dark:text-slate-400 mt-1">Manage your application preferences and data</p>
+                <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Settings</h2>
+                <p className="text-slate-500 dark:text-slate-400 mt-1 font-medium">Manage your application preferences and data</p>
             </div>
 
             <CategorySettings />
 
-            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
-                <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Sync Settings</h3>
+            <Card className="p-6">
+                <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+                    <RefreshCcw size={20} className="text-brand-500" />
+                    Sync Settings
+                </h3>
                 <div className="flex items-center justify-between">
                     <div>
-                        <p className="font-medium text-slate-900 dark:text-slate-100">Auto-Sync</p>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">Automatically sync changes when online</p>
+                        <p className="font-bold text-slate-900 dark:text-slate-100">Auto-Sync</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Automatically sync changes when online</p>
                     </div>
                     <button
                         onClick={() => updateSetting('autoSync', !settings.autoSync)}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 ${settings.autoSync ? 'bg-brand-600' : 'bg-slate-200 dark:bg-slate-700'
+                        className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 ${settings.autoSync ? 'bg-brand-600' : 'bg-slate-200 dark:bg-slate-700'
                             }`}
                     >
                         <span
                             className={`${settings.autoSync ? 'translate-x-6' : 'translate-x-1'
-                                } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                                } inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition-transform`}
                         />
                     </button>
                 </div>
-            </div>
+            </Card>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Export Section */}
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm transition-all hover:shadow-md group">
-                    <div className="w-12 h-12 bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Card hover className="p-6 group relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <Download size={80} className="text-brand-500" />
+                    </div>
+
+                    <div className="w-12 h-12 bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm">
                         <Download size={24} />
                     </div>
                     <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2">Export Data</h3>
-                    <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm leading-relaxed">
+                    <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm leading-relaxed font-medium">
                         Download all your expenses as a CSV file for backup or analysis in other tools.
                     </p>
-                    <button
+                    <Button
                         onClick={handleExport}
-                        className="w-full py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-semibold rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all flex items-center justify-center gap-2 active:scale-95"
+                        variant="outline"
+                        fullWidth
+                        className="group-hover:bg-brand-50 dark:group-hover:bg-brand-900/10 group-hover:border-brand-200 dark:group-hover:border-brand-500/30"
                     >
-                        <Download size={18} />
+                        <Download size={18} className="mr-2" />
                         Download CSV
-                    </button>
-                </div>
+                    </Button>
+                </Card>
 
                 {/* Import Section */}
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm transition-all hover:shadow-md group">
-                    <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Card hover className="p-6 group relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <Upload size={80} className="text-emerald-500" />
+                    </div>
+
+                    <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm">
                         <Upload size={24} />
                     </div>
                     <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2">Import Data</h3>
-                    <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm leading-relaxed">
+                    <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm leading-relaxed font-medium">
                         Upload a CSV file to bulk import expenses. Duplicate handling depends on your data.
                     </p>
                     <div className="relative">
@@ -111,24 +126,26 @@ export default function Settings() {
                             disabled={importing}
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed z-10"
                         />
-                        <button
+                        <Button
+                            variant="secondary"
+                            fullWidth
                             disabled={importing}
-                            className="w-full py-3 bg-slate-900 dark:bg-slate-700 text-white font-semibold rounded-xl hover:bg-slate-800 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-2 disabled:opacity-70 active:scale-95"
+                            isLoading={importing}
                         >
-                            <Upload size={18} />
+                            <Upload size={18} className="mr-2" />
                             {importing ? 'Importing...' : 'Upload CSV'}
-                        </button>
+                        </Button>
                     </div>
-                </div>
+                </Card>
             </div>
 
             {message && (
                 <div className={cn(
-                    "p-4 rounded-xl flex items-center gap-3 animate-in slide-in-from-bottom-2",
-                    message.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-red-50 text-red-700 border border-red-100'
+                    "p-4 rounded-xl flex items-center gap-3 animate-in slide-in-from-bottom-2 shadow-sm font-medium",
+                    message.type === 'success' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-500/20' : 'bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 border border-red-100 dark:border-red-500/20'
                 )}>
                     {message.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
-                    <span className="font-medium">{message.text}</span>
+                    <span>{message.text}</span>
                 </div>
             )}
         </div>

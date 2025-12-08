@@ -39,7 +39,7 @@ export default function Modal({ isOpen, onClose, title, children }) {
     return createPortal(
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4">
+                <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center sm:p-4">
                     {/* Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -66,14 +66,14 @@ export default function Modal({ isOpen, onClose, title, children }) {
                             }
                         }}
                         className={cn(
-                            "bg-white dark:bg-slate-900 w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]",
-                            "rounded-t-[32px] sm:rounded-3xl relative z-10"
+                            "bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]",
+                            "rounded-t-[32px] sm:rounded-3xl relative z-10 border border-white/20 dark:border-slate-700/50"
                         )}
                     >
                         {/* Drag Handle for Mobile */}
                         <div className="mx-auto w-12 h-1.5 bg-slate-200/50 dark:bg-slate-700/50 rounded-full mt-3 mb-1 sm:hidden shrink-0 touch-none" />
 
-                        <div className="flex justify-between items-center p-6 border-b border-slate-50 dark:border-slate-800 shrink-0">
+                        <div className="flex justify-between items-center p-6 border-b border-slate-100 dark:border-slate-800 shrink-0">
                             <h3 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">{title}</h3>
                             <button
                                 onClick={onClose}

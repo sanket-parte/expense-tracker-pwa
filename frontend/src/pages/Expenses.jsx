@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, PlusCircle } from 'lucide-react';
 import ExpenseItem from '../components/ExpenseItem';
 import SwipeableItem from '../components/SwipeableItem';
 import Modal from '../components/Modal';
@@ -7,6 +7,9 @@ import ExpenseForm from '../components/ExpenseForm';
 import ExpenseFilters from '../components/ExpenseFilters';
 import { useExpenses, useCategories } from '../hooks/useQueries';
 import { useDeleteExpense } from '../hooks/useMutations';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export default function Expenses() {
     const [filters, setFilters] = useState({
@@ -75,68 +78,77 @@ export default function Expenses() {
     const expenses = data ? data.pages.flatMap(page => page) : [];
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Expenses</h2>
-                    <p className="text-slate-500 dark:text-slate-400 font-medium">Manage your transactions</p>
+                    <p className="text-slate-500 dark:text-slate-400 font-medium mt-1">Manage your transactions</p>
                 </div>
-                <button
+                <Button
                     onClick={handleAdd}
-                    className="flex items-center gap-2 px-6 py-3 bg-brand-600 text-white rounded-2xl hover:bg-brand-700 shadow-md shadow-brand-200 transition-all font-bold active:scale-95 group"
+                    variant="primary"
+                    className="shadow-lg shadow-brand-200 dark:shadow-none"
                 >
-                    <Plus size={22} className="stroke-2 group-hover:rotate-90 transition-transform" />
+                    <Plus size={22} className="stroke-[3px]" />
                     <span className="hidden sm:inline">Add Expense</span>
                     <span className="sm:hidden">Add</span>
-                </button>
+                </Button>
             </div>
 
             <ExpenseFilters filters={filters} onChange={setFilters} categories={categories} />
 
             {isLoading ? (
                 <div className="flex flex-col items-center justify-center py-24 gap-4">
-                    <div className="w-10 h-10 border-4 border-brand-100 border-t-brand-600 rounded-full animate-spin" />
+                    <div className="w-12 h-12 border-4 border-brand-100 dark:border-brand-900/30 border-t-brand-600 rounded-full animate-spin" />
                     <p className="text-slate-400 font-medium animate-pulse">Loading transaction history...</p>
                 </div>
             ) : error && expenses.length === 0 ? (
-                <div className="text-center py-20 bg-red-50 rounded-3xl border border-red-100 text-red-500 font-medium">
+                <Card className="text-center py-20 bg-red-50 dark:bg-red-900/10 border-red-100 dark:border-red-500/20 text-red-500 font-semibold">
                     Error loading expenses. Please try again.
-                </div>
+                </Card>
             ) : expenses.length === 0 ? (
-                <div className="text-center py-24 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-dashed border-slate-300 dark:border-slate-700 shadow-sm flex flex-col items-center">
-                    <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 text-slate-300 dark:text-slate-600 ring-8 ring-slate-50/50 dark:ring-slate-800/50">
-                        <Plus size={32} />
-                    </div>
-                    <p className="text-slate-600 dark:text-slate-400 text-lg font-semibold mb-2">No expenses found</p>
-                    <p className="text-slate-400 dark:text-slate-500 mb-8 max-w-xs mx-auto">Your expense history is empty. Start tracking your spending now!</p>
-                    <button onClick={handleAdd} className="text-brand-600 dark:text-brand-400 font-bold hover:text-brand-700 dark:hover:text-brand-300 hover:underline decoration-2 underline-offset-4">
-                        Add your first expense
-                    </button>
-                </div>
+                <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
+                    <Card className="text-center py-24 flex flex-col items-center border-dashed">
+                        <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 text-slate-300 dark:text-slate-600 ring-8 ring-slate-50 dark:ring-slate-800">
+                            <PlusCircle size={40} />
+                        </div>
+                        <p className="text-slate-600 dark:text-slate-300 text-xl font-bold mb-2">No expenses found</p>
+                        <p className="text-slate-400 dark:text-slate-500 mb-8 max-w-xs mx-auto">Your expense history is empty. Start tracking your spending now!</p>
+                        <Button variant="accent" onClick={handleAdd}>
+                            Add your first expense
+                        </Button>
+                    </Card>
+                </motion.div>
             ) : (
-                <div className="space-y-4 pb-20 md:pb-8">
-                    {expenses.map((expense, index) => {
-                        const isLast = expenses.length === index + 1;
-                        return (
-                            <div
-                                ref={isLast ? lastExpenseElementRef : null}
-                                key={expense.id}
-                                style={{ animationDelay: `${index * 50}ms` }}
-                                className="animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards"
-                            >
-                                <SwipeableItem id={expense.id} onDelete={handleDelete} onEdit={() => handleEdit(expense)}>
-                                    <ExpenseItem
-                                        expense={expense}
-                                        onEdit={handleEdit}
-                                        onDelete={handleDelete}
-                                    />
-                                </SwipeableItem>
-                            </div>
-                        );
-                    })}
+                <div className="space-y-4">
+                    <AnimatePresence mode="popLayout">
+                        {expenses.map((expense, index) => {
+                            const isLast = expenses.length === index + 1;
+                            return (
+                                <motion.div
+                                    ref={isLast ? lastExpenseElementRef : null}
+                                    key={expense.id}
+                                    layout
+                                    initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                                    transition={{ duration: 0.3, delay: index < 10 ? index * 0.05 : 0 }}
+                                >
+                                    <SwipeableItem id={expense.id} onDelete={handleDelete} onEdit={() => handleEdit(expense)}>
+                                        <ExpenseItem
+                                            expense={expense}
+                                            onEdit={handleEdit}
+                                            onDelete={handleDelete}
+                                        />
+                                    </SwipeableItem>
+                                </motion.div>
+                            );
+                        })}
+                    </AnimatePresence>
+
                     {isFetchingNextPage && (
                         <div className="flex justify-center py-6">
-                            <div className="w-6 h-6 border-2 border-brand-200 border-t-brand-600 rounded-full animate-spin" />
+                            <div className="w-8 h-8 border-4 border-brand-200 border-t-brand-600 rounded-full animate-spin" />
                         </div>
                     )}
                     {!hasNextPage && expenses.length > 5 && (
@@ -161,3 +173,4 @@ export default function Expenses() {
         </div>
     );
 }
+

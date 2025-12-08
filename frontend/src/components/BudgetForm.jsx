@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import { Loader2 } from 'lucide-react';
-import { useCategories, useBudgets } from '../hooks/useQueries';
+import { useCategories } from '../hooks/useQueries';
 import { useCreateBudget } from '../hooks/useMutations';
+import Button from './ui/Button';
+import Input from './ui/Input';
 
-import { useSettings } from '../context/SettingsContext';
-
-export default function BudgetForm({ onSuccess, onClose }) {
+export default function BudgetForm({ onSuccess }) {
     const { register, handleSubmit, formState: { errors } } = useForm();
-    const queryClient = useQueryClient();
     const [submitError, setSubmitError] = useState('');
-    const { settings } = useSettings();
 
     const { data: categories = [] } = useCategories();
     const createMutation = useCreateBudget();
@@ -44,47 +40,45 @@ export default function BudgetForm({ onSuccess, onClose }) {
 
             <div>
                 <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Category</label>
-                <select
-                    {...register('category_id', { required: 'Category is required' })}
-                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-brand-500 font-semibold text-slate-700 dark:text-white"
-                >
-                    <option value="">Select Category</option>
-                    {categories.map(cat => (
-                        <option key={cat.id} value={cat.id}>{cat.name}</option>
-                    ))}
-                </select>
-                {errors.category_id && <p className="text-red-500 text-xs mt-1">{errors.category_id.message}</p>}
-            </div>
-
-            <div>
-                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Monthly Limit</label>
                 <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
-                    <input
-                        type="number"
-                        step="0.01"
-                        {...register('amount', { required: 'Amount is required', min: 1 })}
-                        className="w-full pl-8 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-brand-500 font-bold text-slate-700 dark:text-white"
-                        placeholder="0.00"
-                    />
+                    <select
+                        {...register('category_id', { required: 'Category is required' })}
+                        className="w-full px-4 py-3.5 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-brand-500 font-semibold text-slate-700 dark:text-white appearance-none"
+                    >
+                        <option value="">Select Category</option>
+                        {categories.map(cat => (
+                            <option key={cat.id} value={cat.id}>{cat.name}</option>
+                        ))}
+                    </select>
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </div>
                 </div>
-                {errors.amount && <p className="text-red-500 text-xs mt-1">{errors.amount.message}</p>}
+                {errors.category_id && <p className="text-red-500 text-xs mt-1 font-medium">{errors.category_id.message}</p>}
             </div>
 
-            <button
+            <Input
+                label="Monthly Limit"
+                type="number"
+                step="0.01"
+                icon={<span className="text-slate-500 font-bold">₹</span>}
+                {...register('amount', { required: 'Amount is required', min: 1 })}
+                placeholder="0.00"
+                error={errors.amount?.message}
+                fullWidth
+            />
+
+            <Button
                 type="submit"
-                disabled={createMutation.isPending}
-                className="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-brand-200 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                variant="primary"
+                fullWidth
+                isLoading={createMutation.isPending}
+                className="shadow-lg shadow-brand-200 dark:shadow-none"
             >
-                {createMutation.isPending ? (
-                    <>
-                        <Loader2 className="animate-spin" size={20} />
-                        Saving...
-                    </>
-                ) : (
-                    'Set Budget'
-                )}
-            </button>
+                Set Budget
+            </Button>
         </form>
     );
 }
