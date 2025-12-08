@@ -20,6 +20,7 @@ const Profile = React.lazy(() => import('./pages/Profile'));
 const Budgets = React.lazy(() => import('./pages/Budgets'));
 const CalendarView = React.lazy(() => import('./pages/CalendarView'));
 const Recurring = React.lazy(() => import('./pages/Recurring'));
+const Reports = React.lazy(() => import('./pages/Reports'));
 
 import { SettingsProvider } from './context/SettingsContext';
 
@@ -40,6 +41,7 @@ export default function App() {
                       <Route path="/" element={<Navigate to="/dashboard" replace />} />
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/expenses" element={<Expenses />} />
+                      <Route path="/reports" element={<Reports />} />
                       <Route path="/settings" element={<Settings />} />
                       <Route path="/calendar" element={<CalendarView />} />
                       <Route path="/budgets" element={<Budgets />} />

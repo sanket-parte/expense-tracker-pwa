@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Home, Receipt, Settings, LogOut, Menu, X, UserCircle, Wallet, RefreshCcw, Moon, Sun, Calendar, Search } from 'lucide-react';
+import { Home, Receipt, Settings, LogOut, Menu, X, UserCircle, Wallet, RefreshCcw, Moon, Sun, Calendar, Search, BarChart2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { cn } from '../lib/utils';
@@ -20,8 +20,9 @@ export default function Layout() {
     const navItems = [
         { to: "/dashboard", icon: Home, label: "Home" },
         { to: "/expenses", icon: Receipt, label: "Expenses" },
-        { to: "/calendar", icon: Calendar, label: "Calendar" },
+        { to: "/reports", icon: BarChart2, label: "Reports" },
         { to: "/budgets", icon: Wallet, label: "Budgets" },
+        { to: "/calendar", icon: Calendar, label: "Calendar" },
         { to: "/recurring", icon: RefreshCcw, label: "Recurring" },
         { to: "/settings", icon: Settings, label: "Settings" },
         { to: "/profile", icon: UserCircle, label: "Profile" },
@@ -196,7 +197,7 @@ export default function Layout() {
             {/* Mobile Bottom Nav */}
             <nav className="lg:hidden fixed bottom-0 inset-x-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border-t border-slate-200/50 dark:border-white/5 z-40 safe-area-bottom shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
                 <div className="flex justify-around items-center p-2.5">
-                    {navItems.slice(0, 4).map((item) => (
+                    {navItems.slice(0, 5).map((item) => (
                         <NavLink
                             key={item.to}
                             to={item.to}
