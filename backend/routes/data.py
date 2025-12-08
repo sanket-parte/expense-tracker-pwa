@@ -175,3 +175,27 @@ def export_data_json(
         })
         
     return data
+
+@router.delete("/clear")
+def clear_data(
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    """Clear all data for the current user."""
+    from sqlmodel import delete
+    from models import Budget, RecurringExpense, AISuggestion
+    
+    # Delete dependent data first
+    session.exec(delete(Expense).where(Expense.user_id == current_user.id))
+    session.exec(delete(Budget).where(Budget.user_id == current_user.id))
+    session.exec(delete(RecurringExpense).where(RecurringExpense.user_id == current_user.id))
+    session.exec(delete(AISuggestion).where(AISuggestion.user_id == current_user.id))
+    
+    # Delete custom categories (where user_id is set)
+    # Note: If we had a cleaner cascade setup we could just delete user, but we are keeping the user account.
+    # We must be careful if there are system categories that expenses linked to? 
+    # Valid: Expenses deleted above. So categories usage is gone.
+    session.exec(delete(Category).where(Category.user_id == current_user.id))
+    
+    session.commit()
+    return {"message": "All data cleared successfully"}

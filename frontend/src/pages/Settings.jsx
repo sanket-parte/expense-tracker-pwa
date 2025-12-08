@@ -189,15 +189,49 @@ export default function Settings() {
                 </Card>
             </div>
 
-            {message && (
-                <div className={cn(
-                    "p-4 rounded-xl flex items-center gap-3 animate-in slide-in-from-bottom-2 shadow-sm font-medium",
-                    message.type === 'success' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-500/20' : 'bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 border border-red-100 dark:border-red-500/20'
-                )}>
-                    {message.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
-                    <span>{message.text}</span>
+
+
+            {/* Danger Zone */}
+            <Card className="p-6 border-red-200 dark:border-red-900/30 bg-red-50/50 dark:bg-red-900/10">
+                <h3 className="text-lg font-bold text-red-700 dark:text-red-400 mb-2">Danger Zone</h3>
+                <p className="text-sm text-red-600/80 dark:text-red-400/70 mb-6 font-medium">
+                    Permanent actions that cannot be undone.
+                </p>
+                <div className="flex items-center justify-between p-4 bg-white dark:bg-slate-800 rounded-xl border border-red-100 dark:border-red-900/30">
+                    <div>
+                        <p className="font-bold text-slate-800 dark:text-white">Clear All Data</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">Delete all expenses, budgets, and settings.</p>
+                    </div>
+                    <Button
+                        variant="destructive"
+                        onClick={async () => {
+                            if (window.confirm("Are you absolutely sure? This will delete ALL your expenses, budgets, and generated data. This action cannot be undone.")) {
+                                try {
+                                    await api.delete('/data/clear');
+                                    setMessage({ type: 'success', text: 'All data cleared successfully.' });
+                                    setTimeout(() => window.location.reload(), 1500);
+                                } catch (e) {
+                                    setMessage({ type: 'error', text: 'Failed to clear data.' });
+                                }
+                            }
+                        }}
+                    >
+                        Clear Data
+                    </Button>
                 </div>
-            )}
-        </div>
+            </Card>
+
+            {
+                message && (
+                    <div className={cn(
+                        "p-4 rounded-xl flex items-center gap-3 animate-in slide-in-from-bottom-2 shadow-sm font-medium",
+                        message.type === 'success' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-500/20' : 'bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 border border-red-100 dark:border-red-500/20'
+                    )}>
+                        {message.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
+                        <span>{message.text}</span>
+                    </div>
+                )
+            }
+        </div >
     );
 }
