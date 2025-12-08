@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from routes import expenses, analytics, data, categories, auth, budgets, recurring
+from routes import expenses, analytics, data, categories, auth, budgets, recurring, ai
 from init_db import init_categories
 
 @asynccontextmanager
@@ -37,6 +37,7 @@ app.include_router(data.router)
 app.include_router(categories.router)
 app.include_router(budgets.router)
 app.include_router(recurring.router)
+app.include_router(ai.router)
 
 @app.get("/")
 def read_root():

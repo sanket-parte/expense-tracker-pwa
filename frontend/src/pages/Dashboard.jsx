@@ -10,6 +10,7 @@ import ExpenseForm from '../components/ExpenseForm';
 import PullToRefresh from '../components/PullToRefresh';
 import BudgetOverview from '../components/BudgetOverview';
 import RecentTransactions from '../components/RecentTransactions';
+import AISuggestion from '../components/AISuggestion';
 import Card from '../components/ui/Card';
 import { cn } from '../lib/utils';
 import { useDashboardStats, useBudgets } from '../hooks/useQueries';
@@ -125,6 +126,10 @@ export default function Dashboard() {
 
                 <motion.div variants={itemVariants} className="relative z-20">
                     <QuickAdd onQuickAdd={handleQuickAdd} />
+                </motion.div>
+
+                <motion.div variants={itemVariants}>
+                    <AISuggestion />
                 </motion.div>
 
                 {/* Stats Grid */}

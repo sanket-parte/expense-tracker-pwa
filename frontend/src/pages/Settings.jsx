@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Download, Upload, AlertCircle, CheckCircle2, RefreshCcw, FileJson, FileSpreadsheet } from 'lucide-react';
+import { Download, Upload, AlertCircle, CheckCircle2, RefreshCcw, FileJson, FileSpreadsheet, Brain } from 'lucide-react';
 import api from '../lib/api';
 import CategorySettings from '../components/CategorySettings';
+import AISettings from '../components/AISettings';
 import { cn } from '../lib/utils';
 import { useSettings } from '../context/SettingsContext';
 import Card from '../components/ui/Card';
@@ -114,6 +115,8 @@ export default function Settings() {
                     </button>
                 </div>
             </Card>
+
+            <AISettings />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Export Section */}

@@ -92,8 +92,21 @@ class RecurringExpense(RecurringExpenseBase, table=True):
 class RecurringExpenseCreate(RecurringExpenseBase):
     pass
 
+
 class RecurringExpenseRead(RecurringExpenseBase):
     id: int
     category: Optional[CategoryRead] = None
     created_at: datetime
     last_generated: Optional[datetime] = None
+
+class UserSettings(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id", unique=True)
+    openai_api_key: Optional[str] = None
+    ai_provider: str = Field(default="openai")
+
+class AISuggestion(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id")
+    content: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
