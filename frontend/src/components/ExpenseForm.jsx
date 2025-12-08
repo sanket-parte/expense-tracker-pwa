@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useCategories } from '../hooks/useQueries';
 import { useCreateExpense, useUpdateExpense } from '../hooks/useMutations';
 
+import { useSettings } from '../context/SettingsContext';
+
 export default function ExpenseForm({ initialData, onSuccess, onClose }) {
+    const { settings } = useSettings();
     const { data: categories = [] } = useCategories();
     const createExpenseMutation = useCreateExpense();
     const updateExpenseMutation = useUpdateExpense();
@@ -57,9 +60,17 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
             };
 
             if (initialData?.id) {
-                await updateExpenseMutation.mutateAsync({ id: initialData.id, data: payload });
+                if (settings.autoSync) {
+                    await updateExpenseMutation.mutateAsync({ id: initialData.id, data: payload });
+                } else {
+                    updateExpenseMutation.mutate({ id: initialData.id, data: payload });
+                }
             } else {
-                await createExpenseMutation.mutateAsync(payload);
+                if (settings.autoSync) {
+                    await createExpenseMutation.mutateAsync(payload);
+                } else {
+                    createExpenseMutation.mutate(payload);
+                }
             }
             onSuccess();
             onClose();

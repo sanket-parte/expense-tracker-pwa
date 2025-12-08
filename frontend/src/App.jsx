@@ -43,15 +43,15 @@ export default function App() {
                       <Route path="/budgets" element={<Budgets />} />
                       <Route path="/recurring" element={<Recurring />} />
                       <Route path="/profile" element={<Profile />} />
-                    </Route >
-                  </Route >
+                    </Route>
+                  </Route>
                   <Route path="*" element={<NotFound />} />
-                </Routes >
-              </React.Suspense >
-            </Router >
+                </Routes>
+              </React.Suspense>
+            </Router>
           </LocalizationProvider>
         </ThemeProvider>
-      </AuthProvider >
+      </AuthProvider>
     </SettingsProvider>
   );
 }
