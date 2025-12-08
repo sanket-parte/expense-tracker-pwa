@@ -6,6 +6,7 @@ import { useTheme } from '../context/ThemeContext';
 import { cn } from '../lib/utils';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
+import SyncStatus from './SyncStatus';
 
 export default function Layout() {
     const { logout, user } = useAuth();
@@ -43,9 +44,14 @@ export default function Layout() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
                         </div>
-                        <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-400">
-                            Flow
-                        </span>
+                        <div className="flex flex-col">
+                            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-400">
+                                Flow
+                            </span>
+                            <div className="lg:block hidden">
+                                <SyncStatus />
+                            </div>
+                        </div>
                     </div>
 
                     <nav className="space-y-1.5">
@@ -108,6 +114,7 @@ export default function Layout() {
                     <span className="text-xl font-bold text-slate-900 dark:text-white">Flow</span>
                 </div>
                 <div className="flex items-center gap-2">
+                    <SyncStatus />
                     <button
                         onClick={toggleTheme}
                         className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl active:scale-95 transition-transform"

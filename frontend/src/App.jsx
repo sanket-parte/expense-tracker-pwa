@@ -20,13 +20,11 @@ const Profile = React.lazy(() => import('./pages/Profile'));
 const Budgets = React.lazy(() => import('./pages/Budgets'));
 const Recurring = React.lazy(() => import('./pages/Recurring'));
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-const queryClient = new QueryClient(); // Initialize QueryClient
+import { SettingsProvider } from './context/SettingsContext';
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
+    <SettingsProvider>
       <AuthProvider>
         <ThemeProvider>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -54,6 +52,6 @@ export default function App() {
           </LocalizationProvider>
         </ThemeProvider>
       </AuthProvider >
-    </QueryClientProvider>
+    </SettingsProvider>
   );
 }

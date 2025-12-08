@@ -3,10 +3,12 @@ import { Download, Upload, AlertCircle, CheckCircle2 } from 'lucide-react';
 import api from '../lib/api';
 import CategorySettings from '../components/CategorySettings';
 import { cn } from '../lib/utils';
+import { useSettings } from '../context/SettingsContext';
 
 export default function Settings() {
     const [importing, setImporting] = useState(false);
     const [message, setMessage] = useState(null);
+    const { settings, updateSetting } = useSettings();
 
     const handleExport = () => {
         // Direct open to trigger download
@@ -52,6 +54,26 @@ export default function Settings() {
             </div>
 
             <CategorySettings />
+
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
+                <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Sync Settings</h3>
+                <div className="flex items-center justify-between">
+                    <div>
+                        <p className="font-medium text-slate-900 dark:text-slate-100">Auto-Sync</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">Automatically sync changes when online</p>
+                    </div>
+                    <button
+                        onClick={() => updateSetting('autoSync', !settings.autoSync)}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 ${settings.autoSync ? 'bg-brand-600' : 'bg-slate-200 dark:bg-slate-700'
+                            }`}
+                    >
+                        <span
+                            className={`${settings.autoSync ? 'translate-x-6' : 'translate-x-1'
+                                } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                        />
+                    </button>
+                </div>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Export Section */}

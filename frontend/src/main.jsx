@@ -36,6 +36,26 @@ const queryClient = new QueryClient({
   },
 })
 
+const persistOptions = {
+  persister,
+  maxAge: 1000 * 60 * 60 * 24, // 24 hours
+  dehydrateOptions: {
+    shouldDehydrateMutation: (mutation) => {
+      // Dehydrate all paused mutations
+      return mutation.state.isPaused
+    },
+    shouldDehydrateQuery: (query) => {
+      const defaultShouldDehydrateQuery = (query) => {
+        if (query.state.status === 'success') {
+          return true
+        }
+        return false
+      }
+      return defaultShouldDehydrateQuery(query)
+    },
+  },
+}
+
 import { ErrorBoundary } from 'react-error-boundary'
 import ErrorFallback from './components/ErrorFallback'
 
@@ -55,7 +75,7 @@ const updateSW = registerSW({
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => window.location.replace('/')}>
-      <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
+      <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
         <App />
       </PersistQueryClientProvider>
     </ErrorBoundary>
