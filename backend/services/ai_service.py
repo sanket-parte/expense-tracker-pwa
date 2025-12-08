@@ -686,4 +686,132 @@ def process_natural_language_query(session: Session, user_id: int, query_text: s
         return {"answer": "Sorry, I couldn't process that question."}
 
 
+def generate_spending_challenges(session: Session, user_id: int) -> List[Dict[str, Any]]:
+    """
+    Generates 3 personalized spending challenges for the next 7 days.
+    Look for categories with high spend recently.
+    """
+    from models import Category, Challenge
+    
+    # 1. Analyze last 30 days
+    cutoff = datetime.utcnow() - timedelta(days=30)
+    expenses = session.exec(select(Expense).where(Expense.user_id == user_id, Expense.date >= cutoff)).all()
+    
+    if not expenses:
+        return []
+        
+    categories = session.exec(select(Category).where(Category.user_id == user_id)).all()
+    cat_map = {c.id: c.name for c in categories}
+    
+    # Summarize by category
+    cat_totals = {}
+    for e in expenses:
+        cat_totals[e.category_id] = cat_totals.get(e.category_id, 0.0) + e.amount
+        
+    # Top 3 categories
+    sorted_cats = sorted(cat_totals.items(), key=lambda x: x[1], reverse=True)[:5]
+    
+    context_data = []
+    for cat_id, total in sorted_cats:
+        name = cat_map.get(cat_id, "Unknown")
+        avg_weekly = total / 4.0
+        context_data.append(f"- {name}: spent {total} last 30 days (~{avg_weekly:.0f}/week)")
+        
+    context_str = "\n".join(context_data)
+    
+    # 2. Call OpenAI
+    settings = session.exec(select(UserSettings).where(UserSettings.user_id == user_id)).first()
+    if not settings or not settings.openai_api_key:
+        return []
+        
+    client = OpenAI(api_key=settings.openai_api_key)
+    
+    prompt = f"""
+    Act as a gamification expert for finance.
+    Based on the user's recent heavy spending, generate 3 specific "Spend-Less Challenges" for the UPCOMING WEEK.
+    
+    User's Heavy Spending (Last 30 days):
+    {context_str}
+    
+    Goal:
+    Encourage them to reduce spending in these categories by setting a reachable but tight limit for the next 7 days.
+    If the weekly average is X, set the target to roughly 70-80% of X.
+    
+    Output JSON list:
+    [
+        {{
+            "title": "Coffee Detox",
+            "description": "Limit Coffee spending to 500 this week.",
+            "category_name": "Coffee",
+            "target_amount": 500
+        }}
+    ]
+    
+    Rules:
+    - Return JSON ONLY.
+    - Title should be catchy.
+    - Category Name must match one from the list exactly (or be close enough to map).
+    """
+    
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.7,
+            max_tokens=400
+        )
+        content = response.choices[0].message.content.strip()
+        if content.startswith("```json"):
+            content = content[7:]
+        if content.endswith("```"):
+            content = content[:-3]
+            
+        suggestions = json.loads(content.strip())
+        
+        # 3. Create Pending Challenges
+        today = datetime.now()
+        next_week = today + timedelta(days=7)
+        
+        created_challenges = []
+        name_to_id = {c.name.lower(): c.id for c in categories}
+        
+        for s in suggestions:
+            # Try to map category
+            cat_name = s.get("category_name", "").lower()
+            cat_id = name_to_id.get(cat_name)
+            
+            # If AI hallucinated a category we don't have, find closest or skip
+            # specific mapping logic is simple here: exact match insensitive
+            if cat_id:
+                # Check duplicates (pending)
+                existing = session.exec(select(Challenge).where(
+                    Challenge.user_id == user_id, 
+                    Challenge.status == 'pending', 
+                    Challenge.category_id == cat_id
+                )).first()
+                if existing:
+                    continue
+
+                new_chall = Challenge(
+                    user_id=user_id,
+                    title=s['title'],
+                    description=s['description'],
+                    category_id=cat_id,
+                    target_amount=float(s['target_amount']),
+                    current_amount=0.0,
+                    start_date=today,
+                    end_date=next_week,
+                    status="pending"
+                )
+                session.add(new_chall)
+                created_challenges.append(s)
+                
+        session.commit()
+        return created_challenges
+
+    except Exception as e:
+        print(f"Error generating challenges: {e}")
+        return []
+
+
 

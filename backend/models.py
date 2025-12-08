@@ -110,3 +110,16 @@ class AISuggestion(SQLModel, table=True):
     user_id: int = Field(foreign_key="user.id")
     content: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class Challenge(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id")
+    title: str
+    description: str
+    category_id: Optional[int] = Field(default=None, foreign_key="category.id")
+    target_amount: float
+    current_amount: float = 0.0
+    start_date: datetime
+    end_date: datetime
+    status: str = "pending" # pending, active, completed, failed
+    created_at: datetime = Field(default_factory=datetime.utcnow)
