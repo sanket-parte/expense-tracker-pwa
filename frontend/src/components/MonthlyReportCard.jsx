@@ -59,7 +59,8 @@ export default function MonthlyReportCard({ month }) {
         );
     }
 
-    const { analysis = {}, total_spent, total_income, savings_rate, month } = report;
+    const { analysis: rawAnalysis, total_spent, total_income, savings_rate, month: reportMonth } = report;
+    const analysis = rawAnalysis || {};
     const gradeColor = {
         'A': 'text-green-500',
         'B': 'text-blue-500',
@@ -78,7 +79,7 @@ export default function MonthlyReportCard({ month }) {
                     </div>
                     <div>
                         <h3 className="text-xl font-bold text-slate-900 dark:text-white">Audit Report</h3>
-                        <p className="text-sm text-slate-500">{month}</p>
+                        <p className="text-sm text-slate-500">{reportMonth}</p>
                     </div>
                 </div>
                 <Button variant="ghost" size="sm" onClick={handleGenerate} isLoading={generating}>
@@ -98,11 +99,11 @@ export default function MonthlyReportCard({ month }) {
                 </div>
                 <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl text-center">
                     <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Total Spent</p>
-                    <p className="text-xl font-bold text-slate-900 dark:text-white">{formatCurrency(total_spent)}</p>
+                    <p className="text-xl font-bold text-slate-900 dark:text-white">{formatCurrency(total_spent || 0)}</p>
                 </div>
                 <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl text-center">
                     <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Total Income</p>
-                    <p className="text-xl font-bold text-slate-900 dark:text-white">{formatCurrency(total_income)}</p>
+                    <p className="text-xl font-bold text-slate-900 dark:text-white">{formatCurrency(total_income || 0)}</p>
                 </div>
             </div>
 
