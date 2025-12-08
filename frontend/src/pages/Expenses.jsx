@@ -29,6 +29,14 @@ export default function Expenses() {
         if (query) {
             setFilters(prev => ({ ...prev, search: query }));
         }
+
+        // Handle App Shortcut action
+        const action = searchParams.get('action');
+        if (action === 'new') {
+            setIsModalOpen(true);
+            // Clean URL without reload
+            window.history.replaceState({}, '', '/expenses');
+        }
     }, [searchParams]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);

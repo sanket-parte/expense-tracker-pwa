@@ -25,6 +25,29 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/png'
           }
+        ],
+        shortcuts: [
+          {
+            name: "Add Expense",
+            short_name: "Add",
+            description: "Add a new expense quickly",
+            url: "/expenses?action=new",
+            icons: [{ src: "pwa-192x192.png", sizes: "192x192" }]
+          },
+          {
+            name: "Reports",
+            short_name: "Reports",
+            description: "View monthly reports",
+            url: "/reports",
+            icons: [{ src: "pwa-192x192.png", sizes: "192x192" }]
+          },
+          {
+            name: "Budgets",
+            short_name: "Budgets",
+            description: "Check your budgets",
+            url: "/budgets",
+            icons: [{ src: "pwa-192x192.png", sizes: "192x192" }]
+          }
         ]
       },
       workbox: {
