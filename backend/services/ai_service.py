@@ -693,12 +693,46 @@ def generate_spending_challenges(session: Session, user_id: int) -> List[Dict[st
     """
     from models import Category, Challenge
     
+    today_debug = datetime.now()
+    print(f"[{today_debug}] Generating challenges for user {user_id}")
+    
     # 1. Analyze last 30 days
     cutoff = datetime.utcnow() - timedelta(days=30)
     expenses = session.exec(select(Expense).where(Expense.user_id == user_id, Expense.date >= cutoff)).all()
     
+    print(f"Found {len(expenses)} recent expenses")
+    
+    print(f"Found {len(expenses)} recent expenses")
+    
+    # Fallback for new users or no data
     if not expenses:
-        return []
+        print("No expenses found, returning Starter Challenge.")
+        # Check if starter challenge exists
+        existing = session.exec(select(Challenge).where(
+            Challenge.user_id == user_id, 
+            Challenge.title == "First Step"
+        )).first()
+        
+        if existing:
+            return []
+
+        today = datetime.now()
+        next_week = today + timedelta(days=7)
+        starter = Challenge(
+            user_id=user_id,
+            title="First Step",
+            description="Track your first 3 expenses this week.",
+            category_id=None, # General
+            target_amount=10000, # Arbitrary high limit, or we track count logic (complex). 
+            # Simplified: "Limit spending to 5000"
+            current_amount=0.0,
+            start_date=today,
+            end_date=next_week,
+            status="pending"
+        )
+        session.add(starter)
+        session.commit()
+        return [{"title": "First Step", "description": "Track your spending to unlock insights."}]
         
     categories = session.exec(select(Category).where(Category.user_id == user_id)).all()
     cat_map = {c.id: c.name for c in categories}
@@ -726,12 +760,16 @@ def generate_spending_challenges(session: Session, user_id: int) -> List[Dict[st
         
     client = OpenAI(api_key=settings.openai_api_key)
     
+    available_cats = ", ".join([c.name for c in categories])
+    
     prompt = f"""
     Act as a gamification expert for finance.
     Based on the user's recent heavy spending, generate 3 specific "Spend-Less Challenges" for the UPCOMING WEEK.
     
     User's Heavy Spending (Last 30 days):
     {context_str}
+    
+    Available Category List: [{available_cats}]
     
     Goal:
     Encourage them to reduce spending in these categories by setting a reachable but tight limit for the next 7 days.
@@ -750,7 +788,8 @@ def generate_spending_challenges(session: Session, user_id: int) -> List[Dict[st
     Rules:
     - Return JSON ONLY.
     - Title should be catchy.
-    - Category Name must match one from the list exactly (or be close enough to map).
+    - Category Name MUST be exactly one from the "Available Category List" provided above.
+    - If a spending behavior doesn't fit a specific category (e.g. "Dining Out" but you only have "Uncategorized"), use "Uncategorized".
     """
     
     try:
@@ -767,6 +806,7 @@ def generate_spending_challenges(session: Session, user_id: int) -> List[Dict[st
             content = content[:-3]
             
         suggestions = json.loads(content.strip())
+        print(f"AI Suggestions: {suggestions}")
         
         # 3. Create Pending Challenges
         today = datetime.now()
@@ -774,15 +814,37 @@ def generate_spending_challenges(session: Session, user_id: int) -> List[Dict[st
         
         created_challenges = []
         name_to_id = {c.name.lower(): c.id for c in categories}
+        print(f"Category Map: {name_to_id}")
         
         for s in suggestions:
             # Try to map category
             cat_name = s.get("category_name", "").lower()
             cat_id = name_to_id.get(cat_name)
+
+            # Fuzzy match strategy
+            if not cat_id:
+                # Try simple partial match
+                for name, cid in name_to_id.items():
+                    if name in cat_name or cat_name in name:
+                        cat_id = cid
+                        print(f"Fuzzy matched '{cat_name}' to '{name}' ({cat_id})")
+                        break
             
-            # If AI hallucinated a category we don't have, find closest or skip
-            # specific mapping logic is simple here: exact match insensitive
-            if cat_id:
+            print(f"Processing suggestion '{s['title']}': Cat '{cat_name}' -> ID {cat_id}")
+            
+            # If still no category, assign to None (General Challenge) or skip?
+            # Better to skip if strict, but let's allow General if AI suggested general
+            if not cat_id and "general" in cat_name:
+                 cat_id = None
+            
+            # Fallback to "Uncategorized" if not found
+            if cat_id is None:
+                print(f"Category '{cat_name}' not found. Falling back to Uncategorized.")
+                uncategorized = next((c for c in categories if c.name.lower() == "uncategorized"), None)
+                if uncategorized:
+                    cat_id = uncategorized.id
+
+            if cat_id is not None:
                 # Check duplicates (pending)
                 existing = session.exec(select(Challenge).where(
                     Challenge.user_id == user_id, 
