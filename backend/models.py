@@ -123,3 +123,13 @@ class Challenge(SQLModel, table=True):
     end_date: datetime
     status: str = "pending" # pending, active, completed, failed
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class MonthlyReport(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id")
+    month: str # YYYY-MM
+    total_spent: float
+    total_income: float
+    savings_rate: float
+    analysis: str # JSON string storing complex AI insights
+    created_at: datetime = Field(default_factory=datetime.utcnow)

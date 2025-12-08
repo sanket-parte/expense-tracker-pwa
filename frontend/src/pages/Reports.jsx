@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import api from '../lib/api';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
+import MonthlyReportCard from '../components/MonthlyReportCard';
 import { cn, formatCurrency } from '../lib/utils';
 
 export default function Reports() {
@@ -73,6 +74,11 @@ export default function Reports() {
                         <ChevronRight size={20} />
                     </button>
                 </div>
+            </div>
+
+            {/* Monthly Audit AI Card */}
+            <div className="mb-8">
+                <MonthlyReportCard month={monthStr} />
             </div>
 
             {/* Summary Cards */}

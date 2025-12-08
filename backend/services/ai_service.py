@@ -875,5 +875,156 @@ def generate_spending_challenges(session: Session, user_id: int) -> List[Dict[st
         print(f"Error generating challenges: {e}")
         return []
 
+def generate_monthly_audit(session: Session, user_id: int, month_str: str = None) -> Dict[str, Any]:
+    """
+    Generates a financial audit for the specified month (YYYY-MM).
+    Defaults to previous month if not specified.
+    """
+    from models import MonthlyReport, Expense
+    
+    # 1. Determine Date Range
+    if not month_str:
+        # Default to last month
+        today = datetime.now()
+        first_day_this_month = today.replace(day=1)
+        last_month_end = first_day_this_month - timedelta(days=1)
+        month_str = last_month_end.strftime("%Y-%m")
+        
+    start_date = datetime.strptime(month_str, "%Y-%m")
+    # End date is start of next month
+    if start_date.month == 12:
+        end_date = start_date.replace(year=start_date.year + 1, month=1)
+    else:
+        end_date = start_date.replace(month=start_date.month + 1)
+        
+    # Previous Month for Comparison
+    prev_month_start = start_date - timedelta(days=1)
+    prev_month_start = prev_month_start.replace(day=1)
+    
+    # 2. Fetch Data
+    current_expenses = session.exec(select(Expense).where(
+        Expense.user_id == user_id, 
+        Expense.date >= start_date, 
+        Expense.date < end_date,
+        Expense.type == 'expense'
+    )).all()
+    
+    prev_expenses = session.exec(select(Expense).where(
+        Expense.user_id == user_id, 
+        Expense.date >= prev_month_start, 
+        Expense.date < start_date,
+        Expense.type == 'expense'
+    )).all()
+    
+    current_income_txn = session.exec(select(Expense).where(
+        Expense.user_id == user_id, 
+        Expense.date >= start_date, 
+        Expense.date < end_date,
+        Expense.type == 'income'
+    )).all()
+    
+    total_spent = sum(e.amount for e in current_expenses)
+    prev_spent = sum(e.amount for e in prev_expenses)
+    total_income = sum(e.amount for e in current_income_txn)
+    
+    savings_rate = 0.0
+    if total_income > 0:
+        savings_rate = ((total_income - total_spent) / total_income) * 100
+        
+    # 3. AI Analysis
+    # Summary of categories
+    from models import Category
+    categories = session.exec(select(Category).where(Category.user_id == user_id)).all()
+    cat_map = {c.id: c.name for c in categories}
+    
+    cat_totals = {}
+    for e in current_expenses:
+        cat_totals[e.category_id] = cat_totals.get(e.category_id, 0) + e.amount
+        
+    top_cats = sorted(cat_totals.items(), key=lambda x: x[1], reverse=True)[:5]
+    cat_summary = "\n".join([f"- {cat_map.get(cid, 'Unknown')}: {amt}" for cid, amt in top_cats])
+    
+    change_pct = 0.0
+    if prev_spent > 0:
+        change_pct = ((total_spent - prev_spent) / prev_spent) * 100
+    
+    settings = session.exec(select(UserSettings).where(UserSettings.user_id == user_id)).first()
+    if not settings or not settings.openai_api_key:
+        return None
+
+    client = OpenAI(api_key=settings.openai_api_key)
+    
+    prompt = f"""
+    Act as a brutal but helpful Personal CFO. Audit the user's finances for {month_str}.
+    
+    Data:
+    - Total Spent: {total_spent} (Diff vs last month: {change_pct:.1f}%)
+    - Total Income: {total_income}
+    - Top Spending:
+    {cat_summary}
+    
+    Task:
+    Provide a JSON report with:
+    1. "grade": A/B/C/D/F based on savings rate and spending control.
+    2. "leakage": Identify 1 potential waste of money based on top categories (infer if unsure, e.g. "Dining Out is high").
+    3. "inflation_check": Comment on if spending went up meaningfully.
+    4. "action_item": One specific thing to do next month.
+    
+    Output JSON ONLY:
+    {{
+        "grade": "B",
+        "leakage": "You spent 5000 on Coffee, which is 10% of your income.",
+        "inflation_check": "Spending is flat month-over-month.",
+        "action_item": "Set a hard limit on Dining Out."
+    }}
+    """
+    
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.5,
+            max_tokens=300
+        )
+        content = response.choices[0].message.content.strip()
+        if content.startswith("```json"):
+            content = content[7:]
+        if content.endswith("```"):
+            content = content[:-3]
+            
+        analysis_json = content.strip()
+        
+        # Store Report
+        # Check if exists
+        existing = session.exec(select(MonthlyReport).where(
+            MonthlyReport.user_id == user_id,
+            MonthlyReport.month == month_str
+        )).first()
+        
+        if existing:
+            existing.total_spent = total_spent
+            existing.total_income = total_income
+            existing.savings_rate = savings_rate
+            existing.analysis = analysis_json
+            session.add(existing)
+            report = existing
+        else:
+            report = MonthlyReport(
+                user_id=user_id,
+                month=month_str,
+                total_spent=total_spent,
+                total_income=total_income,
+                savings_rate=savings_rate,
+                analysis=analysis_json
+            )
+            session.add(report)
+            
+        session.commit()
+        return report
+
+    except Exception as e:
+        print(f"Error generating audit: {e}")
+        return None
+
 
 
