@@ -82,8 +82,8 @@ async def get_latest_suggestion(
     if not suggestion:
         return {"suggestion": None}
         
-    return {
+    return {"suggestion": {
         "id": suggestion.id,
         "content": suggestion.content,
         "created_at": suggestion.created_at.isoformat()
-    }
+    }}

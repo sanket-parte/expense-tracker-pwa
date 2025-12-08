@@ -6,9 +6,9 @@ import io
 from datetime import datetime
 
 from database import get_session
-from models import Expense, User, Category
+from models import Expense, User, Category, Budget, RecurringExpense, AISuggestion, UserSettings
 from auth import get_current_user
-from sqlmodel import or_
+from sqlmodel import or_, delete
 
 router = APIRouter(prefix="/data", tags=["data"])
 
@@ -182,20 +182,23 @@ def clear_data(
     current_user: User = Depends(get_current_user)
 ):
     """Clear all data for the current user."""
-    from sqlmodel import delete
-    from models import Budget, RecurringExpense, AISuggestion
     
-    # Delete dependent data first
-    session.exec(delete(Expense).where(Expense.user_id == current_user.id))
-    session.exec(delete(Budget).where(Budget.user_id == current_user.id))
-    session.exec(delete(RecurringExpense).where(RecurringExpense.user_id == current_user.id))
-    session.exec(delete(AISuggestion).where(AISuggestion.user_id == current_user.id))
-    
-    # Delete custom categories (where user_id is set)
-    # Note: If we had a cleaner cascade setup we could just delete user, but we are keeping the user account.
-    # We must be careful if there are system categories that expenses linked to? 
-    # Valid: Expenses deleted above. So categories usage is gone.
-    session.exec(delete(Category).where(Category.user_id == current_user.id))
-    
-    session.commit()
-    return {"message": "All data cleared successfully"}
+    print(f"Clearing data for user {current_user.id}")
+    try:
+        # Delete dependent data first
+        session.exec(delete(Expense).where(Expense.user_id == current_user.id))
+        session.exec(delete(Budget).where(Budget.user_id == current_user.id))
+        session.exec(delete(RecurringExpense).where(RecurringExpense.user_id == current_user.id))
+        session.exec(delete(AISuggestion).where(AISuggestion.user_id == current_user.id))
+        session.exec(delete(UserSettings).where(UserSettings.user_id == current_user.id))
+        
+        # Delete custom categories
+        session.exec(delete(Category).where(Category.user_id == current_user.id))
+        
+        session.commit()
+        print("Data cleared successfully")
+        return {"message": "All data cleared successfully"}
+    except Exception as e:
+        print(f"Error clearing data: {e}")
+        session.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
