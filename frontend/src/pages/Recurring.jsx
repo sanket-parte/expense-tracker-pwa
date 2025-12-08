@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Calendar, RefreshCcw } from 'lucide-react';
 import { useRecurring, useCategories } from '../hooks/useQueries';
 import { useCreateRecurring, useDeleteRecurring } from '../hooks/useMutations';
@@ -8,13 +8,31 @@ import { useForm } from 'react-hook-form';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
+import SubscriptionScanner from '../components/SubscriptionScanner';
 
-const RecurringForm = ({ onSuccess }) => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
+const RecurringForm = ({ initialData, onSuccess }) => {
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm({
+        defaultValues: {
+            title: '',
+            amount: '',
+            category_id: '',
+            frequency: 'monthly',
+            next_due_date: new Date().toISOString().split('T')[0]
+        }
+    });
     const [submitError, setSubmitError] = useState('');
 
     const { data: categories = [] } = useCategories();
     const createMutation = useCreateRecurring();
+
+    useEffect(() => {
+        if (initialData) {
+            setValue('title', initialData.title);
+            setValue('amount', initialData.amount);
+            setValue('frequency', initialData.frequency || 'monthly');
+            // If we had category matching logic, we could set category_id here too
+        }
+    }, [initialData, setValue]);
 
     const onSubmit = async (data) => {
         setSubmitError('');
@@ -127,9 +145,20 @@ const RecurringForm = ({ onSuccess }) => {
 
 export default function Recurring() {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [formData, setFormData] = useState(null);
 
     const { data: expenses, isLoading, error } = useRecurring();
     const deleteMutation = useDeleteRecurring();
+
+    const handleAddSubscription = (sub) => {
+        setFormData(sub);
+        setIsModalOpen(true);
+    };
+
+    const handleNew = () => {
+        setFormData(null);
+        setIsModalOpen(true);
+    };
 
     if (isLoading) return <Loading />;
     if (error) return <div className="text-red-500 p-8 text-center">Error loading recurring expenses</div>;
@@ -142,7 +171,7 @@ export default function Recurring() {
                     <p className="text-slate-500 dark:text-slate-400 font-medium mt-1">Automate your fixed monthly bills</p>
                 </div>
                 <Button
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={handleNew}
                     variant="primary"
                     className="shadow-lg shadow-brand-200 dark:shadow-none"
                 >
@@ -150,6 +179,8 @@ export default function Recurring() {
                     New
                 </Button>
             </div>
+
+            <SubscriptionScanner onAddSubscription={handleAddSubscription} />
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {expenses.length === 0 ? (
@@ -202,9 +233,10 @@ export default function Recurring() {
             <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title="Add Recurring Expense"
+                title={formData ? "Add Detected Subscription" : "Add Recurring Expense"}
             >
                 <RecurringForm
+                    initialData={formData}
                     onSuccess={() => setIsModalOpen(false)}
                 />
             </Modal>

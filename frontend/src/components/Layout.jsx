@@ -20,10 +20,10 @@ export default function Layout() {
     const navItems = [
         { to: "/dashboard", icon: Home, label: "Home" },
         { to: "/expenses", icon: Receipt, label: "Expenses" },
-        { to: "/reports", icon: BarChart2, label: "Reports" },
-        { to: "/budgets", icon: Wallet, label: "Budgets" },
-        { to: "/calendar", icon: Calendar, label: "Calendar" },
         { to: "/recurring", icon: RefreshCcw, label: "Recurring" },
+        { to: "/budgets", icon: Wallet, label: "Budgets" },
+        { to: "/reports", icon: BarChart2, label: "Reports" },
+        { to: "/calendar", icon: Calendar, label: "Calendar" },
         { to: "/settings", icon: Settings, label: "Settings" },
         { to: "/profile", icon: UserCircle, label: "Profile" },
     ];
@@ -59,7 +59,7 @@ export default function Layout() {
 
             {/* Desktop Sidebar */}
             <aside className="hidden lg:flex w-72 flex-col fixed inset-y-0 left-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border-r border-white/20 dark:border-white/5 z-50 shadow-glass-sm transition-all duration-300">
-                <div className="p-8 pb-4">
+                <div className="flex-1 overflow-y-auto p-8 pb-4 scrollbar-hide">
                     <div className="flex items-center gap-3 px-2 mb-10">
                         <div className="w-10 h-10 bg-gradient-to-br from-brand-500 to-brand-700 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/30 text-white">
                             <Wallet size={20} strokeWidth={2.5} />

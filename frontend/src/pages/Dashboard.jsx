@@ -4,7 +4,7 @@ import api from '../lib/api';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Wallet, TrendingDown, TrendingUp, ArrowUpRight, ArrowDownRight, PieChart as PieChartIcon, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
-import QuickAdd from '../components/QuickAdd';
+import MagicExpenseInput from '../components/MagicExpenseInput';
 import Modal from '../components/Modal';
 import ExpenseForm from '../components/ExpenseForm';
 import PullToRefresh from '../components/PullToRefresh';
@@ -62,7 +62,15 @@ export default function Dashboard() {
     const [quickAddData, setQuickAddData] = useState(null);
 
     const handleQuickAdd = (parsedData) => {
-        setQuickAddData(parsedData);
+        // Map parsed data to match ExpenseForm expected structure
+        const mappedData = {
+            title: parsedData.title,
+            amount: parsedData.amount,
+            category_id: parsedData.category_id, // Ensure backend returns category_id or similar
+            date: parsedData.date,
+            // ExpenseForm might expect 'category' string or ID, verify this
+        };
+        setQuickAddData(mappedData);
         setIsModalOpen(true);
     };
 
@@ -125,7 +133,7 @@ export default function Dashboard() {
                 </motion.div>
 
                 <motion.div variants={itemVariants} className="relative z-20">
-                    <QuickAdd onQuickAdd={handleQuickAdd} />
+                    <MagicExpenseInput onParse={handleQuickAdd} />
                 </motion.div>
 
                 <motion.div variants={itemVariants}>

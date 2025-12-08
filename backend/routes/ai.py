@@ -18,6 +18,40 @@ class SuggestionResponse(BaseModel):
     content: str
     created_at: str
 
+class ParseRequest(BaseModel):
+    text: str
+
+@router.post("/parse")
+async def parse_expense(
+    request: ParseRequest,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    """Parse natural language text into expense details."""
+    try:
+        parsed_data = ai_service.parse_expense_natural_language(session, current_user.id, request.text)
+        return {"parsed": parsed_data}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/recurring/detect")
+async def detect_recurring(
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    """Detect potential recurring expenses."""
+    suggestions = ai_service.detect_recurring_expenses(session, current_user.id)
+    return {"suggestions": suggestions}
+
+@router.get("/budgets/forecast")
+async def get_budget_forecast(
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    """Get AI forecasts for budgets at risk."""
+    forecasts = ai_service.generate_budget_forecast(session, current_user.id)
+    return {"forecasts": forecasts}
+
 @router.post("/settings")
 async def save_settings(
     settings_data: SettingsUpdate,

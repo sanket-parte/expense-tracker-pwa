@@ -9,6 +9,7 @@ import SwipeableItem from '../components/SwipeableItem';
 import Card from '../components/ui/Card';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../components/ui/Button';
+import BudgetForecast from '../components/BudgetForecast';
 
 export default function Budgets() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,6 +36,8 @@ export default function Budgets() {
                     New Budget
                 </Button>
             </div>
+
+            <BudgetForecast />
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 <AnimatePresence mode="popLayout">
