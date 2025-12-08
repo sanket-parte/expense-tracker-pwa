@@ -109,7 +109,10 @@ async def get_latest_suggestion(
     """Get the most recent suggestion without regenerating."""
     suggestion = session.exec(
         select(AISuggestion)
-        .where(AISuggestion.user_id == current_user.id)
+        .where(
+            AISuggestion.user_id == current_user.id,
+            AISuggestion.content.not_like("BUDGET_ALERT:%")
+        )
         .order_by(AISuggestion.created_at.desc())
     ).first()
     

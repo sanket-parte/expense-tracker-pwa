@@ -244,8 +244,8 @@ def detect_recurring_expenses(session: Session, user_id: int) -> List[Dict[str, 
         return []
 
 def generate_budget_forecast(session: Session, user_id: int) -> List[Dict[str, Any]]:
-    """Forecasting logic to predict budget overspending."""
-    from models import Budget
+    """Forecasting logic to predict budget overspending with caching."""
+    from models import Budget, AISuggestion
     import calendar
     
     # 1. Get Budgets
@@ -263,6 +263,26 @@ def generate_budget_forecast(session: Session, user_id: int) -> List[Dict[str, A
     
     settings = session.exec(select(UserSettings).where(UserSettings.user_id == user_id)).first()
     client = OpenAI(api_key=settings.openai_api_key) if (settings and settings.openai_api_key) else None
+
+    # Pre-fetch recent suggestions for cache check (last 24 hours)
+    cutoff = datetime.utcnow() - timedelta(hours=24)
+    recent_suggestions = session.exec(
+        select(AISuggestion)
+        .where(
+            AISuggestion.user_id == user_id, 
+            AISuggestion.created_at >= cutoff,
+            AISuggestion.content.like("BUDGET_ALERT:%")
+        )
+    ).all()
+    
+    # Create a map for easy lookup: category_id -> advice
+    cache_map = {}
+    for s in recent_suggestions:
+        parts = s.content.split(":", 2)
+        if len(parts) == 3:
+            cat_id = int(parts[1])
+            advice = parts[2]
+            cache_map[cat_id] = advice
 
     for budget in budgets:
         # Calculate spent for this month/period
@@ -285,26 +305,39 @@ def generate_budget_forecast(session: Session, user_id: int) -> List[Dict[str, A
         is_at_risk = projected_total > (budget.amount * 1.05)
         
         if is_at_risk:
-            advice = "You are spending too fast."
-            if client:
-                try:
-                    prompt = f"""
-                    The user has a budget of {budget.amount} for category '{budget.category.name}'.
-                    Currently it is day {day_of_month} of {days_in_month}.
-                    They have already spent {spent_amount}.
-                    Projected spend: {projected_total:.0f}.
-                    
-                    Give a 1-sentence, encouraging specific tip to help them get back on track.
-                    """
-                    response = client.chat.completions.create(
-                        model="gpt-3.5-turbo",
-                        messages=[{"role": "user", "content": prompt}],
-                        max_tokens=60,
-                        temperature=0.7
-                    )
-                    advice = response.choices[0].message.content.strip()
-                except:
-                    pass
+            # Check cache first
+            if budget.category_id in cache_map:
+                advice = cache_map[budget.category_id]
+            else:
+                advice = "You are spending too fast."
+                if client:
+                    try:
+                        prompt = f"""
+                        The user has a budget of {budget.amount} for category '{budget.category.name}'.
+                        Currently it is day {day_of_month} of {days_in_month}.
+                        They have already spent {spent_amount}.
+                        Projected spend: {projected_total:.0f}.
+                        
+                        Give a 1-sentence, encouraging specific tip to help them get back on track.
+                        """
+                        response = client.chat.completions.create(
+                            model="gpt-3.5-turbo",
+                            messages=[{"role": "user", "content": prompt}],
+                            max_tokens=60,
+                            temperature=0.7
+                        )
+                        advice = response.choices[0].message.content.strip()
+                        
+                        # Cache the advice
+                        new_cache = AISuggestion(
+                            user_id=user_id,
+                            content=f"BUDGET_ALERT:{budget.category_id}:{advice}"
+                        )
+                        session.add(new_cache)
+                        session.commit()
+                        
+                    except Exception as e:
+                        print(f"Error generating forecast advice: {e}")
             
             forecasts.append({
                 "category": budget.category.name,
