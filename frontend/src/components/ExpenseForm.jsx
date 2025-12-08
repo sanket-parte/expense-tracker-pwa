@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import api from '../lib/api';
 import { useCategories } from '../hooks/useQueries';
 import { useCreateExpense, useUpdateExpense } from '../hooks/useMutations';
 import { useSettings } from '../context/SettingsContext';
@@ -18,6 +19,30 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
         category_id: '',
         date: new Date().toISOString().split('T')[0],
     });
+
+    // Smart Category Suggestion
+    useEffect(() => {
+        // Only run for new expenses or if user is typing
+        if (initialData) return;
+
+        const title = formData.title;
+        if (!title || title.length < 3) return;
+
+        const timeoutId = setTimeout(async () => {
+            try {
+                const { data } = await api.get(`/analytics/predict-category?title=${encodeURIComponent(title)}`);
+                if (data.category_id) {
+                    // Only update if user hasn't manually selected a different category (or if it's the default 1st one)
+                    // For simplicity, we just update it. A more complex logic would check if dirty.
+                    setFormData(prev => ({ ...prev, category_id: data.category_id }));
+                }
+            } catch (error) {
+                console.error("Failed to predict category", error);
+            }
+        }, 500); // 500ms debounce
+
+        return () => clearTimeout(timeoutId);
+    }, [formData.title, initialData]);
 
     // Set default category when categories load
     useEffect(() => {

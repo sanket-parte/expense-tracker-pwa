@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from sqlmodel import Session, select, func
+from sqlmodel import Session, select, func, desc
 from datetime import datetime, timedelta
 from database import get_session
 from models import Expense, User, Category
@@ -68,3 +68,28 @@ def get_dashboard_stats(
         "daily_trend": formatted_daily,
         "recent_transactions": recent_expenses
     }
+
+@router.get("/predict-category")
+def predict_category(
+    title: str,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    if not title or len(title) < 2:
+        return {"category_id": None}
+
+    # Find most frequent category for this merchant/title
+    query = (
+        select(Expense.category_id, func.count(Expense.id).label("count"))
+        .where(Expense.user_id == current_user.id)
+        .where(Expense.title.ilike(f"%{title}%")) 
+        .group_by(Expense.category_id)
+        .order_by(desc("count"))
+        .limit(1)
+    )
+    result = session.exec(query).first()
+    
+    if result:
+        return {"category_id": result[0]}
+    
+    return {"category_id": None}
