@@ -76,3 +76,13 @@ def delete_budget(
     session.delete(budget)
     session.commit()
     return {"ok": True}
+
+@router.post("/auto-suggest")
+def suggest_budgets(
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    from services.ai_service import generate_budget_suggestions
+    suggestions = generate_budget_suggestions(session, current_user.id)
+    return suggestions
+

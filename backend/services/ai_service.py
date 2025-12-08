@@ -350,3 +350,120 @@ def generate_budget_forecast(session: Session, user_id: int) -> List[Dict[str, A
             })
             
     return forecasts
+
+def generate_budget_suggestions(session: Session, user_id: int) -> List[Dict[str, Any]]:
+    """Analyzes spending history to suggest realistic budgets."""
+    from models import Category
+    import calendar
+    
+    # 1. 90-day Spending Analysis
+    end_date = datetime.now()
+    start_date = end_date - timedelta(days=90)
+    
+    expenses = session.exec(
+        select(Expense)
+        .where(
+            Expense.user_id == user_id, 
+            Expense.date >= start_date,
+            Expense.date <= end_date
+        )
+    ).all()
+    
+    if not expenses:
+        return []
+
+    # Map Category ID -> List of amounts
+    # usage: cat_expenses[1] = [100, 50, 200...]
+    cat_expenses = {}
+    for e in expenses:
+        if e.category_id not in cat_expenses:
+            cat_expenses[e.category_id] = []
+        cat_expenses[e.category_id].append(e.amount)
+
+    # 2. Calculate Averages (Python side)
+    # We want "Monthly Average". 90 days approx 3 months.
+    summaries = []
+    categories = session.exec(select(Category).where(Category.user_id == user_id)).all()
+    cat_map = {c.id: c.name for c in categories}
+    
+    for cat_id, amounts in cat_expenses.items():
+        total_spent = sum(amounts)
+        avg_monthly = total_spent / 3.0 # Rough 3-month average
+        cat_name = cat_map.get(cat_id, f"Category {cat_id}")
+        
+        summaries.append({
+            "category_id": cat_id,
+            "category_name": cat_name,
+            "avg_monthly": round(avg_monthly, 2),
+            "max_single": max(amounts) if amounts else 0
+        })
+
+    # 3. Consult LLM for "Smart Smoothing"
+    settings = session.exec(select(UserSettings).where(UserSettings.user_id == user_id)).first()
+    
+    # helper to inject names back
+    def attach_names(items):
+        for item in items:
+            item["category_name"] = cat_map.get(item["category_id"], "Unknown")
+        return items
+
+    if not settings or not settings.openai_api_key:
+        # Fallback: Just return raw averages if no API key
+        results = [{
+            "category_id": s["category_id"],
+            "amount": int(s["avg_monthly"]),
+            "reason": "Based on 3-month average."
+        } for s in summaries]
+        return attach_names(results)
+
+    client = OpenAI(api_key=settings.openai_api_key)
+    
+    prompt = f"""
+    Act as a pragmatic budget advisor.
+    I have calculated the raw 3-month average spending for standard categories.
+    Your goal: Propose a REALISTIC monthly budget for each category.
+    
+    Rules:
+    - Round up to the nearest 100 or 500 for clean numbers.
+    - Add a small buffer (5-10%) to the average so the budget isn't too tight.
+    - If the average is very low (< 100), maybe ignore it or suggest 0? Use judgment.
+    
+    Data:
+    {json.dumps(summaries, indent=2)}
+    
+    Output JSON list:
+    [
+        {{
+            "category_id": 123,
+            "amount": 5000,
+            "reason": "Average is 4800, rounded up for safety."
+        }}
+    ]
+    """
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3, # Low temp for consistency
+            max_tokens=500
+        )
+        content = response.choices[0].message.content.strip()
+        if content.startswith("```json"):
+            content = content[7:]
+        if content.endswith("```"):
+            content = content[:-3]
+            
+        suggestions = json.loads(content.strip())
+        return attach_names(suggestions)
+        
+    except Exception as e:
+        print(f"Error generating budget suggestions: {e}")
+        # Fallback to local math
+        results = [{
+            "category_id": s["category_id"],
+            "amount": int(s["avg_monthly"] * 1.1), # +10%
+            "reason": "Fallback: 3-month average + 10%"
+        } for s in summaries]
+        return attach_names(results)
+
