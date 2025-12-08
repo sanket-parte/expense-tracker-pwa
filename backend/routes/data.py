@@ -149,3 +149,29 @@ def export_expenses(
     response = StreamingResponse(iter([output.getvalue()]), media_type="text/csv")
     response.headers["Content-Disposition"] = "attachment; filename=expenses.csv"
     return response
+
+@router.get("/export/json")
+def export_data_json(
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    expenses = session.exec(
+        select(Expense)
+        .where(Expense.user_id == current_user.id)
+        .order_by(Expense.date.desc())
+    ).all()
+    
+    # Manually serialize to avoid circular deps or lazy loading issues if just returning objects
+    data = []
+    for expense in expenses:
+        data.append({
+            "id": expense.id,
+            "title": expense.title,
+            "amount": expense.amount,
+            "category": expense.category.name if expense.category else "Uncategorized",
+            "type": expense.type,
+            "date": expense.date.isoformat(),
+            "created_at": expense.created_at.isoformat()
+        })
+        
+    return data

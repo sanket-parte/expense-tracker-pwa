@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, Upload, AlertCircle, CheckCircle2, RefreshCcw } from 'lucide-react';
+import { Download, Upload, AlertCircle, CheckCircle2, RefreshCcw, FileJson, FileSpreadsheet } from 'lucide-react';
 import api from '../lib/api';
 import CategorySettings from '../components/CategorySettings';
 import { cn } from '../lib/utils';
@@ -9,12 +9,47 @@ import Button from '../components/ui/Button';
 
 export default function Settings() {
     const [importing, setImporting] = useState(false);
+    const [exporting, setExporting] = useState(false);
     const [message, setMessage] = useState(null);
     const { settings, updateSetting } = useSettings();
 
-    const handleExport = () => {
-        // Direct open to trigger download
-        window.open('http://localhost:8000/data/export', '_blank');
+    const handleExportCSV = async () => {
+        setExporting(true);
+        try {
+            const response = await api.get('/data/export', { responseType: 'blob' });
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `expenses_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            console.error("Export failed", error);
+            setMessage({ type: 'error', text: 'Failed to export CSV.' });
+        } finally {
+            setExporting(false);
+        }
+    };
+
+    const handleExportJSON = async () => {
+        setExporting(true);
+        try {
+            const { data } = await api.get('/data/export/json');
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `expenses_backup_${new Date().toISOString().split('T')[0]}.json`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            console.error("Export JSON failed", error);
+            setMessage({ type: 'error', text: 'Failed to export JSON.' });
+        } finally {
+            setExporting(false);
+        }
     };
 
     const handleImport = async (e) => {
@@ -92,17 +127,29 @@ export default function Settings() {
                     </div>
                     <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2">Export Data</h3>
                     <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm leading-relaxed font-medium">
-                        Download all your expenses as a CSV file for backup or analysis in other tools.
+                        Download your expenses for backup or analysis.
                     </p>
-                    <Button
-                        onClick={handleExport}
-                        variant="outline"
-                        fullWidth
-                        className="group-hover:bg-brand-50 dark:group-hover:bg-brand-900/10 group-hover:border-brand-200 dark:group-hover:border-brand-500/30"
-                    >
-                        <Download size={18} className="mr-2" />
-                        Download CSV
-                    </Button>
+                    <div className="flex gap-3">
+                        <Button
+                            onClick={handleExportCSV}
+                            variant="outline"
+                            className="flex-1 group-hover:bg-brand-50 dark:group-hover:bg-brand-900/10 group-hover:border-brand-200 dark:group-hover:border-brand-500/30"
+                            disabled={exporting}
+                            isLoading={exporting}
+                        >
+                            <FileSpreadsheet size={18} className="mr-2" />
+                            CSV
+                        </Button>
+                        <Button
+                            onClick={handleExportJSON}
+                            variant="outline"
+                            className="flex-1 group-hover:bg-brand-50 dark:group-hover:bg-brand-900/10 group-hover:border-brand-200 dark:group-hover:border-brand-500/30"
+                            disabled={exporting}
+                        >
+                            <FileJson size={18} className="mr-2" />
+                            JSON
+                        </Button>
+                    </div>
                 </Card>
 
                 {/* Import Section */}
