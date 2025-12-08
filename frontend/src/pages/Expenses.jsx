@@ -1,4 +1,5 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Plus, PlusCircle } from 'lucide-react';
 import ExpenseItem from '../components/ExpenseItem';
 import SwipeableItem from '../components/SwipeableItem';
@@ -12,8 +13,9 @@ import Card from '../components/ui/Card';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export default function Expenses() {
+    const [searchParams] = useSearchParams();
     const [filters, setFilters] = useState({
-        search: '',
+        search: searchParams.get('search') || '',
         category_id: '',
         type: '',
         start_date: '',
@@ -21,6 +23,13 @@ export default function Expenses() {
         min_amount: '',
         max_amount: ''
     });
+
+    useEffect(() => {
+        const query = searchParams.get('search');
+        if (query) {
+            setFilters(prev => ({ ...prev, search: query }));
+        }
+    }, [searchParams]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingExpense, setEditingExpense] = useState(null);

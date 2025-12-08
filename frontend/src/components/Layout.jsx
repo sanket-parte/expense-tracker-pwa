@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Home, Receipt, Settings, LogOut, Menu, X, UserCircle, Wallet, RefreshCcw, Moon, Sun } from 'lucide-react';
+import { Home, Receipt, Settings, LogOut, Menu, X, UserCircle, Wallet, RefreshCcw, Moon, Sun, Calendar, Search } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { cn } from '../lib/utils';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import SyncStatus from './SyncStatus';
+import CommandPalette from './CommandPalette';
 
 export default function Layout() {
     const { logout, user } = useAuth();
@@ -14,10 +15,12 @@ export default function Layout() {
     const navigate = useNavigate();
     const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     const navItems = [
         { to: "/dashboard", icon: Home, label: "Home" },
         { to: "/expenses", icon: Receipt, label: "Expenses" },
+        { to: "/calendar", icon: Calendar, label: "Calendar" },
         { to: "/budgets", icon: Wallet, label: "Budgets" },
         { to: "/recurring", icon: RefreshCcw, label: "Recurring" },
         { to: "/settings", icon: Settings, label: "Settings" },
@@ -33,10 +36,25 @@ export default function Layout() {
         navigate('/login');
     };
 
+    // Toggle with Cmd+K / Ctrl+K
+    React.useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+                e.preventDefault();
+                setIsSearchOpen((prev) => !prev);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
     return (
         <div className="flex min-h-[100dvh] bg-slate-50 dark:bg-slate-950 transition-colors duration-500 overflow-hidden">
             {/* Global Background Mesh */}
             <div className="fixed inset-0 bg-mesh-light dark:bg-mesh-dark pointer-events-none transition-opacity duration-500" />
+
+            <CommandPalette isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
             {/* Desktop Sidebar */}
             <aside className="hidden lg:flex w-72 flex-col fixed inset-y-0 left-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border-r border-white/20 dark:border-white/5 z-50 shadow-glass-sm transition-all duration-300">
@@ -54,6 +72,17 @@ export default function Layout() {
                             </div>
                         </div>
                     </div>
+
+                    <button
+                        onClick={() => setIsSearchOpen(true)}
+                        className="w-full flex items-center gap-3 px-4 py-3 mb-6 rounded-xl bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all group border border-slate-200 dark:border-slate-800"
+                    >
+                        <Search size={18} className="group-hover:scale-110 transition-transform" />
+                        <span className="text-sm font-medium">Quick Search...</span>
+                        <div className="ml-auto flex items-center gap-1">
+                            <kbd className="inline-flex items-center justify-center h-5 px-1.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-sans text-[10px] text-slate-500">⌘K</kbd>
+                        </div>
+                    </button>
 
                     <nav className="space-y-2">
                         {navItems.map((item) => (
@@ -114,6 +143,12 @@ export default function Layout() {
                 </div>
                 <div className="flex items-center gap-3 scale-90">
                     <SyncStatus />
+                    <button
+                        onClick={() => setIsSearchOpen(true)}
+                        className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-full active:scale-95 transition-all"
+                    >
+                        <Search size={20} />
+                    </button>
                     <button
                         onClick={toggleTheme}
                         className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-full active:scale-95 transition-all"

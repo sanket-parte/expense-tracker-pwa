@@ -9,6 +9,7 @@ export const QUERY_KEYS = {
     expenses: 'expenses',
     budgets: 'budgets',
     recurring: 'recurring',
+    calendar: 'calendar',
 };
 
 // Fetchers
@@ -100,5 +101,22 @@ export const useRecentExpenses = () => {
             return data;
         },
         staleTime: 1000 * 60 * 1, // 1 minute
+    });
+};
+
+export const useCalendarExpenses = (start_date, end_date) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.calendar, { start_date, end_date }],
+        queryFn: async () => {
+            // Assuming formatted strings are passed, otherwise use .toISOString()
+            const params = new URLSearchParams({
+                start_date,
+                end_date,
+                limit: 500
+            });
+            const { data } = await api.get(`/expenses/?${params.toString()}`);
+            return data;
+        },
+        keepPreviousData: true,
     });
 };
