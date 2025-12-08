@@ -5,6 +5,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Wallet, TrendingDown, TrendingUp, ArrowUpRight, ArrowDownRight, PieChart as PieChartIcon, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
 import MagicExpenseInput from '../components/MagicExpenseInput';
+import VoiceInput from '../components/VoiceInput';
 import Modal from '../components/Modal';
 import ExpenseForm from '../components/ExpenseForm';
 import PullToRefresh from '../components/PullToRefresh';
@@ -74,6 +75,18 @@ export default function Dashboard() {
         setIsModalOpen(true);
     };
 
+    const handleVoiceResult = async (transcript) => {
+        try {
+            const { data } = await api.post('/ai/parse', { text: transcript });
+            if (data.parsed) {
+                handleQuickAdd(data.parsed);
+            }
+        } catch (error) {
+            console.error("Failed to parse voice input", error);
+            // Optionally show a toast here
+        }
+    };
+
     const handleSuccess = () => {
         setIsModalOpen(false);
     };
@@ -132,8 +145,11 @@ export default function Dashboard() {
                     </div>
                 </motion.div>
 
-                <motion.div variants={itemVariants} className="relative z-20">
-                    <MagicExpenseInput onParse={handleQuickAdd} />
+                <motion.div variants={itemVariants} className="relative z-20 flex items-center gap-3 mb-8">
+                    <div className="flex-1">
+                        <MagicExpenseInput onParse={handleQuickAdd} />
+                    </div>
+                    <VoiceInput onResult={handleVoiceResult} />
                 </motion.div>
 
                 <motion.div variants={itemVariants}>

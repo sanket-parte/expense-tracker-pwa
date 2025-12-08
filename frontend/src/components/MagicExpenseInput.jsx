@@ -30,7 +30,7 @@ export default function MagicExpenseInput({ onParse }) {
     };
 
     return (
-        <div className="relative mb-8 group z-20">
+        <div className="relative group z-20">
             {/* Ambient Glow */}
             <div className={cn(
                 "absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 rounded-[2rem] blur opacity-25 group-hover:opacity-50 transition duration-1000",
