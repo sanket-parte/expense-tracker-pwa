@@ -1,260 +1,549 @@
 title,amount,category,type,date
-Shopping,126.11,Other,expense,2025-06-01
+Salary,5000.0,Other,income,2025-01-01
+Movie,18.22,Entertainment,expense,2025-01-04
+Internet,61.19,Utilities,expense,2025-01-04
+Electricity,81.46,Utilities,expense,2025-01-04
+Water,49.27,Utilities,expense,2025-01-05
+Grocery Shopping,74.49,Food,expense,2025-01-06
+Gas,44.29,Transport,expense,2025-01-06
+Pharmacy,13.65,Health,expense,2025-01-08
+Lunch,20.44,Food,expense,2025-01-08
+Dinner,62.02,Food,expense,2025-01-08
+Gym,53.44,Health,expense,2025-01-09
+Train Ticket,5.3,Transport,expense,2025-01-09
+Concert,77.1,Entertainment,expense,2025-01-09
+Gas,43.95,Transport,expense,2025-01-10
+Electricity,63.78,Utilities,expense,2025-01-11
+Pharmacy,36.94,Health,expense,2025-01-11
+Gas,45.64,Transport,expense,2025-01-12
+Grocery Shopping,107.06,Food,expense,2025-01-12
+Netflix,15.19,Entertainment,expense,2025-01-12
+Train Ticket,7.52,Transport,expense,2025-01-13
+Internet,68.1,Utilities,expense,2025-01-13
+Movie,24.37,Entertainment,expense,2025-01-14
+Water,45.22,Utilities,expense,2025-01-14
+Gift,24.3,Other,expense,2025-01-15
+Electricity,86.22,Utilities,expense,2025-01-15
+Freelance Project,684.51,Other,income,2025-01-15
+Gym,48.39,Health,expense,2025-01-16
+Netflix,15.03,Entertainment,expense,2025-01-16
+Gym,50.51,Health,expense,2025-01-16
+Dinner,46.42,Food,expense,2025-01-18
+Gift,86.01,Other,expense,2025-01-18
+Water,22.48,Utilities,expense,2025-01-18
+Internet,61.81,Utilities,expense,2025-01-19
+Grocery Shopping,111.43,Food,expense,2025-01-19
+Gym,45.58,Health,expense,2025-01-20
+Internet,68.31,Utilities,expense,2025-01-20
+Pharmacy,38.81,Health,expense,2025-01-21
+Grocery Shopping,144.42,Food,expense,2025-01-21
+Gym,59.94,Health,expense,2025-01-23
+Doctor Visit,127.09,Health,expense,2025-01-24
+Pharmacy,22.23,Health,expense,2025-01-24
+Gym,40.25,Health,expense,2025-01-24
+Gym,54.92,Health,expense,2025-01-25
+Netflix,15.4,Entertainment,expense,2025-01-25
+Doctor Visit,169.43,Health,expense,2025-01-27
+Shopping,172.02,Other,expense,2025-01-27
+Movie,23.02,Entertainment,expense,2025-01-27
+Netflix,15.99,Entertainment,expense,2025-01-31
+Dinner,57.18,Food,expense,2025-01-31
+Salary,5000.0,Other,income,2025-02-01
+Grocery Shopping,106.88,Food,expense,2025-02-02
+Uber,39.46,Transport,expense,2025-02-02
+Train Ticket,5.54,Transport,expense,2025-02-02
+Electricity,98.57,Utilities,expense,2025-02-03
+Concert,52.54,Entertainment,expense,2025-02-03
+Gas,40.63,Transport,expense,2025-02-05
+Water,33.78,Utilities,expense,2025-02-05
+Uber,32.63,Transport,expense,2025-02-05
+Uber,36.48,Transport,expense,2025-02-06
+Gym,54.73,Health,expense,2025-02-06
+Grocery Shopping,83.49,Food,expense,2025-02-06
+Lunch,15.07,Food,expense,2025-02-07
+Shopping,127.51,Other,expense,2025-02-07
+Concert,135.01,Entertainment,expense,2025-02-08
+Movie,22.36,Entertainment,expense,2025-02-08
+Electricity,83.13,Utilities,expense,2025-02-08
+Grocery Shopping,107.68,Food,expense,2025-02-09
+Shopping,61.88,Other,expense,2025-02-09
+Internet,53.49,Utilities,expense,2025-02-10
+Train Ticket,5.66,Transport,expense,2025-02-11
+Grocery Shopping,95.91,Food,expense,2025-02-11
+Concert,92.38,Entertainment,expense,2025-02-13
+Gift,34.37,Other,expense,2025-02-13
+Gym,55.17,Health,expense,2025-02-15
+Dinner,32.44,Food,expense,2025-02-15
+Freelance Project,456.18,Other,income,2025-02-15
+Internet,65.57,Utilities,expense,2025-02-17
+Gift,61.06,Other,expense,2025-02-17
+Pharmacy,38.35,Health,expense,2025-02-17
+Lunch,13.12,Food,expense,2025-02-18
+Lunch,19.73,Food,expense,2025-02-19
+Doctor Visit,167.26,Health,expense,2025-02-20
+Grocery Shopping,74.99,Food,expense,2025-02-23
+Shopping,51.6,Other,expense,2025-02-23
+Internet,66.74,Utilities,expense,2025-02-23
+Shopping,58.78,Other,expense,2025-02-26
+Gym,51.4,Health,expense,2025-02-26
+Train Ticket,13.37,Transport,expense,2025-02-28
+Train Ticket,13.72,Transport,expense,2025-03-01
+Salary,5000.0,Other,income,2025-03-01
+Train Ticket,9.0,Transport,expense,2025-03-02
+Pharmacy,42.5,Health,expense,2025-03-03
+Gas,53.05,Transport,expense,2025-03-03
+Movie,18.62,Entertainment,expense,2025-03-03
+Doctor Visit,84.93,Health,expense,2025-03-05
+Uber,21.36,Transport,expense,2025-03-05
+Internet,64.03,Utilities,expense,2025-03-06
+Concert,65.11,Entertainment,expense,2025-03-08
+Uber,21.44,Transport,expense,2025-03-08
+Gas,53.98,Transport,expense,2025-03-08
+Gas,58.45,Transport,expense,2025-03-09
+Grocery Shopping,119.3,Food,expense,2025-03-09
+Electricity,66.17,Utilities,expense,2025-03-10
+Water,48.12,Utilities,expense,2025-03-13
+Doctor Visit,183.91,Health,expense,2025-03-13
+Gym,49.7,Health,expense,2025-03-13
+Electricity,85.08,Utilities,expense,2025-03-14
+Netflix,15.2,Entertainment,expense,2025-03-14
+Concert,118.18,Entertainment,expense,2025-03-14
+Freelance Project,763.04,Other,income,2025-03-15
+Shopping,69.51,Other,expense,2025-03-16
+Movie,23.28,Entertainment,expense,2025-03-16
+Shopping,62.19,Other,expense,2025-03-16
+Grocery Shopping,99.51,Food,expense,2025-03-17
+Water,44.62,Utilities,expense,2025-03-17
+Lunch,14.66,Food,expense,2025-03-18
+Electricity,111.56,Utilities,expense,2025-03-18
+Gym,51.21,Health,expense,2025-03-19
+Gift,77.46,Other,expense,2025-03-20
+Dinner,60.7,Food,expense,2025-03-20
+Dinner,31.77,Food,expense,2025-03-22
+Train Ticket,5.04,Transport,expense,2025-03-23
+Electricity,78.78,Utilities,expense,2025-03-23
+Netflix,15.97,Entertainment,expense,2025-03-23
+Gas,47.59,Transport,expense,2025-03-26
+Electricity,96.26,Utilities,expense,2025-03-26
+Pharmacy,10.03,Health,expense,2025-03-27
+Pharmacy,22.54,Health,expense,2025-03-27
+Electricity,113.73,Utilities,expense,2025-03-27
+Lunch,12.48,Food,expense,2025-03-28
+Dinner,30.7,Food,expense,2025-03-28
+Water,25.21,Utilities,expense,2025-03-28
+Uber,18.52,Transport,expense,2025-03-29
+Internet,55.32,Utilities,expense,2025-03-30
+Concert,119.06,Entertainment,expense,2025-03-31
+Concert,131.09,Entertainment,expense,2025-03-31
+Gas,44.89,Transport,expense,2025-03-31
+Train Ticket,9.17,Transport,expense,2025-04-01
+Salary,5000.0,Other,income,2025-04-01
+Shopping,182.51,Other,expense,2025-04-02
+Train Ticket,10.66,Transport,expense,2025-04-02
+Gift,88.24,Other,expense,2025-04-03
+Shopping,116.29,Other,expense,2025-04-04
+Doctor Visit,169.02,Health,expense,2025-04-04
+Shopping,103.13,Other,expense,2025-04-06
+Grocery Shopping,120.22,Food,expense,2025-04-06
+Doctor Visit,66.96,Health,expense,2025-04-06
+Concert,98.78,Entertainment,expense,2025-04-07
+Gift,63.71,Other,expense,2025-04-07
+Shopping,52.72,Other,expense,2025-04-08
+Lunch,16.78,Food,expense,2025-04-09
+Grocery Shopping,143.55,Food,expense,2025-04-10
+Netflix,15.52,Entertainment,expense,2025-04-10
+Shopping,100.59,Other,expense,2025-04-11
+Netflix,15.12,Entertainment,expense,2025-04-11
+Gas,54.61,Transport,expense,2025-04-11
+Shopping,108.67,Other,expense,2025-04-12
+Lunch,15.46,Food,expense,2025-04-12
+Concert,122.51,Entertainment,expense,2025-04-13
+Grocery Shopping,50.18,Food,expense,2025-04-13
+Movie,20.89,Entertainment,expense,2025-04-14
+Gas,59.7,Transport,expense,2025-04-15
+Freelance Project,473.68,Other,income,2025-04-15
+Movie,17.3,Entertainment,expense,2025-04-16
+Internet,51.7,Utilities,expense,2025-04-16
+Train Ticket,12.43,Transport,expense,2025-04-17
+Water,25.38,Utilities,expense,2025-04-18
+Gift,96.11,Other,expense,2025-04-18
+Grocery Shopping,130.69,Food,expense,2025-04-19
+Internet,51.09,Utilities,expense,2025-04-19
+Electricity,83.49,Utilities,expense,2025-04-21
+Gift,23.78,Other,expense,2025-04-22
+Gym,40.87,Health,expense,2025-04-22
+Shopping,82.04,Other,expense,2025-04-22
+Netflix,15.57,Entertainment,expense,2025-04-23
+Internet,52.1,Utilities,expense,2025-04-23
+Pharmacy,20.01,Health,expense,2025-04-23
+Lunch,17.55,Food,expense,2025-04-24
+Pharmacy,21.72,Health,expense,2025-04-25
+Dinner,77.2,Food,expense,2025-04-25
+Pharmacy,36.53,Health,expense,2025-04-25
+Gym,43.18,Health,expense,2025-04-26
+Gas,40.26,Transport,expense,2025-04-26
+Shopping,100.91,Other,expense,2025-04-26
+Internet,50.52,Utilities,expense,2025-04-29
+Gas,44.56,Transport,expense,2025-04-30
+Salary,5000.0,Other,income,2025-05-01
+Train Ticket,14.84,Transport,expense,2025-05-02
+Gift,57.8,Other,expense,2025-05-02
+Uber,34.2,Transport,expense,2025-05-04
+Concert,75.76,Entertainment,expense,2025-05-05
+Shopping,122.85,Other,expense,2025-05-05
+Gas,52.19,Transport,expense,2025-05-05
+Internet,51.13,Utilities,expense,2025-05-06
+Gym,58.21,Health,expense,2025-05-07
+Dinner,53.32,Food,expense,2025-05-08
+Gift,54.2,Other,expense,2025-05-08
+Water,40.28,Utilities,expense,2025-05-08
+Movie,21.36,Entertainment,expense,2025-05-09
+Pharmacy,14.59,Health,expense,2025-05-10
+Gift,70.29,Other,expense,2025-05-10
+Grocery Shopping,52.46,Food,expense,2025-05-11
+Uber,18.82,Transport,expense,2025-05-11
+Gym,44.81,Health,expense,2025-05-12
+Shopping,191.42,Other,expense,2025-05-13
+Pharmacy,32.79,Health,expense,2025-05-13
+Train Ticket,7.03,Transport,expense,2025-05-15
+Uber,35.0,Transport,expense,2025-05-15
+Freelance Project,597.3,Other,income,2025-05-15
+Gift,87.08,Other,expense,2025-05-17
+Electricity,112.94,Utilities,expense,2025-05-18
+Train Ticket,6.61,Transport,expense,2025-05-18
+Concert,111.71,Entertainment,expense,2025-05-18
+Water,22.14,Utilities,expense,2025-05-19
+Lunch,12.98,Food,expense,2025-05-19
+Water,47.64,Utilities,expense,2025-05-21
+Uber,32.77,Transport,expense,2025-05-21
+Uber,31.51,Transport,expense,2025-05-21
+Uber,24.48,Transport,expense,2025-05-22
+Train Ticket,11.32,Transport,expense,2025-05-22
+Pharmacy,35.99,Health,expense,2025-05-23
+Lunch,21.3,Food,expense,2025-05-23
+Grocery Shopping,149.26,Food,expense,2025-05-24
+Gift,53.47,Other,expense,2025-05-26
+Gym,49.39,Health,expense,2025-05-28
+Lunch,18.09,Food,expense,2025-05-28
+Gift,40.73,Other,expense,2025-05-29
+Pharmacy,40.08,Health,expense,2025-05-30
+Grocery Shopping,50.16,Food,expense,2025-05-31
+Shopping,91.49,Other,expense,2025-06-01
+Lunch,14.38,Food,expense,2025-06-01
 Salary,5000.0,Other,income,2025-06-01
-Lunch,23.21,Food,expense,2025-06-02
-Doctor Visit,153.55,Health,expense,2025-06-02
-Water,21.05,Utilities,expense,2025-06-03
-Lunch,10.49,Food,expense,2025-06-03
-Internet,55.85,Utilities,expense,2025-06-03
-Internet,54.68,Utilities,expense,2025-06-05
-Electricity,95.82,Utilities,expense,2025-06-05
-Doctor Visit,103.05,Health,expense,2025-06-06
-Gym,43.66,Health,expense,2025-06-06
-Gas,48.43,Transport,expense,2025-06-07
-Gym,44.14,Health,expense,2025-06-07
-Gas,54.61,Transport,expense,2025-06-08
-Shopping,195.06,Other,expense,2025-06-08
-Movie,22.92,Entertainment,expense,2025-06-09
-Concert,119.58,Entertainment,expense,2025-06-09
-Doctor Visit,113.51,Health,expense,2025-06-11
-Electricity,72.34,Utilities,expense,2025-06-11
-Netflix,15.58,Entertainment,expense,2025-06-12
-Movie,21.9,Entertainment,expense,2025-06-13
-Pharmacy,27.55,Health,expense,2025-06-15
-Movie,23.21,Entertainment,expense,2025-06-16
-Netflix,15.54,Entertainment,expense,2025-06-17
-Dinner,76.32,Food,expense,2025-06-20
-Gym,56.91,Health,expense,2025-06-22
-Movie,18.15,Entertainment,expense,2025-06-22
-Lunch,22.28,Food,expense,2025-06-22
-Doctor Visit,107.61,Health,expense,2025-06-24
-Gift,27.42,Other,expense,2025-06-25
-Electricity,66.0,Utilities,expense,2025-06-25
-Electricity,85.05,Utilities,expense,2025-06-26
-Gym,54.26,Health,expense,2025-06-26
-Train Ticket,13.57,Transport,expense,2025-06-27
-Doctor Visit,198.14,Health,expense,2025-06-27
-Electricity,110.09,Utilities,expense,2025-06-27
-Pharmacy,31.97,Health,expense,2025-06-29
-Gas,59.82,Transport,expense,2025-06-29
-Grocery Shopping,113.13,Food,expense,2025-06-30
-Train Ticket,6.55,Transport,expense,2025-07-01
+Internet,50.27,Utilities,expense,2025-06-02
+Shopping,98.94,Other,expense,2025-06-05
+Doctor Visit,161.65,Health,expense,2025-06-05
+Train Ticket,5.53,Transport,expense,2025-06-05
+Gift,79.79,Other,expense,2025-06-06
+Shopping,138.25,Other,expense,2025-06-06
+Water,20.83,Utilities,expense,2025-06-06
+Concert,112.61,Entertainment,expense,2025-06-07
+Movie,18.69,Entertainment,expense,2025-06-07
+Dinner,34.35,Food,expense,2025-06-07
+Doctor Visit,79.94,Health,expense,2025-06-08
+Water,38.76,Utilities,expense,2025-06-08
+Uber,37.51,Transport,expense,2025-06-08
+Grocery Shopping,117.16,Food,expense,2025-06-11
+Doctor Visit,52.94,Health,expense,2025-06-11
+Concert,92.74,Entertainment,expense,2025-06-11
+Movie,19.47,Entertainment,expense,2025-06-14
+Uber,20.98,Transport,expense,2025-06-15
+Train Ticket,6.04,Transport,expense,2025-06-16
+Grocery Shopping,95.99,Food,expense,2025-06-16
+Gift,45.4,Other,expense,2025-06-17
+Gym,50.47,Health,expense,2025-06-17
+Movie,22.72,Entertainment,expense,2025-06-17
+Water,23.07,Utilities,expense,2025-06-18
+Gas,47.92,Transport,expense,2025-06-19
+Grocery Shopping,120.86,Food,expense,2025-06-19
+Gift,87.45,Other,expense,2025-06-19
+Uber,39.75,Transport,expense,2025-06-20
+Doctor Visit,62.03,Health,expense,2025-06-20
+Movie,23.32,Entertainment,expense,2025-06-20
+Gas,41.45,Transport,expense,2025-06-21
+Internet,59.69,Utilities,expense,2025-06-21
+Dinner,52.86,Food,expense,2025-06-21
+Movie,23.39,Entertainment,expense,2025-06-22
+Shopping,96.82,Other,expense,2025-06-22
+Water,24.55,Utilities,expense,2025-06-23
+Pharmacy,22.11,Health,expense,2025-06-24
+Lunch,24.5,Food,expense,2025-06-25
+Gym,45.38,Health,expense,2025-06-25
+Concert,131.69,Entertainment,expense,2025-06-25
+Grocery Shopping,53.78,Food,expense,2025-06-27
+Pharmacy,15.97,Health,expense,2025-06-27
+Gift,78.29,Other,expense,2025-06-28
+Shopping,168.95,Other,expense,2025-06-28
+Gift,46.79,Other,expense,2025-06-28
+Lunch,11.03,Food,expense,2025-06-30
+Uber,19.1,Transport,expense,2025-06-30
+Gift,52.05,Other,expense,2025-06-30
+Gym,44.34,Health,expense,2025-07-01
 Salary,5000.0,Other,income,2025-07-01
-Uber,29.94,Transport,expense,2025-07-03
-Internet,53.67,Utilities,expense,2025-07-03
-Gift,32.93,Other,expense,2025-07-03
-Gas,46.65,Transport,expense,2025-07-05
-Internet,64.89,Utilities,expense,2025-07-05
-Gas,44.47,Transport,expense,2025-07-06
-Pharmacy,20.89,Health,expense,2025-07-07
-Movie,24.91,Entertainment,expense,2025-07-08
-Gift,56.23,Other,expense,2025-07-09
-Lunch,18.38,Food,expense,2025-07-09
-Internet,50.13,Utilities,expense,2025-07-09
-Internet,59.24,Utilities,expense,2025-07-11
-Concert,79.39,Entertainment,expense,2025-07-12
-Shopping,141.4,Other,expense,2025-07-13
-Internet,51.31,Utilities,expense,2025-07-13
-Electricity,95.12,Utilities,expense,2025-07-14
-Gift,37.34,Other,expense,2025-07-14
-Freelance Project,533.55,Other,income,2025-07-15
-Gym,52.77,Health,expense,2025-07-16
-Lunch,29.32,Food,expense,2025-07-16
-Internet,51.03,Utilities,expense,2025-07-17
-Shopping,88.83,Other,expense,2025-07-17
-Water,41.4,Utilities,expense,2025-07-19
-Gym,46.79,Health,expense,2025-07-19
-Movie,15.8,Entertainment,expense,2025-07-20
-Grocery Shopping,68.56,Food,expense,2025-07-22
-Uber,33.01,Transport,expense,2025-07-22
-Gift,92.5,Other,expense,2025-07-23
-Shopping,97.68,Other,expense,2025-07-23
-Uber,32.41,Transport,expense,2025-07-23
-Dinner,75.29,Food,expense,2025-07-24
-Water,22.38,Utilities,expense,2025-07-25
-Lunch,10.24,Food,expense,2025-07-25
-Grocery Shopping,77.7,Food,expense,2025-07-27
-Water,44.87,Utilities,expense,2025-07-27
-Gift,47.71,Other,expense,2025-07-27
-Train Ticket,14.1,Transport,expense,2025-07-28
-Train Ticket,7.78,Transport,expense,2025-07-28
-Water,28.09,Utilities,expense,2025-07-28
-Shopping,113.83,Other,expense,2025-07-29
-Lunch,27.85,Food,expense,2025-07-31
+Netflix,15.96,Entertainment,expense,2025-07-02
+Netflix,15.88,Entertainment,expense,2025-07-03
+Shopping,161.52,Other,expense,2025-07-04
+Train Ticket,14.18,Transport,expense,2025-07-04
+Movie,19.97,Entertainment,expense,2025-07-05
+Gift,91.99,Other,expense,2025-07-06
+Movie,23.85,Entertainment,expense,2025-07-06
+Lunch,14.11,Food,expense,2025-07-09
+Dinner,41.9,Food,expense,2025-07-11
+Water,34.73,Utilities,expense,2025-07-13
+Netflix,15.85,Entertainment,expense,2025-07-13
+Pharmacy,29.45,Health,expense,2025-07-13
+Concert,109.6,Entertainment,expense,2025-07-14
+Doctor Visit,50.55,Health,expense,2025-07-15
+Electricity,61.61,Utilities,expense,2025-07-15
+Gas,49.86,Transport,expense,2025-07-16
+Pharmacy,11.44,Health,expense,2025-07-16
+Doctor Visit,194.98,Health,expense,2025-07-16
+Gym,42.69,Health,expense,2025-07-17
+Internet,63.72,Utilities,expense,2025-07-17
+Gym,41.91,Health,expense,2025-07-18
+Uber,26.16,Transport,expense,2025-07-19
+Pharmacy,47.51,Health,expense,2025-07-20
+Gym,55.23,Health,expense,2025-07-20
+Doctor Visit,69.31,Health,expense,2025-07-20
+Netflix,15.57,Entertainment,expense,2025-07-21
+Grocery Shopping,144.74,Food,expense,2025-07-21
+Movie,21.8,Entertainment,expense,2025-07-22
+Netflix,15.96,Entertainment,expense,2025-07-22
+Concert,120.56,Entertainment,expense,2025-07-24
+Gas,40.37,Transport,expense,2025-07-24
+Pharmacy,18.43,Health,expense,2025-07-26
+Netflix,15.26,Entertainment,expense,2025-07-27
+Concert,54.0,Entertainment,expense,2025-07-27
+Doctor Visit,195.41,Health,expense,2025-07-27
+Internet,55.32,Utilities,expense,2025-07-28
+Uber,15.5,Transport,expense,2025-07-28
+Water,46.34,Utilities,expense,2025-07-29
+Uber,22.94,Transport,expense,2025-07-29
+Shopping,192.53,Other,expense,2025-07-30
+Movie,15.87,Entertainment,expense,2025-07-30
+Lunch,25.0,Food,expense,2025-07-31
+Concert,141.73,Entertainment,expense,2025-08-01
 Salary,5000.0,Other,income,2025-08-01
-Gas,41.75,Transport,expense,2025-08-02
-Gym,41.7,Health,expense,2025-08-04
-Gas,42.48,Transport,expense,2025-08-04
-Concert,72.98,Entertainment,expense,2025-08-04
-Uber,32.05,Transport,expense,2025-08-05
-Shopping,92.54,Other,expense,2025-08-06
-Lunch,20.61,Food,expense,2025-08-09
-Internet,50.38,Utilities,expense,2025-08-09
-Gas,54.84,Transport,expense,2025-08-11
-Doctor Visit,132.99,Health,expense,2025-08-11
-Electricity,67.72,Utilities,expense,2025-08-12
-Dinner,59.11,Food,expense,2025-08-12
-Electricity,113.89,Utilities,expense,2025-08-13
-Dinner,33.96,Food,expense,2025-08-14
-Internet,51.4,Utilities,expense,2025-08-15
-Netflix,15.7,Entertainment,expense,2025-08-15
-Dinner,77.05,Food,expense,2025-08-15
-Concert,51.95,Entertainment,expense,2025-08-17
-Water,29.44,Utilities,expense,2025-08-17
-Doctor Visit,107.69,Health,expense,2025-08-17
-Grocery Shopping,60.28,Food,expense,2025-08-18
-Water,27.7,Utilities,expense,2025-08-18
-Uber,17.83,Transport,expense,2025-08-19
-Uber,15.48,Transport,expense,2025-08-19
-Internet,63.33,Utilities,expense,2025-08-19
-Lunch,29.58,Food,expense,2025-08-20
-Internet,63.08,Utilities,expense,2025-08-20
-Electricity,87.83,Utilities,expense,2025-08-22
-Shopping,149.17,Other,expense,2025-08-22
-Gym,41.71,Health,expense,2025-08-24
-Water,26.52,Utilities,expense,2025-08-25
-Gas,51.66,Transport,expense,2025-08-25
-Dinner,34.36,Food,expense,2025-08-25
-Doctor Visit,148.54,Health,expense,2025-08-26
-Internet,53.83,Utilities,expense,2025-08-26
-Grocery Shopping,127.17,Food,expense,2025-08-27
-Internet,57.23,Utilities,expense,2025-08-27
-Gift,87.72,Other,expense,2025-08-27
-Movie,15.7,Entertainment,expense,2025-08-29
-Lunch,27.23,Food,expense,2025-08-30
-Pharmacy,46.17,Health,expense,2025-08-31
-Doctor Visit,190.49,Health,expense,2025-09-01
-Water,26.68,Utilities,expense,2025-09-01
-Pharmacy,17.71,Health,expense,2025-09-01
+Electricity,114.98,Utilities,expense,2025-08-04
+Gas,59.54,Transport,expense,2025-08-05
+Gift,90.8,Other,expense,2025-08-06
+Uber,32.55,Transport,expense,2025-08-06
+Lunch,28.59,Food,expense,2025-08-06
+Concert,88.81,Entertainment,expense,2025-08-07
+Electricity,112.04,Utilities,expense,2025-08-07
+Dinner,42.07,Food,expense,2025-08-08
+Doctor Visit,191.89,Health,expense,2025-08-08
+Water,48.22,Utilities,expense,2025-08-09
+Grocery Shopping,95.74,Food,expense,2025-08-09
+Lunch,28.41,Food,expense,2025-08-09
+Internet,53.98,Utilities,expense,2025-08-10
+Gym,42.34,Health,expense,2025-08-11
+Movie,16.9,Entertainment,expense,2025-08-11
+Water,47.63,Utilities,expense,2025-08-11
+Concert,148.05,Entertainment,expense,2025-08-12
+Train Ticket,11.61,Transport,expense,2025-08-12
+Electricity,114.53,Utilities,expense,2025-08-13
+Gas,49.41,Transport,expense,2025-08-14
+Internet,58.94,Utilities,expense,2025-08-14
+Pharmacy,23.26,Health,expense,2025-08-15
+Concert,63.63,Entertainment,expense,2025-08-15
+Doctor Visit,88.99,Health,expense,2025-08-15
+Freelance Project,393.81,Other,income,2025-08-15
+Uber,30.47,Transport,expense,2025-08-16
+Shopping,152.35,Other,expense,2025-08-16
+Gym,49.11,Health,expense,2025-08-17
+Electricity,60.84,Utilities,expense,2025-08-19
+Water,34.46,Utilities,expense,2025-08-20
+Uber,36.4,Transport,expense,2025-08-21
+Dinner,70.61,Food,expense,2025-08-22
+Train Ticket,11.02,Transport,expense,2025-08-22
+Netflix,15.62,Entertainment,expense,2025-08-23
+Train Ticket,14.7,Transport,expense,2025-08-23
+Dinner,30.25,Food,expense,2025-08-23
+Shopping,113.46,Other,expense,2025-08-25
+Concert,120.61,Entertainment,expense,2025-08-25
+Movie,16.71,Entertainment,expense,2025-08-25
+Grocery Shopping,63.28,Food,expense,2025-08-26
+Uber,23.72,Transport,expense,2025-08-26
+Concert,80.17,Entertainment,expense,2025-08-26
+Netflix,15.47,Entertainment,expense,2025-08-27
+Shopping,109.24,Other,expense,2025-08-27
+Train Ticket,8.91,Transport,expense,2025-08-27
+Netflix,15.5,Entertainment,expense,2025-08-28
+Doctor Visit,144.1,Health,expense,2025-08-29
+Gym,52.62,Health,expense,2025-08-29
+Gas,57.17,Transport,expense,2025-08-29
+Lunch,20.86,Food,expense,2025-08-30
+Gift,45.02,Other,expense,2025-08-31
+Movie,22.16,Entertainment,expense,2025-08-31
+Train Ticket,14.91,Transport,expense,2025-09-01
+Dinner,56.98,Food,expense,2025-09-01
 Salary,5000.0,Other,income,2025-09-01
-Uber,20.02,Transport,expense,2025-09-02
-Water,38.77,Utilities,expense,2025-09-02
-Shopping,102.78,Other,expense,2025-09-02
-Gym,58.81,Health,expense,2025-09-03
-Gas,50.97,Transport,expense,2025-09-03
-Water,20.08,Utilities,expense,2025-09-03
-Uber,16.21,Transport,expense,2025-09-06
-Lunch,27.89,Food,expense,2025-09-06
-Gift,64.42,Other,expense,2025-09-06
-Dinner,72.69,Food,expense,2025-09-07
-Water,21.67,Utilities,expense,2025-09-07
-Shopping,81.49,Other,expense,2025-09-07
-Uber,16.39,Transport,expense,2025-09-08
-Movie,19.3,Entertainment,expense,2025-09-13
-Electricity,118.88,Utilities,expense,2025-09-13
-Grocery Shopping,81.2,Food,expense,2025-09-14
-Concert,113.92,Entertainment,expense,2025-09-15
-Dinner,76.75,Food,expense,2025-09-15
-Dinner,60.14,Food,expense,2025-09-15
-Netflix,15.8,Entertainment,expense,2025-09-18
-Electricity,97.62,Utilities,expense,2025-09-18
-Netflix,15.75,Entertainment,expense,2025-09-18
-Netflix,15.86,Entertainment,expense,2025-09-19
-Shopping,184.48,Other,expense,2025-09-19
-Netflix,15.85,Entertainment,expense,2025-09-19
-Movie,21.09,Entertainment,expense,2025-09-20
-Pharmacy,10.06,Health,expense,2025-09-20
-Doctor Visit,161.64,Health,expense,2025-09-20
-Movie,16.92,Entertainment,expense,2025-09-22
-Dinner,55.33,Food,expense,2025-09-22
-Internet,54.2,Utilities,expense,2025-09-22
-Doctor Visit,121.3,Health,expense,2025-09-23
-Shopping,149.4,Other,expense,2025-09-23
-Doctor Visit,125.12,Health,expense,2025-09-25
-Uber,34.48,Transport,expense,2025-09-25
-Internet,54.08,Utilities,expense,2025-09-25
-Grocery Shopping,102.44,Food,expense,2025-09-26
-Doctor Visit,75.71,Health,expense,2025-09-26
-Concert,59.08,Entertainment,expense,2025-09-27
-Dinner,48.85,Food,expense,2025-09-27
-Concert,67.7,Entertainment,expense,2025-10-01
-Uber,30.72,Transport,expense,2025-10-01
+Dinner,49.15,Food,expense,2025-09-05
+Shopping,54.12,Other,expense,2025-09-05
+Grocery Shopping,127.38,Food,expense,2025-09-05
+Dinner,42.85,Food,expense,2025-09-06
+Pharmacy,15.39,Health,expense,2025-09-06
+Dinner,37.82,Food,expense,2025-09-07
+Pharmacy,29.97,Health,expense,2025-09-07
+Concert,131.58,Entertainment,expense,2025-09-07
+Internet,58.46,Utilities,expense,2025-09-09
+Train Ticket,11.06,Transport,expense,2025-09-10
+Train Ticket,9.71,Transport,expense,2025-09-10
+Shopping,168.78,Other,expense,2025-09-11
+Water,30.2,Utilities,expense,2025-09-11
+Water,25.4,Utilities,expense,2025-09-12
+Doctor Visit,174.63,Health,expense,2025-09-18
+Water,31.54,Utilities,expense,2025-09-18
+Pharmacy,25.64,Health,expense,2025-09-19
+Uber,20.39,Transport,expense,2025-09-20
+Dinner,78.59,Food,expense,2025-09-20
+Water,32.75,Utilities,expense,2025-09-21
+Train Ticket,8.04,Transport,expense,2025-09-21
+Gym,44.5,Health,expense,2025-09-23
+Water,23.26,Utilities,expense,2025-09-23
+Pharmacy,40.0,Health,expense,2025-09-23
+Netflix,15.34,Entertainment,expense,2025-09-24
+Internet,50.75,Utilities,expense,2025-09-25
+Gift,30.76,Other,expense,2025-09-25
+Train Ticket,12.94,Transport,expense,2025-09-26
+Electricity,103.55,Utilities,expense,2025-09-26
+Internet,57.7,Utilities,expense,2025-09-28
+Movie,20.63,Entertainment,expense,2025-09-28
+Dinner,49.43,Food,expense,2025-09-29
+Gas,41.36,Transport,expense,2025-09-29
+Gas,53.72,Transport,expense,2025-09-30
+Internet,68.45,Utilities,expense,2025-09-30
+Movie,16.61,Entertainment,expense,2025-09-30
+Pharmacy,47.19,Health,expense,2025-10-01
+Shopping,69.88,Other,expense,2025-10-01
+Water,22.48,Utilities,expense,2025-10-01
 Salary,5000.0,Other,income,2025-10-01
-Electricity,89.63,Utilities,expense,2025-10-02
-Grocery Shopping,115.35,Food,expense,2025-10-02
-Lunch,17.16,Food,expense,2025-10-03
-Lunch,29.32,Food,expense,2025-10-03
-Dinner,73.23,Food,expense,2025-10-04
-Shopping,177.89,Other,expense,2025-10-06
-Doctor Visit,175.44,Health,expense,2025-10-06
-Water,22.85,Utilities,expense,2025-10-07
-Uber,27.07,Transport,expense,2025-10-08
-Concert,97.83,Entertainment,expense,2025-10-09
-Shopping,78.97,Other,expense,2025-10-09
-Concert,67.8,Entertainment,expense,2025-10-09
-Netflix,15.62,Entertainment,expense,2025-10-10
-Electricity,99.64,Utilities,expense,2025-10-10
-Uber,21.89,Transport,expense,2025-10-11
-Pharmacy,24.22,Health,expense,2025-10-12
-Dinner,73.9,Food,expense,2025-10-16
-Electricity,63.9,Utilities,expense,2025-10-17
-Shopping,85.92,Other,expense,2025-10-17
-Dinner,32.84,Food,expense,2025-10-17
-Dinner,61.07,Food,expense,2025-10-18
-Water,40.46,Utilities,expense,2025-10-19
-Lunch,26.98,Food,expense,2025-10-20
-Electricity,101.29,Utilities,expense,2025-10-23
-Lunch,24.99,Food,expense,2025-10-23
-Concert,51.67,Entertainment,expense,2025-10-23
-Shopping,99.66,Other,expense,2025-10-24
-Uber,36.21,Transport,expense,2025-10-24
-Netflix,15.46,Entertainment,expense,2025-10-25
-Lunch,28.78,Food,expense,2025-10-25
-Dinner,63.9,Food,expense,2025-10-27
-Grocery Shopping,84.67,Food,expense,2025-10-31
-Electricity,86.72,Utilities,expense,2025-10-31
-Gas,51.74,Transport,expense,2025-10-31
-Movie,18.43,Entertainment,expense,2025-11-01
-Lunch,15.86,Food,expense,2025-11-01
-Grocery Shopping,76.16,Food,expense,2025-11-01
+Pharmacy,49.09,Health,expense,2025-10-03
+Shopping,61.48,Other,expense,2025-10-04
+Pharmacy,43.74,Health,expense,2025-10-04
+Gym,58.15,Health,expense,2025-10-06
+Water,33.09,Utilities,expense,2025-10-06
+Gift,93.8,Other,expense,2025-10-06
+Lunch,24.64,Food,expense,2025-10-07
+Lunch,14.28,Food,expense,2025-10-07
+Shopping,52.4,Other,expense,2025-10-09
+Concert,84.17,Entertainment,expense,2025-10-10
+Water,42.99,Utilities,expense,2025-10-10
+Netflix,15.63,Entertainment,expense,2025-10-10
+Dinner,39.54,Food,expense,2025-10-14
+Doctor Visit,116.68,Health,expense,2025-10-15
+Shopping,80.06,Other,expense,2025-10-15
+Gas,47.23,Transport,expense,2025-10-15
+Freelance Project,472.05,Other,income,2025-10-15
+Gift,43.92,Other,expense,2025-10-16
+Concert,51.25,Entertainment,expense,2025-10-17
+Doctor Visit,147.39,Health,expense,2025-10-18
+Water,25.36,Utilities,expense,2025-10-18
+Doctor Visit,133.04,Health,expense,2025-10-19
+Internet,54.23,Utilities,expense,2025-10-19
+Movie,22.52,Entertainment,expense,2025-10-20
+Gift,31.53,Other,expense,2025-10-20
+Train Ticket,11.03,Transport,expense,2025-10-21
+Uber,31.46,Transport,expense,2025-10-21
+Movie,15.86,Entertainment,expense,2025-10-22
+Gym,49.29,Health,expense,2025-10-22
+Movie,19.12,Entertainment,expense,2025-10-23
+Train Ticket,5.1,Transport,expense,2025-10-23
+Water,21.68,Utilities,expense,2025-10-23
+Pharmacy,13.33,Health,expense,2025-10-24
+Gym,43.95,Health,expense,2025-10-24
+Grocery Shopping,66.31,Food,expense,2025-10-26
+Gym,43.65,Health,expense,2025-10-27
+Dinner,45.04,Food,expense,2025-10-27
+Movie,22.43,Entertainment,expense,2025-10-27
+Uber,39.97,Transport,expense,2025-10-28
+Water,40.11,Utilities,expense,2025-10-28
+Doctor Visit,163.09,Health,expense,2025-10-29
+Grocery Shopping,88.6,Food,expense,2025-10-30
+Gym,55.13,Health,expense,2025-10-31
 Salary,5000.0,Other,income,2025-11-01
-Internet,66.17,Utilities,expense,2025-11-03
-Dinner,67.1,Food,expense,2025-11-04
-Dinner,78.89,Food,expense,2025-11-05
-Netflix,15.04,Entertainment,expense,2025-11-05
-Pharmacy,32.75,Health,expense,2025-11-07
-Shopping,163.98,Other,expense,2025-11-09
-Concert,56.54,Entertainment,expense,2025-11-09
-Lunch,21.17,Food,expense,2025-11-09
-Lunch,10.6,Food,expense,2025-11-10
-Gift,43.23,Other,expense,2025-11-10
-Dinner,50.76,Food,expense,2025-11-10
-Concert,53.91,Entertainment,expense,2025-11-11
-Train Ticket,9.48,Transport,expense,2025-11-11
-Electricity,81.97,Utilities,expense,2025-11-12
-Internet,57.68,Utilities,expense,2025-11-12
-Concert,136.4,Entertainment,expense,2025-11-14
-Gym,53.16,Health,expense,2025-11-14
-Movie,15.92,Entertainment,expense,2025-11-14
-Electricity,67.95,Utilities,expense,2025-11-15
-Freelance Project,312.13,Other,income,2025-11-15
-Concert,148.75,Entertainment,expense,2025-11-16
-Electricity,101.03,Utilities,expense,2025-11-18
-Grocery Shopping,78.71,Food,expense,2025-11-18
-Gift,62.92,Other,expense,2025-11-18
-Gym,57.76,Health,expense,2025-11-19
-Netflix,15.89,Entertainment,expense,2025-11-19
-Pharmacy,17.67,Health,expense,2025-11-19
-Movie,19.52,Entertainment,expense,2025-11-20
-Dinner,45.76,Food,expense,2025-11-20
-Concert,147.46,Entertainment,expense,2025-11-23
-Concert,146.17,Entertainment,expense,2025-11-24
-Gas,41.51,Transport,expense,2025-11-25
-Doctor Visit,142.68,Health,expense,2025-11-25
-Gas,49.96,Transport,expense,2025-11-25
-Internet,69.65,Utilities,expense,2025-11-26
-Gym,42.94,Health,expense,2025-11-27
-Water,40.04,Utilities,expense,2025-11-27
-Uber,25.65,Transport,expense,2025-11-28
-Shopping,196.5,Other,expense,2025-11-28
-Shopping,80.2,Other,expense,2025-11-28
-Pharmacy,15.95,Health,expense,2025-11-30
+Gift,93.49,Other,expense,2025-11-02
+Grocery Shopping,124.09,Food,expense,2025-11-03
+Uber,32.79,Transport,expense,2025-11-04
+Netflix,15.62,Entertainment,expense,2025-11-05
+Pharmacy,14.01,Health,expense,2025-11-05
+Movie,23.37,Entertainment,expense,2025-11-06
+Internet,62.49,Utilities,expense,2025-11-06
+Concert,109.61,Entertainment,expense,2025-11-07
+Doctor Visit,96.54,Health,expense,2025-11-07
+Netflix,15.29,Entertainment,expense,2025-11-09
+Lunch,11.55,Food,expense,2025-11-09
+Netflix,15.88,Entertainment,expense,2025-11-10
+Internet,50.26,Utilities,expense,2025-11-11
+Concert,142.84,Entertainment,expense,2025-11-12
+Pharmacy,41.75,Health,expense,2025-11-12
+Train Ticket,9.92,Transport,expense,2025-11-12
+Water,37.46,Utilities,expense,2025-11-13
+Movie,22.83,Entertainment,expense,2025-11-13
+Movie,22.58,Entertainment,expense,2025-11-13
+Internet,69.06,Utilities,expense,2025-11-14
+Gas,48.17,Transport,expense,2025-11-15
+Lunch,13.57,Food,expense,2025-11-15
+Pharmacy,21.64,Health,expense,2025-11-15
+Movie,17.61,Entertainment,expense,2025-11-16
+Netflix,15.86,Entertainment,expense,2025-11-16
+Grocery Shopping,78.8,Food,expense,2025-11-18
+Train Ticket,7.51,Transport,expense,2025-11-20
+Internet,66.1,Utilities,expense,2025-11-20
+Pharmacy,28.95,Health,expense,2025-11-23
+Water,23.67,Utilities,expense,2025-11-23
+Lunch,22.01,Food,expense,2025-11-24
+Gas,45.05,Transport,expense,2025-11-24
+Water,49.34,Utilities,expense,2025-11-27
+Internet,60.25,Utilities,expense,2025-11-27
+Grocery Shopping,106.56,Food,expense,2025-11-28
+Lunch,26.33,Food,expense,2025-11-28
+Lunch,26.59,Food,expense,2025-11-28
 Salary,5000.0,Other,income,2025-12-01
-Water,24.49,Utilities,expense,2025-12-04
-Lunch,25.41,Food,expense,2025-12-04
-Grocery Shopping,53.12,Food,expense,2025-12-05
-Gym,59.81,Health,expense,2025-12-06
-Lunch,23.26,Food,expense,2025-12-06
-Electricity,68.29,Utilities,expense,2025-12-06
-Water,20.7,Utilities,expense,2025-12-07
-Dinner,76.36,Food,expense,2025-12-07
+Uber,37.51,Transport,expense,2025-12-02
+Train Ticket,9.54,Transport,expense,2025-12-03
+Shopping,147.34,Other,expense,2025-12-03
+Movie,23.48,Entertainment,expense,2025-12-03
+Water,43.89,Utilities,expense,2025-12-04
+Doctor Visit,75.06,Health,expense,2025-12-04
+Shopping,137.17,Other,expense,2025-12-05
+Shopping,94.75,Other,expense,2025-12-06
+Netflix,15.48,Entertainment,expense,2025-12-06
+Internet,68.3,Utilities,expense,2025-12-06
+Dinner,62.86,Food,expense,2025-12-09
+Pharmacy,37.31,Health,expense,2025-12-10
+Gift,93.62,Other,expense,2025-12-10
+Shopping,131.52,Other,expense,2025-12-11
+Netflix,15.39,Entertainment,expense,2025-12-11
+Doctor Visit,73.29,Health,expense,2025-12-12
+Shopping,98.61,Other,expense,2025-12-13
+Lunch,23.91,Food,expense,2025-12-14
+Gift,98.49,Other,expense,2025-12-14
+Concert,53.78,Entertainment,expense,2025-12-15
+Freelance Project,705.53,Other,income,2025-12-15
+Water,41.88,Utilities,expense,2025-12-16
+Movie,19.91,Entertainment,expense,2025-12-16
+Doctor Visit,159.9,Health,expense,2025-12-16
+Grocery Shopping,116.49,Food,expense,2025-12-18
+Train Ticket,7.99,Transport,expense,2025-12-19
+Dinner,68.24,Food,expense,2025-12-20
+Gym,51.24,Health,expense,2025-12-22
+Electricity,77.54,Utilities,expense,2025-12-22
+Dinner,40.26,Food,expense,2025-12-23
+Pharmacy,11.26,Health,expense,2025-12-23
+Gas,45.28,Transport,expense,2025-12-23
+Gift,37.25,Other,expense,2025-12-24
+Shopping,62.84,Other,expense,2025-12-24
+Shopping,144.87,Other,expense,2025-12-25
+Dinner,39.17,Food,expense,2025-12-25
+Gas,53.71,Transport,expense,2025-12-27
+Movie,17.39,Entertainment,expense,2025-12-27
+Electricity,78.43,Utilities,expense,2025-12-28
+Shopping,159.33,Other,expense,2025-12-29
+Gym,44.28,Health,expense,2025-12-29
+Gas,59.8,Transport,expense,2025-12-30
+Water,22.21,Utilities,expense,2025-12-30
+Shopping,102.07,Other,expense,2025-12-31
+Doctor Visit,120.74,Health,expense,2025-12-31

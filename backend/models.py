@@ -16,6 +16,7 @@ class CategoryBase(SQLModel):
 class Category(CategoryBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    user_id: Optional[int] = Field(default=None, foreign_key="user.id", nullable=True)
     expenses: List["Expense"] = Relationship(back_populates="category")
 
 class CategoryCreate(CategoryBase):

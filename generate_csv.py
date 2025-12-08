@@ -24,8 +24,8 @@ def generate_data():
         ('Gift', 20, 100, 'Other'),
     ]
 
-    start_date = datetime(2025, 6, 1)
-    end_date = datetime(2025, 12, 7)
+    start_date = datetime(2025, 1, 1)
+    end_date = datetime(2025, 12, 31)
     delta = end_date - start_date
 
     data = []
