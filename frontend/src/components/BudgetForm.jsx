@@ -4,10 +4,13 @@ import { useForm } from 'react-hook-form';
 import api from '../lib/api';
 import { Loader2 } from 'lucide-react';
 
+import { useSettings } from '../context/SettingsContext';
+
 export default function BudgetForm({ onSuccess, onClose }) {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const queryClient = useQueryClient();
     const [submitError, setSubmitError] = useState('');
+    const { settings } = useSettings();
 
     const { data: categories = [] } = useQuery({
         queryKey: ['categories'],
@@ -24,20 +27,29 @@ export default function BudgetForm({ onSuccess, onClose }) {
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['budgets']);
-            if (onSuccess) onSuccess();
+            // Only call onSuccess here if autoSync is ON, 
+            // otherwise we handle it manually in onSubmit to avoid waiting
+            if (settings.autoSync && onSuccess) onSuccess();
         },
         onError: (err) => {
             setSubmitError(err.response?.data?.detail || 'Failed to create budget');
         }
     });
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         setSubmitError('');
-        createMutation.mutate({
+        const payload = {
             category_id: parseInt(data.category_id),
             amount: parseFloat(data.amount),
             period: 'monthly'
-        });
+        };
+
+        if (settings.autoSync) {
+            await createMutation.mutateAsync(payload);
+        } else {
+            createMutation.mutate(payload);
+            if (onSuccess) onSuccess();
+        }
     };
 
     return (

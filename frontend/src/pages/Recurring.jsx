@@ -6,10 +6,13 @@ import Modal from '../components/Modal';
 import Loading from '../components/Loading';
 import { useForm } from 'react-hook-form';
 
+import { useSettings } from '../context/SettingsContext';
+
 const RecurringForm = ({ onSuccess, onClose }) => {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const queryClient = useQueryClient();
     const [submitError, setSubmitError] = useState('');
+    const { settings } = useSettings();
 
     const { data: categories = [] } = useQuery({
         queryKey: ['categories'],
@@ -26,21 +29,28 @@ const RecurringForm = ({ onSuccess, onClose }) => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['recurring']);
-            if (onSuccess) onSuccess();
+            if (settings.autoSync && onSuccess) onSuccess();
         },
         onError: (err) => {
             setSubmitError(err.response?.data?.detail || 'Failed to create recurring expense');
         }
     });
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         setSubmitError('');
-        createMutation.mutate({
+        const payload = {
             ...data,
             amount: parseFloat(data.amount),
             category_id: parseInt(data.category_id),
             next_due_date: new Date(data.next_due_date).toISOString()
-        });
+        };
+
+        if (settings.autoSync) {
+            await createMutation.mutateAsync(payload);
+        } else {
+            createMutation.mutate(payload);
+            if (onSuccess) onSuccess();
+        }
     };
 
     return (
