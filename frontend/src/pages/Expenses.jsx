@@ -56,13 +56,14 @@ export default function Expenses() {
         setIsModalOpen(true);
     };
 
-    const handleDelete = async (id) => {
+    const handleDelete = (id) => {
         if (confirm('Are you sure you want to delete this expense?')) {
-            try {
-                await deleteExpenseMutation.mutateAsync(id);
-            } catch (error) {
-                console.error("Failed to delete", error);
-            }
+            deleteExpenseMutation.mutate(id, {
+                onError: (error) => {
+                    console.error("Failed to delete", error);
+                    alert("Failed to delete expense");
+                }
+            });
         }
     };
 

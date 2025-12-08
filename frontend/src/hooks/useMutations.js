@@ -163,13 +163,13 @@ export const useDeleteExpense = () => {
                 if (old.pages) {
                     return {
                         ...old,
-                        pages: old.pages.map(page => page.filter(expense => expense.id !== id))
+                        pages: old.pages.map(page => page.filter(expense => expense.id != id))
                     };
                 }
 
                 // Handle Standard Query
                 if (Array.isArray(old)) {
-                    return old.filter(expense => expense.id !== id);
+                    return old.filter(expense => expense.id != id);
                 }
 
                 return old;
@@ -232,7 +232,7 @@ export const useDeleteBudget = () => {
         onMutate: async (id) => {
             await queryClient.cancelQueries({ queryKey: [QUERY_KEYS.budgets] });
             const previousBudgets = queryClient.getQueryData([QUERY_KEYS.budgets]);
-            queryClient.setQueryData([QUERY_KEYS.budgets], (old) => old?.filter(b => b.id !== id));
+            queryClient.setQueryData([QUERY_KEYS.budgets], (old) => old?.filter(b => b.id != id));
             return { previousBudgets };
         },
         onError: (err, id, context) => {
@@ -275,7 +275,7 @@ export const useDeleteRecurring = () => {
         onMutate: async (id) => {
             await queryClient.cancelQueries({ queryKey: [QUERY_KEYS.recurring] });
             const previousRecurring = queryClient.getQueryData([QUERY_KEYS.recurring]);
-            queryClient.setQueryData([QUERY_KEYS.recurring], (old) => old?.filter(r => r.id !== id));
+            queryClient.setQueryData([QUERY_KEYS.recurring], (old) => old?.filter(r => r.id != id));
             return { previousRecurring };
         },
         onError: (err, id, context) => {
