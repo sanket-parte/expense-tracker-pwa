@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '../lib/api';
+import { useQueryClient } from '@tanstack/react-query';
 import { Plus, Trash2, Calendar, RefreshCcw, AlertCircle } from 'lucide-react';
+import { useRecurring, useCategories } from '../hooks/useQueries';
+import { useCreateRecurring, useDeleteRecurring } from '../hooks/useMutations';
 import Modal from '../components/Modal';
 import Loading from '../components/Loading';
 import { useForm } from 'react-hook-form';
@@ -14,27 +15,8 @@ const RecurringForm = ({ onSuccess, onClose }) => {
     const [submitError, setSubmitError] = useState('');
     const { settings } = useSettings();
 
-    const { data: categories = [] } = useQuery({
-        queryKey: ['categories'],
-        queryFn: async () => {
-            const res = await api.get('/categories/');
-            return res.data;
-        }
-    });
-
-    const createMutation = useMutation({
-        mutationFn: async (data) => {
-            const res = await api.post('/recurring/', data);
-            return res.data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries(['recurring']);
-            if (settings.autoSync && onSuccess) onSuccess();
-        },
-        onError: (err) => {
-            setSubmitError(err.response?.data?.detail || 'Failed to create recurring expense');
-        }
-    });
+    const { data: categories = [] } = useCategories();
+    const createMutation = useCreateRecurring();
 
     const onSubmit = async (data) => {
         setSubmitError('');
@@ -45,12 +27,14 @@ const RecurringForm = ({ onSuccess, onClose }) => {
             next_due_date: new Date(data.next_due_date).toISOString()
         };
 
-        if (settings.autoSync) {
-            await createMutation.mutateAsync(payload);
-        } else {
-            createMutation.mutate(payload);
-            if (onSuccess) onSuccess();
-        }
+        createMutation.mutate(payload, {
+            onError: (err) => {
+                setSubmitError(err.response?.data?.detail || 'Failed to create recurring expense');
+            }
+        });
+
+        // Instant close using optimistic update assumptions
+        if (onSuccess) onSuccess();
     };
 
     return (
@@ -138,22 +122,8 @@ export default function Recurring() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const queryClient = useQueryClient();
 
-    const { data: expenses, isLoading, error } = useQuery({
-        queryKey: ['recurring'],
-        queryFn: async () => {
-            const res = await api.get('/recurring/');
-            return res.data;
-        }
-    });
-
-    const deleteMutation = useMutation({
-        mutationFn: async (id) => {
-            await api.delete(`/recurring/${id}`);
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries(['recurring']);
-        }
-    });
+    const { data: expenses, isLoading, error } = useRecurring();
+    const deleteMutation = useDeleteRecurring();
 
     if (isLoading) return <Loading />;
     if (error) return <div className="text-red-500">Error loading recurring expenses</div>;

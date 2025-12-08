@@ -48,36 +48,33 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
         }
     }, [initialData, categories]);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
-        try {
-            const payload = {
-                title: formData.title,
-                amount: parseFloat(formData.amount),
-                date: new Date(formData.date).toISOString(),
-                category_id: parseInt(formData.category_id),
-            };
+        const payload = {
+            title: formData.title,
+            amount: parseFloat(formData.amount),
+            date: new Date(formData.date).toISOString(),
+            category_id: parseInt(formData.category_id),
+        };
 
-            if (initialData?.id) {
-                if (settings.autoSync) {
-                    await updateExpenseMutation.mutateAsync({ id: initialData.id, data: payload });
-                } else {
-                    updateExpenseMutation.mutate({ id: initialData.id, data: payload });
-                }
-            } else {
-                if (settings.autoSync) {
-                    await createExpenseMutation.mutateAsync(payload);
-                } else {
-                    createExpenseMutation.mutate(payload);
-                }
+        const mutationOptions = {
+            onError: (error) => {
+                console.error("Failed to save expense", error);
+                // Since modal is closed, we might want to show a toast here in future
+                alert("Failed to save expense");
             }
-            onSuccess();
-            onClose();
-        } catch (error) {
-            console.error("Failed to save expense", error);
-            alert("Failed to save expense");
+        };
+
+        if (initialData?.id) {
+            updateExpenseMutation.mutate({ id: initialData.id, data: payload }, mutationOptions);
+        } else {
+            createExpenseMutation.mutate(payload, mutationOptions);
         }
+
+        // Instant close - reliance on Optimistic Updates
+        if (onSuccess) onSuccess();
+        if (onClose) onClose();
     };
 
     // Loading state derived from mutations

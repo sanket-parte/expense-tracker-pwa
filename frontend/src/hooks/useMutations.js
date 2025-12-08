@@ -190,3 +190,99 @@ export const useDeleteExpense = () => {
         },
     });
 };
+
+export const useCreateBudget = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (newBudget) => api.post('/budgets/', newBudget),
+        onMutate: async (newBudget) => {
+            await queryClient.cancelQueries({ queryKey: [QUERY_KEYS.budgets] });
+            const previousBudgets = queryClient.getQueryData([QUERY_KEYS.budgets]);
+
+            // Get category name for optimistic UI
+            const categories = queryClient.getQueryData([QUERY_KEYS.categories]);
+            const category = categories?.find(c => c.id === newBudget.category_id);
+
+            queryClient.setQueryData([QUERY_KEYS.budgets], (old) => [
+                ...(old || []),
+                {
+                    ...newBudget,
+                    id: Date.now(),
+                    spent: 0,
+                    category: category || { name: 'Loading...' }
+                }
+            ]);
+            return { previousBudgets };
+        },
+        onError: (err, newBudget, context) => {
+            queryClient.setQueryData([QUERY_KEYS.budgets], context.previousBudgets);
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.budgets] });
+        },
+    });
+};
+
+export const useDeleteBudget = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id) => api.delete(`/budgets/${id}`),
+        onMutate: async (id) => {
+            await queryClient.cancelQueries({ queryKey: [QUERY_KEYS.budgets] });
+            const previousBudgets = queryClient.getQueryData([QUERY_KEYS.budgets]);
+            queryClient.setQueryData([QUERY_KEYS.budgets], (old) => old?.filter(b => b.id !== id));
+            return { previousBudgets };
+        },
+        onError: (err, id, context) => {
+            queryClient.setQueryData([QUERY_KEYS.budgets], context.previousBudgets);
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.budgets] });
+        },
+    });
+};
+
+export const useCreateRecurring = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (newRecurring) => api.post('/recurring/', newRecurring),
+        onMutate: async (newRecurring) => {
+            await queryClient.cancelQueries({ queryKey: [QUERY_KEYS.recurring] });
+            const previousRecurring = queryClient.getQueryData([QUERY_KEYS.recurring]);
+            queryClient.setQueryData([QUERY_KEYS.recurring], (old) => [
+                ...(old || []),
+                { ...newRecurring, id: Date.now() }
+            ]);
+            return { previousRecurring };
+        },
+        onError: (err, newRecurring, context) => {
+            queryClient.setQueryData([QUERY_KEYS.recurring], context.previousRecurring);
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.recurring] });
+        },
+    });
+};
+
+export const useDeleteRecurring = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id) => api.delete(`/recurring/${id}`),
+        onMutate: async (id) => {
+            await queryClient.cancelQueries({ queryKey: [QUERY_KEYS.recurring] });
+            const previousRecurring = queryClient.getQueryData([QUERY_KEYS.recurring]);
+            queryClient.setQueryData([QUERY_KEYS.recurring], (old) => old?.filter(r => r.id !== id));
+            return { previousRecurring };
+        },
+        onError: (err, id, context) => {
+            queryClient.setQueryData([QUERY_KEYS.recurring], context.previousRecurring);
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.recurring] });
+        },
+    });
+};

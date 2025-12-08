@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import api from '../lib/api';
 import { Loader2 } from 'lucide-react';
+import { useCategories, useBudgets } from '../hooks/useQueries';
+import { useCreateBudget } from '../hooks/useMutations';
 
 import { useSettings } from '../context/SettingsContext';
 
@@ -12,29 +13,8 @@ export default function BudgetForm({ onSuccess, onClose }) {
     const [submitError, setSubmitError] = useState('');
     const { settings } = useSettings();
 
-    const { data: categories = [] } = useQuery({
-        queryKey: ['categories'],
-        queryFn: async () => {
-            const res = await api.get('/categories/');
-            return res.data;
-        }
-    });
-
-    const createMutation = useMutation({
-        mutationFn: async (data) => {
-            const res = await api.post('/budgets/', data);
-            return res.data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries(['budgets']);
-            // Only call onSuccess here if autoSync is ON, 
-            // otherwise we handle it manually in onSubmit to avoid waiting
-            if (settings.autoSync && onSuccess) onSuccess();
-        },
-        onError: (err) => {
-            setSubmitError(err.response?.data?.detail || 'Failed to create budget');
-        }
-    });
+    const { data: categories = [] } = useCategories();
+    const createMutation = useCreateBudget();
 
     const onSubmit = async (data) => {
         setSubmitError('');
@@ -44,12 +24,14 @@ export default function BudgetForm({ onSuccess, onClose }) {
             period: 'monthly'
         };
 
-        if (settings.autoSync) {
-            await createMutation.mutateAsync(payload);
-        } else {
-            createMutation.mutate(payload);
-            if (onSuccess) onSuccess();
-        }
+        createMutation.mutate(payload, {
+            onError: (err) => {
+                setSubmitError(err.response?.data?.detail || 'Failed to create budget');
+            }
+        });
+
+        // Instant close for better UX (Optimistic Update handles the UI)
+        if (onSuccess) onSuccess();
     };
 
     return (

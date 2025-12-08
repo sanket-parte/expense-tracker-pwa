@@ -1,28 +1,21 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '../lib/api';
+import { useQueryClient } from '@tanstack/react-query';
 import { Plus, Trash2, AlertCircle } from 'lucide-react';
+import { useBudgets } from '../hooks/useQueries';
+import { useDeleteBudget } from '../hooks/useMutations';
 import Modal from '../components/Modal';
 import BudgetForm from '../components/BudgetForm';
 import Loading from '../components/Loading';
 import SwipeableItem from '../components/SwipeableItem';
 
-import { useBudgets } from '../hooks/useQueries';
+
 
 export default function Budgets() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const queryClient = useQueryClient();
 
     const { data: budgets, isLoading, error } = useBudgets();
-
-    const deleteMutation = useMutation({
-        mutationFn: async (id) => {
-            await api.delete(`/budgets/${id}`);
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries(['budgets']);
-        }
-    });
+    const deleteMutation = useDeleteBudget();
 
     if (isLoading) return <Loading />;
     if (error) return <div className="text-red-500">Error loading budgets</div>;

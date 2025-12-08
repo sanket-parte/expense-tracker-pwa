@@ -7,6 +7,8 @@ export const QUERY_KEYS = {
     categories: 'categories',
     dashboard: 'dashboard',
     expenses: 'expenses',
+    budgets: 'budgets',
+    recurring: 'recurring',
 };
 
 // Fetchers
@@ -60,8 +62,21 @@ const fetchBudgets = async () => {
 
 export const useBudgets = () => {
     return useQuery({
-        queryKey: ['budgets'], // Should ideally match QUERY_KEYS
+        queryKey: [QUERY_KEYS.budgets],
         queryFn: fetchBudgets,
+        staleTime: 1000 * 60 * 5, // 5 minutes
+    });
+};
+
+const fetchRecurring = async () => {
+    const { data } = await api.get('/recurring/');
+    return data;
+};
+
+export const useRecurring = () => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.recurring],
+        queryFn: fetchRecurring,
         staleTime: 1000 * 60 * 5, // 5 minutes
     });
 };
