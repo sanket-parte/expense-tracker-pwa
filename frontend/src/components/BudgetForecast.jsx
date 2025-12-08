@@ -23,7 +23,30 @@ export default function BudgetForecast() {
         fetchForecast();
     }, []);
 
-    if (loading || forecasts.length === 0) return null;
+    if (loading) return null;
+
+    if (forecasts.length === 0) {
+        return (
+            <div className="mb-8">
+                <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+                    <Lightbulb className="text-emerald-500" size={20} /> Smart Insights
+                </h3>
+                <Card className="bg-emerald-50 dark:bg-emerald-500/10 border-dashed border-emerald-200 dark:border-emerald-500/30">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-500/20 rounded-full flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                            <TrendingUp size={24} />
+                        </div>
+                        <div>
+                            <h4 className="font-bold text-slate-800 dark:text-white text-lg">You're on track! 🎉</h4>
+                            <p className="text-slate-600 dark:text-slate-400 text-sm">
+                                All your budgets are looking healthy. Keep up the great work!
+                            </p>
+                        </div>
+                    </div>
+                </Card>
+            </div>
+        );
+    }
 
     return (
         <div className="mb-8">
