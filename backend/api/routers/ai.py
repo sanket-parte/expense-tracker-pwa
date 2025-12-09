@@ -29,7 +29,8 @@ async def parse_expense(
 ):
     """Parse natural language text into expense details."""
     try:
-        parsed_data = ai_service.parse_expense_natural_language(session, current_user.id, request.text)
+        service = ai_service.AIService(session, current_user.id)
+        parsed_data = service.parse_expense_natural_language(request.text)
         return {"parsed": parsed_data}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -40,7 +41,8 @@ async def detect_recurring(
     current_user: User = Depends(get_current_user)
 ):
     """Detect potential recurring expenses."""
-    suggestions = ai_service.detect_recurring_expenses(session, current_user.id)
+    service = ai_service.AIService(session, current_user.id)
+    suggestions = service.detect_recurring_expenses()
     return {"suggestions": suggestions}
 
 @router.get("/budgets/forecast")
@@ -49,7 +51,8 @@ async def get_budget_forecast(
     current_user: User = Depends(get_current_user)
 ):
     """Get AI forecasts for budgets at risk."""
-    forecasts = ai_service.generate_budget_forecast(session, current_user.id)
+    service = ai_service.AIService(session, current_user.id)
+    forecasts = service.generate_budget_forecast()
     return {"forecasts": forecasts}
 
 @router.post("/settings")
@@ -98,7 +101,8 @@ async def generate_suggestion(
     current_user: User = Depends(get_current_user)
 ):
     """Trigger generation of a new suggestion."""
-    suggestion_text = ai_service.generate_suggestion(session, current_user.id)
+    service = ai_service.AIService(session, current_user.id)
+    suggestion_text = service.generate_financial_advice()
     return {"suggestion": suggestion_text}
 
 @router.get("/suggestion")
