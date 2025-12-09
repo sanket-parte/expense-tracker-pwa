@@ -1,0 +1,66 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - img [ref=e8]
+        - generic [ref=e11]:
+          - generic [ref=e12]: Flow
+          - button "Synced" [ref=e15] [cursor=pointer]:
+            - img [ref=e16]
+            - generic [ref=e20]: Synced
+      - button "Quick Search... ⌘K" [ref=e21] [cursor=pointer]:
+        - img [ref=e22]
+        - generic [ref=e25]: Quick Search...
+        - generic [ref=e27]: ⌘K
+      - navigation [ref=e28]:
+        - link "Home" [ref=e29] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e30]
+          - text: Home
+        - link "Expenses" [ref=e33] [cursor=pointer]:
+          - /url: /expenses
+          - img [ref=e34]
+          - text: Expenses
+        - link "Recurring" [ref=e37] [cursor=pointer]:
+          - /url: /recurring
+          - img [ref=e38]
+          - text: Recurring
+        - link "Budgets" [ref=e43] [cursor=pointer]:
+          - /url: /budgets
+          - img [ref=e44]
+          - text: Budgets
+        - link "Reports" [ref=e47] [cursor=pointer]:
+          - /url: /reports
+          - img [ref=e48]
+          - text: Reports
+        - link "Calendar" [ref=e49] [cursor=pointer]:
+          - /url: /calendar
+          - img [ref=e50]
+          - text: Calendar
+        - link "Settings" [ref=e52] [cursor=pointer]:
+          - /url: /settings
+          - img [ref=e53]
+          - text: Settings
+        - link "Profile" [ref=e56] [cursor=pointer]:
+          - /url: /profile
+          - img [ref=e57]
+          - text: Profile
+    - generic [ref=e61]:
+      - button "Dark Mode" [ref=e62] [cursor=pointer]:
+        - img [ref=e63]
+        - text: Dark Mode
+      - button "Sign Out" [ref=e65] [cursor=pointer]:
+        - img [ref=e66]
+        - text: Sign Out
+      - generic [ref=e69]:
+        - generic [ref=e70]: T
+        - generic [ref=e71]:
+          - paragraph [ref=e72]: Test User 1765309378941
+          - paragraph [ref=e73]: testuser1765309378941_793@example.com
+  - main [ref=e74]
+  - button [ref=e77] [cursor=pointer]:
+    - img [ref=e78]
+```

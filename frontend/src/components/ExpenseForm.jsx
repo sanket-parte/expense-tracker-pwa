@@ -85,21 +85,19 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
             category_id: parseInt(formData.category_id),
         };
 
-        const mutationOptions = {
-            onError: (error) => {
+        const mutation = initialData?.id
+            ? updateExpenseMutation.mutateAsync({ id: initialData.id, data: payload })
+            : createExpenseMutation.mutateAsync(payload);
+
+        mutation
+            .then(() => {
+                if (onSuccess) onSuccess();
+                if (onClose) onClose();
+            })
+            .catch((error) => {
                 console.error("Failed to save expense", error);
                 alert("Failed to save expense");
-            }
-        };
-
-        if (initialData?.id) {
-            updateExpenseMutation.mutate({ id: initialData.id, data: payload }, mutationOptions);
-        } else {
-            createExpenseMutation.mutate(payload, mutationOptions);
-        }
-
-        if (onSuccess) onSuccess();
-        if (onClose) onClose();
+            });
     };
 
     const loading = createExpenseMutation.isPending || updateExpenseMutation.isPending;
