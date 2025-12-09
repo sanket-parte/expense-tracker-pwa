@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Lock, Mail, ArrowRight, Wallet } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -14,6 +14,7 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,7 +22,10 @@ export default function Login() {
         setLoading(true);
         try {
             await login(email, password);
-            navigate('/');
+
+            const from = location.state?.from?.pathname || '/';
+            const search = location.state?.from?.search || '';
+            navigate(`${from}${search}`, { replace: true });
         } catch {
             setError('Invalid email or password');
         } finally {

@@ -128,6 +128,21 @@ export default function Dashboard() {
         </PullToRefresh>
     );
 
+    // Safety check: specific to the error "undefined is not an object (evaluating 'data.category_breakdown.length')"
+    const isValidData = data && Array.isArray(data.category_breakdown);
+
+    if (!isValidData) {
+        // If data exists (so not loading) but is invalid (e.g. error message), treat as empty or error
+        return (
+            <PullToRefresh onRefresh={handleRefresh}>
+                <div className="space-y-8 pb-20 pt-10 px-4 text-center">
+                    <p className="text-slate-500">Connecting to server...</p>
+                    <button onClick={handleRefresh} className="px-4 py-2 bg-brand-500 text-white rounded-lg">Retry</button>
+                </div>
+            </PullToRefresh>
+        );
+    }
+
     return (
         <PullToRefresh onRefresh={handleRefresh}>
             <motion.div
@@ -271,7 +286,7 @@ export default function Dashboard() {
                             </div>
 
                             <div className="flex-1 min-h-[300px] flex flex-col md:flex-row items-center justify-center gap-8">
-                                {data.category_breakdown.length > 0 ? (
+                                {data?.category_breakdown?.length > 0 ? (
                                     <>
                                         <div className="w-full md:w-1/2 h-56 md:h-full relative">
                                             <ResponsiveContainer width="100%" height="100%">

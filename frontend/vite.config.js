@@ -48,7 +48,17 @@ export default defineConfig({
             url: "/budgets",
             icons: [{ src: "pwa-192x192.png", sizes: "192x192" }]
           }
-        ]
+        ],
+        share_target: {
+          action: "/expenses",
+          method: "GET",
+          enctype: "application/x-www-form-urlencoded",
+          params: {
+            title: "title",
+            text: "text",
+            url: "url"
+          }
+        }
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
@@ -92,4 +102,8 @@ export default defineConfig({
       },
     })
   ],
+  server: {
+    host: true,
+    allowedHosts: true
+  }
 })

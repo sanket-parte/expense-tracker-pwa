@@ -65,11 +65,17 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
                 }
             }
 
+            // If we have an ID, it's an edit, otherwise it might be a pre-fill from Share Target
+            // For pre-fills, we might want to default to the first category if none provided
+            if (!categoryId && !initialData.id && categories.length > 0) {
+                categoryId = categories[0].id;
+            }
+
             setTimeout(() => setFormData(prev => ({
                 ...prev,
-                title: initialData.title,
-                amount: initialData.amount,
-                category_id: categoryId,
+                title: initialData.title || '',
+                amount: initialData.amount || '',
+                category_id: categoryId || '',
                 date: initialData.date ? initialData.date.split('T')[0] : new Date().toISOString().split('T')[0],
             })), 0);
         }
@@ -85,21 +91,19 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
             category_id: parseInt(formData.category_id),
         };
 
-        const mutationOptions = {
-            onError: (error) => {
+        const mutation = initialData?.id
+            ? updateExpenseMutation.mutateAsync({ id: initialData.id, data: payload })
+            : createExpenseMutation.mutateAsync(payload);
+
+        mutation
+            .then(() => {
+                if (onSuccess) onSuccess();
+                if (onClose) onClose();
+            })
+            .catch((error) => {
                 console.error("Failed to save expense", error);
                 alert("Failed to save expense");
-            }
-        };
-
-        if (initialData?.id) {
-            updateExpenseMutation.mutate({ id: initialData.id, data: payload }, mutationOptions);
-        } else {
-            createExpenseMutation.mutate(payload, mutationOptions);
-        }
-
-        if (onSuccess) onSuccess();
-        if (onClose) onClose();
+            });
     };
 
     const loading = createExpenseMutation.isPending || updateExpenseMutation.isPending;
@@ -113,6 +117,7 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
                 placeholder="e.g. Grocery Shopping"
                 required
                 fullWidth
+                autoFocus
             />
 
             <div className="grid grid-cols-2 gap-5">

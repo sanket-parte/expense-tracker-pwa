@@ -2,28 +2,24 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from routes import expenses, analytics, data, categories, auth, budgets, recurring, ai, challenges, reports
-from init_db import init_categories
+# Import new routers
+from backend.api.routers import expenses, auth, analytics, data, categories, budgets, recurring, ai, challenges, reports
+from backend.init_db import init_categories
+from backend.core.config import settings
+from backend.adapters.database.session import create_db_and_tables
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # create_db_and_tables() # Managed by Alembic now
+    create_db_and_tables() 
     init_categories()
     yield
 
 app = FastAPI(lifespan=lifespan)
 
 # CORS setup
-origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://expense-tracker-pwa-phi.vercel.app", # Example Vercel URL
-    "*", # Allow all for now to ease deployment debugging, restrictive list recommended for prod
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=settings.BACKEND_CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -43,4 +39,4 @@ app.include_router(reports.router)
 
 @app.get("/")
 def read_root():
-    return {"message": "Expense Tracker API is running"}
+    return {"message": "Expense Tracker API is running (Clean Architecture)"}

@@ -1,6 +1,6 @@
 from sqlmodel import Session, select
-from database import create_db_and_tables, engine
-from models import Category
+from backend.adapters.database.session import create_db_and_tables, engine
+from backend.adapters.database.models import Category
 
 def init_categories():
     with Session(engine) as session:
