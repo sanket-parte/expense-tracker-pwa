@@ -5,12 +5,12 @@ import litellm
 
 class LLMProvider(ABC):
     @abstractmethod
-    def generate_text(self, prompt: str, system_prompt: Optional[str] = None, model: str = "gpt-3.5-turbo", temperature: float = 0.7) -> str:
+    def generate_text(self, prompt: str, system_prompt: Optional[str] = None, model: str = "gpt-3.5-turbo", temperature: float = 0.7, images: Optional[List[str]] = None) -> str:
         """Generates text from an LLM."""
         pass
 
     @abstractmethod
-    def generate_json(self, prompt: str, system_prompt: Optional[str] = None, model: str = "gpt-3.5-turbo", temperature: float = 0.0) -> Dict[str, Any]:
+    def generate_json(self, prompt: str, system_prompt: Optional[str] = None, model: str = "gpt-3.5-turbo", temperature: float = 0.0, images: Optional[List[str]] = None) -> Dict[str, Any]:
         """Generates structured JSON from an LLM."""
         pass
 
@@ -26,11 +26,25 @@ class LiteLLMProvider(LLMProvider):
         import os
         os.environ["OPENAI_API_KEY"] = api_key
 
-    def generate_text(self, prompt: str, system_prompt: Optional[str] = None, model: str = "gpt-3.5-turbo", temperature: float = 0.7) -> str:
+    def _prepare_messages(self, prompt: str, system_prompt: Optional[str], images: Optional[List[str]] = None) -> List[Dict[str, Any]]:
         messages = []
         if system_prompt:
             messages.append({"role": "system", "content": system_prompt})
-        messages.append({"role": "user", "content": prompt})
+            
+        if images:
+            content = [{"type": "text", "text": prompt}]
+            for img in images:
+                content.append({
+                    "type": "image_url",
+                    "image_url": {"url": img}
+                })
+            messages.append({"role": "user", "content": content})
+        else:
+            messages.append({"role": "user", "content": prompt})
+        return messages
+
+    def generate_text(self, prompt: str, system_prompt: Optional[str] = None, model: str = "gpt-3.5-turbo", temperature: float = 0.7, images: Optional[List[str]] = None) -> str:
+        messages = self._prepare_messages(prompt, system_prompt, images)
 
         try:
             response = litellm.completion(
@@ -44,11 +58,8 @@ class LiteLLMProvider(LLMProvider):
             print(f"LiteLLM Text Generation Error: {e}")
             raise e
 
-    def generate_json(self, prompt: str, system_prompt: Optional[str] = None, model: str = "gpt-3.5-turbo", temperature: float = 0.0) -> Dict[str, Any]:
-        messages = []
-        if system_prompt:
-            messages.append({"role": "system", "content": system_prompt})
-        messages.append({"role": "user", "content": prompt})
+    def generate_json(self, prompt: str, system_prompt: Optional[str] = None, model: str = "gpt-3.5-turbo", temperature: float = 0.0, images: Optional[List[str]] = None) -> Dict[str, Any]:
+        messages = self._prepare_messages(prompt, system_prompt, images)
 
         try:
             response = litellm.completion(

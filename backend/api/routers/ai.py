@@ -128,3 +128,22 @@ async def get_latest_suggestion(
         "content": suggestion.content,
         "created_at": suggestion.created_at.isoformat()
     }}
+
+from fastapi import UploadFile, File
+
+@router.post("/scan-receipt")
+async def scan_receipt(
+    file: UploadFile = File(...),
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    """Scan a receipt image and extract expense details."""
+    try:
+        contents = await file.read()
+        service = ai_service.AIService(session, current_user.id)
+        # Pass content type (e.g. image/jpeg)
+        extracted_data = service.extract_receipt_data(contents, media_type=file.content_type or "image/jpeg")
+        return {"parsed": extracted_data}
+    except Exception as e:
+        print(f"Receipt scan error: {e}")
+        raise HTTPException(status_code=400, detail=str(e))

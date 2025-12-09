@@ -6,6 +6,7 @@ import { Wallet, TrendingDown, TrendingUp, ArrowUpRight, ArrowDownRight, PieChar
 import { motion } from 'framer-motion';
 import MagicExpenseInput from '../components/MagicExpenseInput';
 import VoiceInput from '../components/VoiceInput';
+import ScanReceipt from '../components/ScanReceipt';
 import ChallengesWidget from '../components/ChallengesWidget';
 import Modal from '../components/Modal';
 import ExpenseForm from '../components/ExpenseForm';
@@ -166,6 +167,7 @@ export default function Dashboard() {
                         <MagicExpenseInput onParse={handleQuickAdd} />
                     </div>
                     <VoiceInput onResult={handleVoiceResult} />
+                    <ScanReceipt onParse={handleQuickAdd} />
                 </motion.div>
 
                 <motion.div variants={itemVariants}>

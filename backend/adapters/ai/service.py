@@ -1,4 +1,5 @@
 import json
+import base64
 from datetime import datetime, timedelta
 from typing import List, Optional, Dict, Any
 from sqlmodel import Session, select
@@ -90,6 +91,47 @@ class AIService:
         except Exception as e:
             print(f"Error generating advice: {e}")
             return f"Error generating suggestion: {str(e)}"
+
+    def extract_receipt_data(self, image_data: bytes, media_type: str = "image/jpeg") -> Dict[str, Any]:
+        if not self.provider:
+             raise ValueError("OpenAI API Key not configured")
+
+        # Encode image to base64
+        base64_image = base64.b64encode(image_data).decode('utf-8')
+        image_url = f"data:{media_type};base64,{base64_image}"
+        
+        categories = self.session.exec(select(Category).where(Category.user_id == self.user_id)).all()
+        cat_list = ", ".join([f"{c.id}:{c.name}" for c in categories])
+        current_date = datetime.now().strftime("%Y-%m-%d")
+
+        prompt = f"""
+        You are an intelligent receipt parser. Extract transaction details from the image provided.
+        
+        Context:
+        - Current Date: {current_date}
+        - User's Categories (ID:Name): {cat_list}
+        
+        Instructions:
+        1. Extract 'title' (Merchant Name), 'amount' (Total), 'date' (YYYY-MM-DD), and 'category_id'.
+        2. Map the purchase to the most appropriate category ID from the list. If unsure, set category_id to null.
+        3. If date is missing, use Current Date.
+        4. Return JSON ONLY.
+        
+        Output Format:
+        {{
+            "title": "Starbucks",
+            "amount": 350.50,
+            "date": "2023-10-27",
+            "category_id": 12
+        }}
+        """
+        
+        return self.provider.generate_json(
+            prompt, 
+            system_prompt="You are a precise receipt data extractor.",
+            images=[image_url],
+            model="gpt-4o" # Force a vision-capable model if possible, or user's default if it supports it
+        )
 
     def parse_expense_natural_language(self, text: str) -> Dict[str, Any]:
         if not self.provider:
