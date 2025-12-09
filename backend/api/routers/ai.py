@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from typing import Optional
 from pydantic import BaseModel
-from models import User, UserSettings, AISuggestion
-from database import get_session
-from auth import get_current_user
-from services import ai_service
+from backend.adapters.database.models import User, UserSettings, AISuggestion
+from backend.api.deps import get_db as get_session
+from backend.api.deps import get_current_user
+from backend.adapters.ai import service as ai_service
 
 router = APIRouter(prefix="/ai", tags=["ai"])
 
