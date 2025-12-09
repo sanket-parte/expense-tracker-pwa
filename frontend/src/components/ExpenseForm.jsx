@@ -65,11 +65,17 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
                 }
             }
 
+            // If we have an ID, it's an edit, otherwise it might be a pre-fill from Share Target
+            // For pre-fills, we might want to default to the first category if none provided
+            if (!categoryId && !initialData.id && categories.length > 0) {
+                categoryId = categories[0].id;
+            }
+
             setTimeout(() => setFormData(prev => ({
                 ...prev,
-                title: initialData.title,
-                amount: initialData.amount,
-                category_id: categoryId,
+                title: initialData.title || '',
+                amount: initialData.amount || '',
+                category_id: categoryId || '',
                 date: initialData.date ? initialData.date.split('T')[0] : new Date().toISOString().split('T')[0],
             })), 0);
         }
@@ -111,6 +117,7 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
                 placeholder="e.g. Grocery Shopping"
                 required
                 fullWidth
+                autoFocus
             />
 
             <div className="grid grid-cols-2 gap-5">

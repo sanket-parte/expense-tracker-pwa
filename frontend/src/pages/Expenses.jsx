@@ -33,11 +33,39 @@ export default function Expenses() {
             setFilters(prev => ({ ...prev, search: query }));
         }
 
-        // Handle App Shortcut action
+        // Handle App Shortcut action & Share Target
         const action = searchParams.get('action');
-        if (action === 'new') {
+        const title = searchParams.get('title');
+        const text = searchParams.get('text');
+        const url = searchParams.get('url');
+
+        if (action === 'new' || title || text || url) {
+            let initialAmount = '';
+            let initialTitle = title || '';
+            const fullText = [title, text, url].filter(Boolean).join(' ');
+
+            // Try to extract amount from text (e.g. "Paid Rs 500" or "INR 500.00")
+            // Matches: Rs. 500, INR 500, ₹500, 500.00
+            const amountMatch = fullText.match(/(?:Rs\.?|INR|₹)\s*([\d,]+(?:\.\d{2})?)|([\d,]+(?:\.\d{2})?)\s*(?:Rs\.?|INR|₹)?/i);
+
+            if (amountMatch) {
+                // Remove commas and get the number
+                const amountStr = (amountMatch[1] || amountMatch[0]).replace(/,/g, '');
+                if (!isNaN(parseFloat(amountStr))) {
+                    initialAmount = amountStr;
+                }
+            }
+
+            setEditingExpense({
+                title: initialTitle || (text ? text.slice(0, 50) : ''), // Fallback to start of text
+                amount: initialAmount,
+                category_id: '', // Will let smart suggestion handle it or default
+                date: new Date().toISOString().split('T')[0]
+            });
+
             setIsModalOpen(true);
-            // Clean URL without reload
+
+            // Clean URL without reload so we don't re-trigger on refresh
             window.history.replaceState({}, '', '/expenses');
         }
     }, [searchParams]);
