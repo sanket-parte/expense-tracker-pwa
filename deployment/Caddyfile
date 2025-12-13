@@ -1,9 +1,0 @@
-{
-    # Global options
-    email your-email@example.com
-}
-
-# Variable for domain, can be overridden or set to :80 if no domain yet
-:80 {
-    reverse_proxy backend:8000
-}

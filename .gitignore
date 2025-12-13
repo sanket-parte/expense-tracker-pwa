@@ -2,3 +2,18 @@
 .idea/
 .vscode/
 !.vscode/settings.json
+
+# Environment Variables
+.env
+.env.*
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Local config
+ngrok.yml
+
+# Docker
+docker-compose.override.yml
