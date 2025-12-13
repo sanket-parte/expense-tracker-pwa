@@ -85,7 +85,6 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
-            type=sha
 
       - name: Build and push Frontend Docker image
         if: steps.changes.outputs.frontend == 'true'
@@ -106,7 +105,6 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
-            type=sha
 
       - name: Build and push Backend Docker image
         if: steps.changes.outputs.backend == 'true'
