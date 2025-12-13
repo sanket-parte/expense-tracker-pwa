@@ -31,7 +31,8 @@ services:
       test: [ "CMD", "curl", "-f", "http://localhost:8000/" ]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 6
+      start_period: 40s
 
   db:
     image: postgres:15-alpine
