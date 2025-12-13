@@ -40,6 +40,9 @@ COPY --chown=appuser:appgroup . backend/
 COPY --chown=appuser:appgroup entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
+# Create logs directory with correct permissions
+RUN mkdir logs && chown -R appuser:appgroup logs
+
 # Expose port
 EXPOSE 8000
 
