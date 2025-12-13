@@ -131,6 +131,10 @@ async def get_latest_suggestion(
 
 from fastapi import UploadFile, File
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 @router.post("/scan-receipt")
 async def scan_receipt(
     file: UploadFile = File(...),
@@ -145,5 +149,5 @@ async def scan_receipt(
         extracted_data = service.extract_receipt_data(contents, media_type=file.content_type or "image/jpeg")
         return {"parsed": extracted_data}
     except Exception as e:
-        print(f"Receipt scan error: {e}")
+        logger.error(f"Receipt scan error: {e}")
         raise HTTPException(status_code=400, detail=str(e))

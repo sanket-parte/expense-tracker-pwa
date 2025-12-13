@@ -6,6 +6,8 @@
 # Environment Variables
 .env
 .env.*
+!.env.example
+
 
 # Database
 *.db

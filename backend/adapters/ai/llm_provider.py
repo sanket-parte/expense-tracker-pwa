@@ -1,7 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any, Optional
 import json
+import logging
 import litellm
+
+logger = logging.getLogger(__name__)
 
 class LLMProvider(ABC):
     @abstractmethod
@@ -55,7 +58,7 @@ class LiteLLMProvider(LLMProvider):
             )
             return response.choices[0].message.content.strip()
         except Exception as e:
-            print(f"LiteLLM Text Generation Error: {e}")
+            logger.error(f"LiteLLM Text Generation Error: {e}")
             raise e
 
     def generate_json(self, prompt: str, system_prompt: Optional[str] = None, model: str = "gpt-3.5-turbo", temperature: float = 0.0, images: Optional[List[str]] = None) -> Dict[str, Any]:
@@ -79,6 +82,6 @@ class LiteLLMProvider(LLMProvider):
                 
             return json.loads(content.strip())
         except Exception as e:
-            print(f"LiteLLM JSON Generation Error: {e}")
+            logger.error(f"LiteLLM JSON Generation Error: {e}")
             # Logic to handle JSON parsing error if needed, but let's raise for now
             raise e
