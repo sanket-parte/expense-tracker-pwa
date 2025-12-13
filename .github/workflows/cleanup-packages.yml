@@ -1,0 +1,29 @@
+name: Cleanup Old Packages
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0' # Run weekly on Sundays at midnight
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - name: Delete untagged images (Frontend)
+        uses: actions/delete-package-versions@v5
+        with: 
+          package-name: 'expense-tracker-pwa-frontend'
+          package-type: 'container'
+          min-versions-to-keep: 2
+          delete-only-untagged-versions: 'true'
+          # token: ${{ secrets.GITHUB_TOKEN }} # Automatically provided
+
+      - name: Delete untagged images (Backend)
+        uses: actions/delete-package-versions@v5
+        with: 
+          package-name: 'expense-tracker-pwa-backend'
+          package-type: 'container'
+          min-versions-to-keep: 2
+          delete-only-untagged-versions: 'true'
