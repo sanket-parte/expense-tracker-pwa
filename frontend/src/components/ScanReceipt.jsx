@@ -1,7 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { Camera, Loader2, Upload } from 'lucide-react';
 import api from '../lib/api';
+// eslint-disable-next-line no-unused-vars
 import { cn } from '../lib/utils';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ScanReceipt({ onParse }) {

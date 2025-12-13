@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useQueryClient, useMutationState, onlineManager } from '@tanstack/react-query';
 import { Wifi, WifiOff, RefreshCw } from 'lucide-react';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSettings } from '../context/SettingsContext';
 

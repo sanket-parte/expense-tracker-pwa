@@ -3,7 +3,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import api from '../lib/api';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Wallet, TrendingDown, TrendingUp, ArrowUpRight, ArrowDownRight, PieChart as PieChartIcon, Activity } from 'lucide-react';
-import { motion } from 'framer-motion';
+// eslint-disable-next-line no-unused-vars
+import { motion, AnimatePresence } from 'framer-motion';
 import MagicExpenseInput from '../components/MagicExpenseInput';
 import VoiceInput from '../components/VoiceInput';
 import ScanReceipt from '../components/ScanReceipt';
@@ -35,6 +36,7 @@ const itemVariants = {
     visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
 };
 
+// eslint-disable-next-line no-unused-vars
 const StatCard = ({ title, amount, icon: Icon, trend, color, labelColor }) => (
     <Card hover className="relative overflow-hidden group">
         <div className={cn("absolute -right-6 -top-6 w-32 h-32 rounded-full opacity-10 transition-transform duration-700 group-hover:scale-150 blur-3xl", color)} />
@@ -212,13 +214,13 @@ export default function Dashboard() {
                         <Card className="h-full">
                             <div className="flex justify-between items-center mb-8">
                                 <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-brand-100 dark:bg-brand-900/30 rounded-lg text-brand-600 dark:text-brand-400">
-                                        <Activity size={20} />
+                                    <div className={`p-3 rounded-xl bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400 group-hover:scale-110 transition-transform`}>
+                                        <Activity size={24} strokeWidth={2.5} />
                                     </div>
-                                    <div>
-                                        <h3 className="text-lg font-bold text-slate-800 dark:text-white">Spending Trend</h3>
-                                        <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">Last 30 Days</p>
-                                    </div>
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-slate-800 dark:text-white">Spending Trend</h3>
+                                    <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">Last 30 Days</p>
                                 </div>
                                 <select className="text-sm bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-600 dark:text-slate-400 font-medium focus:ring-brand-500 cursor-pointer py-2 px-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors outline-none">
                                     <option>Daily</option>
@@ -346,7 +348,7 @@ export default function Dashboard() {
                             </div>
                         </Card>
                     </motion.div>
-                </div>
+                </div >
 
                 <Modal
                     isOpen={isModalOpen}
@@ -359,7 +361,7 @@ export default function Dashboard() {
                         onClose={() => setIsModalOpen(false)}
                     />
                 </Modal>
-            </motion.div>
-        </PullToRefresh>
+            </motion.div >
+        </PullToRefresh >
     );
 }

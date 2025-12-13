@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Filter, X, Calendar, ChevronDown } from 'lucide-react';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from './ui/Button';
 import Input from './ui/Input';

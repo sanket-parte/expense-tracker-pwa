@@ -7,6 +7,7 @@ import BudgetForm from '../components/BudgetForm';
 import Loading from '../components/Loading';
 import SwipeableItem from '../components/SwipeableItem';
 import Card from '../components/ui/Card';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../components/ui/Button';
 import BudgetForecast from '../components/BudgetForecast';

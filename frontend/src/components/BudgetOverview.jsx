@@ -2,6 +2,7 @@ import React from 'react';
 import { ResponsiveContainer, RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts';
 import { TrendingUp, AlertCircle } from 'lucide-react';
 import { cn } from '../lib/utils';
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 
 export default function BudgetOverview({ budgets, WrapperComponent = 'div' }) {

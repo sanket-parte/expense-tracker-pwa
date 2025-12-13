@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, AlertCircle } from 'lucide-react';
 import { useCalendarExpenses } from '../hooks/useQueries';
 import Card from '../components/ui/Card';
 import ExpenseItem from '../components/ExpenseItem';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../components/ui/Button';
 
@@ -19,7 +20,7 @@ export default function CalendarView() {
     const startDateStr = startOfMonth.toISOString();
     const endDateStr = endOfMonth.toISOString();
 
-    const { data: expenses = [], isLoading, error } = useCalendarExpenses(startDateStr, endDateStr);
+    const { data: expenses = [] } = useCalendarExpenses(startDateStr, endDateStr);
 
     // Group expenses by date (YYYY-MM-DD keys)
     const expensesByDate = useMemo(() => {

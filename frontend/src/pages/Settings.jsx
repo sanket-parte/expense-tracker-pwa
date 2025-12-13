@@ -210,7 +210,7 @@ export default function Settings() {
                                     await api.delete('/data/clear');
                                     setMessage({ type: 'success', text: 'All data cleared successfully.' });
                                     setTimeout(() => window.location.reload(), 1500);
-                                } catch (e) {
+                                } catch {
                                     setMessage({ type: 'error', text: 'Failed to clear data.' });
                                 }
                             }

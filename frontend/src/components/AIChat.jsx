@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, Send, X, Minimize2, Maximize2, Sparkles, Bot } from 'lucide-react';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from './ui/Button';
 import Card from './ui/Card';
@@ -35,8 +36,8 @@ export default function AIChat() {
             const res = await api.post('/analytics/ask', { q: userMsg.content });
             const aiMsg = { role: 'assistant', content: res.data.answer };
             setMessages(prev => [...prev, aiMsg]);
-        } catch (err) {
-            setMessages(prev => [...prev, { role: 'assistant', content: "Sorry, I'm having trouble connecting right now." }]);
+        } catch {
+            setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }]);
         } finally {
             setIsLoading(false);
         }
@@ -94,8 +95,8 @@ export default function AIChat() {
                                     >
                                         <div
                                             className={`max-w-[85%] p-3 rounded-2xl text-sm leading-relaxed ${msg.role === 'user'
-                                                    ? 'bg-brand-600 text-white rounded-br-none shadow-md shadow-brand-500/20'
-                                                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-bl-none shadow-sm border border-slate-100 dark:border-slate-700'
+                                                ? 'bg-brand-600 text-white rounded-br-none shadow-md shadow-brand-500/20'
+                                                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-bl-none shadow-sm border border-slate-100 dark:border-slate-700'
                                                 }`}
                                         >
                                             {msg.content}

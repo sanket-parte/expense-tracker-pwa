@@ -39,8 +39,8 @@ export default function AISettings() {
             setMessage({ type: 'success', text: 'AI configuration saved successfully!' });
             setIsSet(true);
             setTimeout(() => setMessage(null), 3000);
-        } catch (error) {
-            setMessage({ type: 'error', text: 'Failed to save settings. Please try again.' });
+        } catch {
+            console.error('Failed to load settings');
         } finally {
             setLoading(false);
         }

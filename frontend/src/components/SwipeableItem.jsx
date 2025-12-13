@@ -1,6 +1,6 @@
 import React from 'react';
 // eslint-disable-next-line no-unused-vars
-import { motion, useAnimation, useMotionValue, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useAnimation, useMotionValue, useTransform } from 'framer-motion';
 import { Trash2, Edit2 } from 'lucide-react';
 import useHaptics from '../hooks/useHaptics';
 

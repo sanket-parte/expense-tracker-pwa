@@ -13,8 +13,6 @@ export default function PullToRefresh({ onRefresh, children }) {
     const controls = useAnimation();
     const { medium } = useHaptics();
 
-    // eslint-disable-next-line no-unused-vars
-    const progress = useTransform(y, [0, PULL_THRESHOLD], [0, 100]);
     const rotate = useTransform(y, [0, PULL_THRESHOLD], [0, 360]);
     const opacity = useTransform(y, [0, PULL_THRESHOLD / 2, PULL_THRESHOLD], [0, 0.5, 1]);
 
@@ -68,7 +66,7 @@ export default function PullToRefresh({ onRefresh, children }) {
                 className="absolute top-4 left-0 right-0 flex justify-center items-center z-0"
             >
                 <div className="bg-white dark:bg-slate-800 rounded-full p-2 shadow-md border border-slate-100 dark:border-slate-700">
-                    <Loader2 className={`w-5 h-5 text-brand-600 dark:text-brand-400 ${isRefreshing ? 'animate-spin' : ''}`} />
+                    <Loader2 className={`w - 5 h - 5 text - brand - 600 dark: text - brand - 400 ${isRefreshing ? 'animate-spin' : ''} `} />
                 </div>
             </motion.div>
 

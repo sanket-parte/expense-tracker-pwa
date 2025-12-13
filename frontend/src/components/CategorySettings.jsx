@@ -5,10 +5,10 @@ import { useCreateCategory, useDeleteCategory } from '../hooks/useMutations';
 import Card from './ui/Card';
 import Button from './ui/Button';
 import Input from './ui/Input';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 
 export default function CategorySettings() {
-    const { data: categories = [], isLoading: loading } = useCategories();
+    const { data: categories = [], isLoading } = useCategories();
     const createCategoryMutation = useCreateCategory();
     const deleteCategoryMutation = useDeleteCategory();
 
@@ -45,7 +45,7 @@ export default function CategorySettings() {
             await createCategoryMutation.mutateAsync(newCategory);
             setNewCategory({ name: '', color: '#64748b' });
             setIsModalOpen(false);
-        } catch (error) {
+        } catch {
             setError("Failed to add category. Name might be duplicate.");
         }
     };
@@ -132,7 +132,7 @@ export default function CategorySettings() {
                     </AnimatePresence>
                 </div>
 
-                {filteredCategories.length === 0 && !loading && (
+                {filteredCategories.length === 0 && !isLoading && (
                     <div className="text-center py-16 text-slate-400 text-sm bg-slate-50/50 dark:bg-slate-800/20 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 flex flex-col items-center">
                         <Tags size={32} className="mb-3 opacity-20" />
                         <p className="font-medium">{searchQuery ? 'No categories match your search.' : 'No categories found. Create one to get started.'}</p>
@@ -181,7 +181,7 @@ export default function CategorySettings() {
                                                 key={c}
                                                 type="button"
                                                 onClick={() => setNewCategory({ ...newCategory, color: c })}
-                                                className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${newCategory.color === c ? 'ring-2 ring-offset-2 ring-slate-900 dark:ring-slate-100 scale-110 shadow-lg' : 'hover:scale-105 hover:shadow'}`}
+                                                className={`w - 10 h - 10 rounded - xl flex items - center justify - center transition - all ${newCategory.color === c ? 'ring-2 ring-offset-2 ring-slate-900 dark:ring-slate-100 scale-110 shadow-lg' : 'hover:scale-105 hover:shadow'} `}
                                                 style={{ backgroundColor: c }}
                                             >
                                                 {newCategory.color === c && <Check size={18} className="text-white stroke-[3] drop-shadow-sm" />}

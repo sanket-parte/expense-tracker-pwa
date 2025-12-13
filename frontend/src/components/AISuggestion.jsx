@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Sparkles, RefreshCw, MessageSquareQuote, AlertTriangle, Lightbulb, Target, TrendingUp } from 'lucide-react';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
@@ -22,7 +23,7 @@ export default function AISuggestion() {
         try {
             const { data } = await api.get('/ai/settings');
             setIsConfigured(data.is_set);
-        } catch (e) {
+        } catch {
             console.error("Failed to check AI config");
         }
     };
@@ -148,7 +149,11 @@ export default function AISuggestion() {
                                     <div className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
                                         <ReactMarkdown
                                             components={{
+                                                // eslint-disable-next-line no-unused-vars
                                                 ul: ({ node, ...props }) => <ul className="space-y-3 my-4 list-none pl-0" {...props} />,
+                                                // eslint-disable-next-line no-unused-vars
+                                                ol: ({ node, ...props }) => <ol className="list-decimal pl-4 mb-2" {...props} />,
+                                                // eslint-disable-next-line no-unused-vars
                                                 li: ({ node, ...props }) => (
                                                     <li className="flex gap-3 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-700/50 transition-all hover:bg-white dark:hover:bg-slate-800 hover:shadow-md hover:border-indigo-100 dark:hover:border-indigo-900/30 group">
                                                         <div className="shrink-0 mt-0.5 w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
@@ -159,8 +164,12 @@ export default function AISuggestion() {
                                                         </div>
                                                     </li>
                                                 ),
+                                                // eslint-disable-next-line no-unused-vars
+                                                p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                                                // eslint-disable-next-line no-unused-vars
+                                                a: ({ node, ...props }) => <a className="text-brand-600 hover:underline" {...props} />,
+                                                // eslint-disable-next-line no-unused-vars
                                                 strong: ({ node, ...props }) => <strong className="font-bold text-slate-900 dark:text-white" {...props} />,
-                                                p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />
                                             }}
                                         >
                                             {suggestion.content}

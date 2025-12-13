@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Send, Sparkles, Loader2 } from 'lucide-react';
 import api from '../lib/api';
 import { cn } from '../lib/utils';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function MagicExpenseInput({ onParse }) {

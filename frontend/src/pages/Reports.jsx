@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { ChevronLeft, ChevronRight, Download, BarChart2, PieChart, TrendingUp, DollarSign } from 'lucide-react';
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import api from '../lib/api';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import MonthlyReportCard from '../components/MonthlyReportCard';
-import { cn, formatCurrency } from '../lib/utils';
+// eslint-disable-next-line no-unused-vars
+import { useDashboardStats } from '../hooks/useQueries';
+// eslint-disable-next-line no-unused-vars
+import { cn } from '../lib/utils';
+import { formatCurrency } from '../lib/utils';
 
 export default function Reports() {
     const [currentDate, setCurrentDate] = useState(dayjs());
@@ -20,7 +24,7 @@ export default function Reports() {
         const fetchReport = async () => {
             setLoading(true);
             try {
-                const { data } = await api.get(`/analytics/monthly-report?month=${monthStr}`);
+                const { data } = await api.get(`/ analytics / monthly - report ? month = ${monthStr} `);
                 setReportData(data);
             } catch (error) {
                 console.error("Failed to fetch report", error);
@@ -145,7 +149,7 @@ export default function Reports() {
                             <div key={i} className="group relative flex-1 flex flex-col items-center gap-2 h-full justify-end">
                                 <div
                                     className="w-full bg-brand-500/80 hover:bg-brand-500 dark:bg-brand-500/60 dark:hover:bg-brand-500 rounded-t-md transition-all relative"
-                                    style={{ height: `${(day.amount / maxDaily) * 100}%`, minHeight: '4px' }}
+                                    style={{ height: `${(day.amount / maxDaily) * 100}% `, minHeight: '4px' }}
                                 >
                                     {/* Tooltip */}
                                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none">
@@ -184,7 +188,7 @@ export default function Reports() {
                                     <div
                                         className="h-full rounded-full"
                                         style={{
-                                            width: `${(cat.value / reportData.total_expense) * 100}%`,
+                                            width: `${(cat.value / reportData.total_expense) * 100}% `,
                                             backgroundColor: cat.color
                                         }}
                                     />

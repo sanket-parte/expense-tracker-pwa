@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Radar, Check, Loader2, Plus, AlertCircle } from 'lucide-react';
 import api from '../lib/api';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
+// eslint-disable-next-line no-unused-vars
 import { cn } from '../lib/utils';
 import Button from './ui/Button';
 

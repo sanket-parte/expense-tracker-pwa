@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import { FileText, TrendingUp, TrendingDown, AlertTriangle, CheckCircle, RefreshCw } from 'lucide-react';
 import api from '../lib/api';
@@ -11,7 +12,8 @@ export default function MonthlyReportCard({ month }) {
     const [loading, setLoading] = useState(true);
     const [generating, setGenerating] = useState(false);
 
-    const fetchReport = async () => {
+    const fetchReport = useCallback(async () => {
+        setLoading(true);
         try {
             const url = month ? `/reports/${month}` : '/reports/latest';
             const { data } = await api.get(url);
@@ -21,11 +23,11 @@ export default function MonthlyReportCard({ month }) {
         } finally {
             setLoading(false);
         }
-    };
+    }, [month]);
 
     useEffect(() => {
         fetchReport();
-    }, [month]);
+    }, [month, fetchReport]);
 
     const handleGenerate = async () => {
         setGenerating(true);

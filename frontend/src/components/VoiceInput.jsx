@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 
 const VoiceInput = ({ onResult, onError }) => {
     const [isListening, setIsListening] = useState(false);
-    const [isSupported, setIsSupported] = useState(true);
+    const [isSupported] = useState(
+        ('webkitSpeechRecognition' in window) || ('SpeechRecognition' in window)
+    );
     const recognitionRef = useRef(null);
 
     useEffect(() => {
-        // Check browser support
-        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-            setIsSupported(false);
-            return;
-        }
+        if (!isSupported) return;
 
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
@@ -44,7 +43,7 @@ const VoiceInput = ({ onResult, onError }) => {
         };
 
         recognitionRef.current = recognition;
-    }, [onResult, onError]);
+    }, [onResult, onError, isSupported]);
 
     const toggleListening = () => {
         if (!isSupported) {
@@ -67,8 +66,8 @@ const VoiceInput = ({ onResult, onError }) => {
                 whileTap={{ scale: 0.95 }}
                 onClick={toggleListening}
                 className={`p-3 rounded-full transition-colors flex items-center justify-center ${isListening
-                        ? 'bg-red-500/20 text-red-500 ring-2 ring-red-500/50'
-                        : 'bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white border border-white/10'
+                    ? 'bg-red-500/20 text-red-500 ring-2 ring-red-500/50'
+                    : 'bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white border border-white/10'
                     }`}
                 title="Voice Quick Add"
             >

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Home, Receipt, Wallet, Calendar, Settings, Moon, Sun, Monitor, ArrowRight, X } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
@@ -9,7 +10,7 @@ export default function CommandPalette({ isOpen, onClose }) {
     const [query, setQuery] = useState('');
     const [activeIndex, setActiveIndex] = useState(0);
     const navigate = useNavigate();
-    const { theme, setTheme } = useTheme();
+    const { setTheme } = useTheme();
 
     // Internal keyboard handling for closing and navigation
     useEffect(() => {
@@ -50,11 +51,11 @@ export default function CommandPalette({ isOpen, onClose }) {
         });
     }
 
-    const handleSelect = (item) => {
+    const handleSelect = useCallback((item) => {
         item.action();
         setQuery('');
         onClose();
-    };
+    }, [onClose]);
 
     // Keyboard navigation within list
     useEffect(() => {
@@ -77,14 +78,16 @@ export default function CommandPalette({ isOpen, onClose }) {
 
         window.addEventListener('keydown', handleListNav);
         return () => window.removeEventListener('keydown', handleListNav);
-    }, [isOpen, activeIndex, filteredItems]);
+    }, [isOpen, activeIndex, filteredItems, handleSelect]);
 
-    // Reset index when query changes
-    useEffect(() => {
-        setActiveIndex(0);
-    }, [query]);
+    // Removed useEffect that set activeIndex on query change. Moved to handleQueryChange.
 
     if (!isOpen) return null;
+
+    const handleQueryChange = (e) => {
+        setQuery(e.target.value);
+        setActiveIndex(0);
+    };
 
     return (
         <AnimatePresence>
@@ -116,7 +119,7 @@ export default function CommandPalette({ isOpen, onClose }) {
                                         type="text"
                                         placeholder="Type a command or search..."
                                         value={query}
-                                        onChange={(e) => setQuery(e.target.value)}
+                                        onChange={handleQueryChange}
                                         className="flex-1 bg-transparent border-none outline-none text-slate-900 dark:text-white placeholder:text-slate-400 text-lg"
                                     />
                                     <div className="flex items-center gap-1">

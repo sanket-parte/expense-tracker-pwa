@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 const SettingsContext = createContext();
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useSettings = () => {
     const context = useContext(SettingsContext);
     if (!context) {

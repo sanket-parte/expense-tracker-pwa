@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import api from '../lib/api';
 import { useCategories } from '../hooks/useQueries';
 import { useCreateExpense, useUpdateExpense } from '../hooks/useMutations';
-import { useSettings } from '../context/SettingsContext';
 import Input from './ui/Input';
 import Button from './ui/Button';
 import { ChevronDown, Calendar, Wallet } from 'lucide-react';
 
 export default function ExpenseForm({ initialData, onSuccess, onClose }) {
-    const { settings } = useSettings();
+    // settings was unused
     const { data: categories = [] } = useCategories();
     const createExpenseMutation = useCreateExpense();
     const updateExpenseMutation = useUpdateExpense();
@@ -49,7 +48,7 @@ export default function ExpenseForm({ initialData, onSuccess, onClose }) {
         if (!initialData && categories.length > 0 && !formData.category_id) {
             setTimeout(() => setFormData(prev => ({ ...prev, category_id: categories[0].id })), 0);
         }
-    }, [categories, initialData]);
+    }, [categories, initialData, formData.category_id]); // Fixed dependency
 
     useEffect(() => {
         if (initialData) {

@@ -1,7 +1,9 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { Edit2, Trash2, Calendar, Tag } from 'lucide-react';
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
+
 
 export default function ExpenseItem({ expense, color, onEdit, onDelete }) {
     const categoryColor = expense.category?.color || color;

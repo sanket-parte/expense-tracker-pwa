@@ -16,7 +16,6 @@ export default function Layout() {
     const { theme, setTheme } = useTheme();
     const navigate = useNavigate();
     const location = useLocation();
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     const navItems = [
