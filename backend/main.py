@@ -7,9 +7,11 @@ from backend.api.routers import expenses, auth, analytics, data, categories, bud
 from backend.init_db import init_categories
 from backend.core.config import settings
 from backend.adapters.database.session import create_db_and_tables
+from backend.core.logging import setup_logging
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    setup_logging()
     create_db_and_tables() 
     init_categories()
     yield

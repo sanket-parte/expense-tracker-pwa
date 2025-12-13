@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "supersecretkey" # TODO: Change in production
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    LOG_DIR: str = "logs"
     
     # CORS
     BACKEND_CORS_ORIGINS: list[str] = [
