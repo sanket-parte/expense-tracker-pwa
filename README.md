@@ -1,5 +1,6 @@
 # Expense Tracker PWA
 
+
 ## Deployment
 
 This project is configured for automated deployment to a VM via GitHub Actions.
