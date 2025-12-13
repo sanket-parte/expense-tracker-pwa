@@ -10,7 +10,7 @@ class UserBase(SQLModel):
 
 # --- Category ---
 class CategoryBase(SQLModel):
-    name: str = Field(index=True, unique=True)
+    name: str = Field(index=True)
     color: str = "#64748b" # Default slate-500
 
 # --- Expense ---

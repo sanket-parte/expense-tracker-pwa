@@ -18,7 +18,7 @@ def create_category(
     current_user: User = Depends(get_current_user)
 ):
     service = CategoryService(session)
-    new_category = service.create_category(category)
+    new_category = service.create_category(category, user_id=current_user.id)
     
     if not new_category:
         raise HTTPException(status_code=400, detail="Category already exists")
@@ -31,7 +31,7 @@ def read_categories(
     current_user: User = Depends(get_current_user)
 ):
     service = CategoryService(session)
-    return service.get_categories()
+    return service.get_categories(user_id=current_user.id)
 
 @router.delete("/{category_id}")
 def delete_category(
@@ -41,7 +41,7 @@ def delete_category(
     current_user: User = Depends(get_current_user)
 ):
     service = CategoryService(session)
-    success = service.delete_category(category_id)
+    success = service.delete_category(category_id, user_id=current_user.id)
     if not success:
         raise HTTPException(status_code=404, detail="Category not found")
     

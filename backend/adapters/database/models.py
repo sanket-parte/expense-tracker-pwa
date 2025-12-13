@@ -1,6 +1,7 @@
 from typing import Optional, List
 from datetime import datetime
 from sqlmodel import Field, Relationship, SQLModel
+from sqlalchemy import UniqueConstraint
 
 from backend.core.models import UserBase, CategoryBase, ExpenseBase, BudgetBase, RecurringExpenseBase
 
@@ -16,6 +17,8 @@ class Category(CategoryBase, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     user_id: Optional[int] = Field(default=None, foreign_key="user.id", nullable=True)
     expenses: List["Expense"] = Relationship(back_populates="category")
+
+    __table_args__ = (UniqueConstraint("user_id", "name", name="unique_user_category_name"),)
 
 class User(UserBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)

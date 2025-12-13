@@ -7,7 +7,12 @@ class CategoryRepository(BaseRepository[Category]):
     def __init__(self, session: Session):
         super().__init__(session, Category)
 
-    def get_by_name(self, name: str) -> Optional[Category]:
+    def get_by_name(self, name: str, user_id: int) -> Optional[Category]:
         return self.session.exec(
-            select(Category).where(Category.name == name)
+            select(Category).where(Category.name == name, Category.user_id == user_id)
         ).first()
+
+    def get_all_by_user(self, user_id: int) -> List[Category]:
+        return self.session.exec(
+            select(Category).where(Category.user_id == user_id)
+        ).all()
