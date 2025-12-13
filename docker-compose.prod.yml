@@ -1,10 +1,49 @@
 services:
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - conf:/etc/nginx/conf.d
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - dhparam:/etc/nginx/dhparam
+      - certs:/etc/nginx/certs:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - app-network
+    restart: always
+
+  acme-companion:
+    image: nginxproxy/acme-companion
+    container_name: nginx-proxy-acme
+    depends_on:
+      - nginx-proxy
+    volumes:
+      - conf:/etc/nginx/conf.d
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - dhparam:/etc/nginx/dhparam
+      - certs:/etc/nginx/certs:rw
+      - acme:/etc/acme.sh
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+    networks:
+      - app-network
+    restart: always
+
   frontend:
     image: ghcr.io/${GITHUB_REPOSITORY:-sanket-parte/expense-tracker-pwa}-frontend:latest
     container_name: et-frontend
     restart: always
-    ports:
-      - "80:8080"
+    environment:
+      - VIRTUAL_HOST=expense-flow.duckdns.org
+      - VIRTUAL_PORT=8080
+      - LETSENCRYPT_HOST=expense-flow.duckdns.org
+      - LETSENCRYPT_EMAIL=${SSL_EMAIL:-admin@expense-flow.duckdns.org}
     depends_on:
       backend:
         condition: service_healthy
@@ -70,6 +109,12 @@ services:
 
 volumes:
   pgdata:
+  conf:
+  vhost:
+  html:
+  dhparam:
+  certs:
+  acme:
 
 
 networks:
