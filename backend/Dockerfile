@@ -31,7 +31,9 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 # Create and switch to non-root user
 RUN addgroup -S appgroup && \
-    adduser -S appuser -G appgroup
+    adduser -S appuser -G appgroup && \
+    mkdir logs && \
+    chown -R appuser:appgroup logs
 USER appuser
 
 # Copy application code
@@ -39,9 +41,6 @@ COPY --chown=appuser:appgroup . backend/
 
 COPY --chown=appuser:appgroup entrypoint.sh .
 RUN chmod +x entrypoint.sh
-
-# Create logs directory with correct permissions
-RUN mkdir logs && chown -R appuser:appgroup logs
 
 # Expose port
 EXPOSE 8000
