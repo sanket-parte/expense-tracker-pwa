@@ -28,6 +28,13 @@ export default defineConfig({
         ],
         shortcuts: [
           {
+            name: "Scan Receipt",
+            short_name: "Scan",
+            description: "Scan a receipt to add expense",
+            url: "/expenses?action=scan",
+            icons: [{ src: "pwa-192x192.png", sizes: "192x192" }]
+          },
+          {
             name: "Add Expense",
             short_name: "Add",
             description: "Add a new expense quickly",

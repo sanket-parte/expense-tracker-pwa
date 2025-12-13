@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ../backend
+    container_name: expense-tracker-backend
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-expense_tracker}
+      # Add other environment variables here if needed
+      # e.g., OPENAI_API_KEY, etc.
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: postgres:15-alpine
+    container_name: expense-tracker-db
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-expense_tracker}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: expense-tracker-caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - app-network
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:
+
+networks:
+  app-network:
+    driver: bridge

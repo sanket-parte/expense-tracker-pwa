@@ -5,6 +5,7 @@ import ExpenseItem from '../components/ExpenseItem';
 import SwipeableItem from '../components/SwipeableItem';
 import Modal from '../components/Modal';
 import ExpenseForm from '../components/ExpenseForm';
+import ScanReceipt from '../components/ScanReceipt';
 import ExpenseFilters from '../components/ExpenseFilters';
 import { useExpenses, useCategories } from '../hooks/useQueries';
 import { useDeleteExpense } from '../hooks/useMutations';
@@ -39,6 +40,14 @@ export default function Expenses() {
         const text = searchParams.get('text');
         const url = searchParams.get('url');
 
+        if (action === 'scan') {
+            setIsModalOpen(true);
+            setModalMode('scan');
+            // Clean URL
+            window.history.replaceState({}, '', '/expenses');
+            return;
+        }
+
         if (action === 'new' || title || text || url) {
             let initialAmount = '';
             let initialTitle = title || '';
@@ -63,6 +72,7 @@ export default function Expenses() {
                 date: new Date().toISOString().split('T')[0]
             });
 
+            setModalMode('form');
             setIsModalOpen(true);
 
             // Clean URL without reload so we don't re-trigger on refresh
@@ -72,6 +82,7 @@ export default function Expenses() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingExpense, setEditingExpense] = useState(null);
+    const [modalMode, setModalMode] = useState('form'); // 'form' | 'scan'
     const [isScanning, setIsScanning] = useState(false);
     const queryClient = useQueryClient();
 
@@ -101,11 +112,13 @@ export default function Expenses() {
 
     const handleAdd = () => {
         setEditingExpense(null);
+        setModalMode('form');
         setIsModalOpen(true);
     };
 
     const handleEdit = (expense) => {
         setEditingExpense(expense);
+        setModalMode('form');
         setIsModalOpen(true);
     };
 
@@ -141,6 +154,16 @@ export default function Expenses() {
         } finally {
             setIsScanning(false);
         }
+    };
+
+    const handleScanComplete = (parsedData) => {
+        setEditingExpense({
+            title: parsedData.merchant || '',
+            amount: parsedData.amount || '',
+            date: parsedData.date || new Date().toISOString().split('T')[0],
+            category_id: '' // Let smart suggestion or default handle it
+        });
+        setModalMode('form');
     };
 
     // Flatten pages into a single array
@@ -246,13 +269,33 @@ export default function Expenses() {
             <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title={editingExpense ? 'Edit Expense' : 'Add New Expense'}
+                title={modalMode === 'scan' ? 'Scan Receipt' : (editingExpense ? 'Edit Expense' : 'Add New Expense')}
             >
-                <ExpenseForm
-                    initialData={editingExpense}
-                    onSuccess={handleSuccess}
-                    onClose={() => setIsModalOpen(false)}
-                />
+                {modalMode === 'scan' ? (
+                    <div className="flex flex-col items-center justify-center py-8 space-y-6">
+                        <div className="text-center space-y-2">
+                            <p className="text-slate-600 dark:text-slate-300">
+                                Take a photo or upload a receipt to automatically fill details.
+                            </p>
+                        </div>
+                        <div className="scale-125">
+                            <ScanReceipt onParse={handleScanComplete} />
+                        </div>
+                        <Button
+                            variant="ghost"
+                            onClick={() => setModalMode('form')}
+                            className="mt-4"
+                        >
+                            Enter Manually
+                        </Button>
+                    </div>
+                ) : (
+                    <ExpenseForm
+                        initialData={editingExpense}
+                        onSuccess={handleSuccess}
+                        onClose={() => setIsModalOpen(false)}
+                    />
+                )}
             </Modal>
         </div>
     );
