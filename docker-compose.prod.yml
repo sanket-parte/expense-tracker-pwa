@@ -59,6 +59,8 @@ services:
     environment:
       # Using the APP_USER and APP_PASSWORD defined below
       - DATABASE_URL=postgresql://${APP_USER}:${APP_PASSWORD}@db:5432/${APP_DB}
+      - SECRET_KEY=${SECRET_KEY}
+      - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
     depends_on:
       db:
         condition: service_healthy

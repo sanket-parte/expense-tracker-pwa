@@ -6,6 +6,7 @@ from backend.adapters.database.repositories.user_repository import UserRepositor
 from backend.adapters.database.models import User
 from backend.api.schemas.all import UserCreate, UserUpdate
 from backend.core.security import get_password_hash, verify_password, create_access_token
+from backend.core.config import settings
 import logging
 
 logger = logging.getLogger(__name__)
@@ -30,7 +31,7 @@ class AuthService:
             return None
         
         logger.info(f"User authenticated successfully: {email}")
-        access_token_expires = timedelta(minutes=60*24) # 1 day
+        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(
             data={"sub": user.email}, expires_delta=access_token_expires
         )

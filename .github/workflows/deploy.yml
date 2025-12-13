@@ -151,11 +151,13 @@ jobs:
           APP_USER: ${{ secrets.APP_USER }}
           APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
           APP_DB: ${{ secrets.APP_DB }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          BACKEND_CORS_ORIGINS: ${{ secrets.BACKEND_CORS_ORIGINS }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          envs: GITHUB_REPOSITORY,CR_PAT,POSTGRES_PASSWORD,APP_USER,APP_PASSWORD,APP_DB
+          envs: GITHUB_REPOSITORY,CR_PAT,POSTGRES_PASSWORD,APP_USER,APP_PASSWORD,APP_DB,SECRET_KEY,BACKEND_CORS_ORIGINS
           script: |
             echo $CR_PAT | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
             
@@ -172,5 +174,7 @@ jobs:
             export APP_USER=$APP_USER
             export APP_PASSWORD=$APP_PASSWORD
             export APP_DB=$APP_DB
+            export SECRET_KEY=$SECRET_KEY
+            export BACKEND_CORS_ORIGINS=$BACKEND_CORS_ORIGINS
             
             docker compose up -d --pull always
