@@ -67,6 +67,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
+      - name: Prepare VM directories
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            mkdir -p ~/expense-tracker
+            # Clean up potential conflicted file/directory that caused scp error
+            rm -rf ~/expense-tracker/docker-compose.prod.yml
+
       - name: Copy docker-compose.prod.yml to VM
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -81,23 +92,24 @@ jobs:
         env:
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          CR_PAT: ${{ secrets.GITHUB_TOKEN }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          envs: GITHUB_REPOSITORY_OWNER,POSTGRES_PASSWORD
+          envs: GITHUB_REPOSITORY_OWNER,POSTGRES_PASSWORD,CR_PAT
           script: |
+            # Login to GHCR so we can pull the images
+            echo $CR_PAT | docker login ghcr.io -u $GITHUB_REPOSITORY_OWNER --password-stdin
+            
             # Pull latest images
             docker pull ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/expense-tracker-frontend:latest
             docker pull ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/expense-tracker-backend:latest
             
-            # Navigate to directory (create if doesn't exist)
-            mkdir -p ~/expense-tracker
+            # Navigate to directory
             cd ~/expense-tracker
             
             # Start services
-            # Make sure to clean up potentially conflicting containers if needed, or just up -d --recreate
-            # Passing environment variables to the compose command
             export GITHUB_REPOSITORY_OWNER=${GITHUB_REPOSITORY_OWNER,,}
             export POSTGRES_PASSWORD=$POSTGRES_PASSWORD
             
