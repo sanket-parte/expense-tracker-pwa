@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 from typing import List
+import logging
+from fastapi import APIRouter, Depends, HTTPException
 
 from backend.api.deps import get_db as get_session
 from backend.adapters.database.models import User
@@ -9,6 +11,7 @@ from backend.api.deps import get_current_user
 from backend.services.category_service import CategoryService
 
 router = APIRouter(prefix="/categories", tags=["categories"])
+logger = logging.getLogger(__name__)
 
 @router.post("/", response_model=CategoryRead)
 def create_category(
@@ -18,9 +21,11 @@ def create_category(
     current_user: User = Depends(get_current_user)
 ):
     service = CategoryService(session)
+    logger.info(f"Creating category: {category.name} for user: {current_user.id}")
     new_category = service.create_category(category, user_id=current_user.id)
     
     if not new_category:
+        logger.warning(f"Category already exists: {category.name}")
         raise HTTPException(status_code=400, detail="Category already exists")
     
     return new_category
@@ -41,8 +46,10 @@ def delete_category(
     current_user: User = Depends(get_current_user)
 ):
     service = CategoryService(session)
+    logger.info(f"Deleting category {category_id} for user {current_user.id}")
     success = service.delete_category(category_id, user_id=current_user.id)
     if not success:
+        logger.warning(f"Category not found for delete: {category_id}")
         raise HTTPException(status_code=404, detail="Category not found")
     
     return {"ok": True}

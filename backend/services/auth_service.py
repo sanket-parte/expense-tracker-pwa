@@ -6,6 +6,9 @@ from backend.adapters.database.repositories.user_repository import UserRepositor
 from backend.adapters.database.models import User
 from backend.api.schemas.all import UserCreate, UserUpdate
 from backend.core.security import get_password_hash, verify_password, create_access_token
+import logging
+
+logger = logging.getLogger(__name__)
 
 class AuthService:
     def __init__(self, session: Session):
@@ -23,8 +26,10 @@ class AuthService:
     def authenticate_user(self, email: str, password: str) -> dict:
         user = self.repository.get_by_email(email)
         if not user or not verify_password(password, user.password_hash):
-             return None
+            logger.warning(f"Authentication failed for user: {email}")
+            return None
         
+        logger.info(f"User authenticated successfully: {email}")
         access_token_expires = timedelta(minutes=60*24) # 1 day
         access_token = create_access_token(
             data={"sub": user.email}, expires_delta=access_token_expires

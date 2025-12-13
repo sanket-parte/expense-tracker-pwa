@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
+from typing import List
+import logging
 from backend.api.deps import get_db as get_session
 from backend.adapters.database.models import User
 from backend.api.schemas.all import BudgetCreate, BudgetRead
@@ -7,6 +9,7 @@ from backend.api.deps import get_current_user
 from backend.services.budget_service import BudgetService
 
 router = APIRouter(prefix="/budgets", tags=["budgets"])
+logger = logging.getLogger(__name__)
 
 @router.get("/", response_model=list[BudgetRead])
 def get_budgets(
@@ -22,8 +25,14 @@ def create_budget(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_current_user)
 ):
+    logger.info(f"Upserting budget for category {budget.category_id}, user {current_user.id}")
     service = BudgetService(session)
-    new_budget = service.create_budget(budget, current_user.id)
+    try:
+        updated_budget = service.upsert_budget(budget, current_user.id)
+        return updated_budget
+    except Exception as e:
+        logger.error(f"Error upserting budget: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
     
     if not new_budget:
         raise HTTPException(status_code=400, detail="Budget already exists for this category")

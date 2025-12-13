@@ -3,6 +3,9 @@ from sqlmodel import Session
 from backend.adapters.database.repositories.category_repository import CategoryRepository
 from backend.adapters.database.models import Category
 from backend.api.schemas.all import CategoryCreate
+import logging
+
+logger = logging.getLogger(__name__)
 
 class CategoryService:
     def __init__(self, session: Session):
@@ -11,6 +14,7 @@ class CategoryService:
     def create_category(self, category_create: CategoryCreate, user_id: int) -> Optional[Category]:
         # Check uniqueness for this user
         if self.repository.get_by_name(category_create.name, user_id):
+            logger.info(f"Category creation skipped: '{category_create.name}' already exists for user {user_id}")
             return None
         
         db_category = Category.from_orm(category_create)

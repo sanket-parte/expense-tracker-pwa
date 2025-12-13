@@ -8,6 +8,10 @@ venv/
 env/
 .env
 
+# Logs
+logs/
+*.log
+
 # Database
 *.db
 *.sqlite3

@@ -2,22 +2,29 @@ import json
 import base64
 from datetime import datetime, timedelta
 from typing import List, Optional, Dict, Any
+import logging
+from backend.core.config import settings
 from sqlmodel import Session, select
 from sqlalchemy import func
 
 from backend.adapters.database.models import Expense, UserSettings, AISuggestion, Category, RecurringExpense, Budget, Challenge, MonthlyReport
 from backend.adapters.ai.llm_provider import LiteLLMProvider, LLMProvider
 
+logger = logging.getLogger(__name__)
+
 class AIService:
     def __init__(self, session: Session, user_id: int):
         self.session = session
         self.user_id = user_id
         self.provider = self._get_provider(user_id)
+        logger.info(f"AIService initialized for user {user_id}. Provider available: {self.provider is not None}")
 
     def _get_provider(self, user_id: int) -> Optional[LLMProvider]:
         settings = self.session.exec(select(UserSettings).where(UserSettings.user_id == user_id)).first()
         if not settings or not settings.openai_api_key:
+            logger.warning(f"No OpenAI API key found for user {user_id}. AI features will be disabled.")
             return None
+        logger.info(f"LLMProvider initialized for user {user_id}.")
         return LiteLLMProvider(api_key=settings.openai_api_key)
 
     def _get_recent_expenses_text(self, days: int = 365) -> str:
@@ -28,6 +35,7 @@ class AIService:
         ).all()
         
         if not expenses:
+            logger.info(f"No expenses found for user {self.user_id} in the last {days} days.")
             return f"No expenses recorded in the last {days} days."
 
         category_totals = {}
@@ -52,10 +60,12 @@ class AIService:
             
         summary += "\nRecent Transactions (Last 50):\n" + "\n".join(expense_details[:50])
         
+        logger.debug(f"Generated expense summary for user {self.user_id}.")
         return summary
 
     def generate_financial_advice(self) -> str:
         if not self.provider:
+            logger.warning(f"Attempted to generate financial advice for user {self.user_id} without LLM provider.")
             return "Please configure your OpenAI API Key in Settings to receive AI suggestions."
             
         expense_data = self._get_recent_expenses_text(days=365)
@@ -78,7 +88,9 @@ class AIService:
         """
         
         try:
+            logger.info(f"Generating financial advice for user {self.user_id}...")
             suggestion_text = self.provider.generate_text(prompt, system_prompt="You are a helpful financial analyst who provides specific, personalized advice based on actual data.")
+            logger.debug(f"AI generated advice: {suggestion_text[:100]}...")
             
             new_suggestion = AISuggestion(
                 user_id=self.user_id,
@@ -86,14 +98,16 @@ class AIService:
             )
             self.session.add(new_suggestion)
             self.session.commit()
+            logger.info(f"Financial advice saved for user {self.user_id}.")
             
             return suggestion_text
         except Exception as e:
-            print(f"Error generating advice: {e}")
+            logger.error(f"Error generating financial advice for user {self.user_id}: {e}")
             return f"Error generating suggestion: {str(e)}"
 
     def extract_receipt_data(self, image_data: bytes, media_type: str = "image/jpeg") -> Dict[str, Any]:
         if not self.provider:
+             logger.warning(f"Attempted to extract receipt data for user {self.user_id} without LLM provider.")
              raise ValueError("OpenAI API Key not configured")
 
         # Encode image to base64
@@ -125,16 +139,23 @@ class AIService:
             "category_id": 12
         }}
         """
-        
-        return self.provider.generate_json(
-            prompt, 
-            system_prompt="You are a precise receipt data extractor.",
-            images=[image_url],
-            model="gpt-4o" # Force a vision-capable model if possible, or user's default if it supports it
-        )
+        try:
+            logger.info(f"Extracting receipt data for user {self.user_id}...")
+            result = self.provider.generate_json(
+                prompt, 
+                system_prompt="You are a precise receipt data extractor.",
+                images=[image_url],
+                model="gpt-4o" # Force a vision-capable model if possible, or user's default if it supports it
+            )
+            logger.debug(f"Receipt extraction result for user {self.user_id}: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"Error extracting receipt data for user {self.user_id}: {e}")
+            raise
 
     def parse_expense_natural_language(self, text: str) -> Dict[str, Any]:
         if not self.provider:
+             logger.warning(f"Attempted to parse natural language expense for user {self.user_id} without LLM provider.")
              raise ValueError("OpenAI API Key not configured")
 
         categories = self.session.exec(select(Category).where(Category.user_id == self.user_id)).all()
@@ -165,8 +186,14 @@ class AIService:
             "category_id": int or null
         }}
         """
-        
-        return self.provider.generate_json(prompt, system_prompt="You are a precise data extraction assistant that outputs raw JSON.")
+        try:
+            logger.info(f"Parsing natural language expense for user {self.user_id}: '{text}'")
+            result = self.provider.generate_json(prompt, system_prompt="You are a precise data extraction assistant that outputs raw JSON.")
+            logger.debug(f"NL expense parsing result for user {self.user_id}: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"Error parsing natural language expense for user {self.user_id}: {e}")
+            raise
 
     def detect_recurring_expenses(self) -> List[Dict[str, Any]]:
         expenses = self.session.exec(
@@ -177,6 +204,7 @@ class AIService:
         ).all()
         
         if len(expenses) < 5 or not self.provider:
+            logger.info(f"Not enough expenses ({len(expenses)}) or no LLM provider for user {self.user_id} to detect recurring expenses.")
             return []
 
         existing = self.session.exec(select(RecurringExpense).where(RecurringExpense.user_id == self.user_id)).all()
@@ -206,15 +234,19 @@ class AIService:
         Return JSON ONLY.
         """
         try:
-            return self.provider.generate_json(prompt)
+            logger.info(f"Detecting recurring expenses for user {self.user_id}...")
+            result = self.provider.generate_json(prompt)
+            logger.debug(f"Recurring expense detection result for user {self.user_id}: {result}")
+            return result
         except Exception as e:
-            print(f"Error detecting recurring: {e}")
+            logger.error(f"Error detecting recurring expenses for user {self.user_id}: {e}")
             return []
 
     def generate_budget_forecast(self) -> List[Dict[str, Any]]:
         import calendar
         budgets = self.session.exec(select(Budget).where(Budget.user_id == self.user_id)).all()
         if not budgets:
+            logger.info(f"No budgets found for user {self.user_id}. Skipping budget forecast.")
             return []
             
         forecasts = []
@@ -259,6 +291,7 @@ class AIService:
             if is_at_risk:
                 if budget.category_id in cache_map:
                     advice = cache_map[budget.category_id]
+                    logger.debug(f"Using cached budget advice for category {budget.category.name}.")
                 else:
                     advice = "You are spending too fast."
                     if self.provider:
@@ -271,7 +304,9 @@ class AIService:
                             
                             Give a 1-sentence, encouraging specific tip to help them get back on track.
                             """
+                            logger.info(f"Generating budget advice for category {budget.category.name} for user {self.user_id}...")
                             advice = self.provider.generate_text(prompt, max_tokens=60)
+                            logger.debug(f"Generated budget advice: {advice}")
                             
                             new_cache = AISuggestion(
                                 user_id=self.user_id,
@@ -279,8 +314,9 @@ class AIService:
                             )
                             self.session.add(new_cache)
                             self.session.commit()
+                            logger.info(f"Budget advice cached for category {budget.category.name}.")
                         except Exception as e:
-                            print(f"Error generating forecast advice: {e}")
+                            logger.error(f"Error generating forecast advice for user {self.user_id}, category {budget.category.name}: {e}")
             
             forecasts.append({
                 "category": budget.category.name,
@@ -291,6 +327,7 @@ class AIService:
                 "status": "at_risk" if spent_amount < budget.amount else "exceeded",
                 "advice": advice
             })
+        logger.info(f"Generated budget forecast for user {self.user_id}.")
         return forecasts
 
     def generate_budget_suggestions(self) -> List[Dict[str, Any]]:
@@ -307,6 +344,7 @@ class AIService:
         ).all()
         
         if not expenses:
+            logger.info(f"No expenses found for user {self.user_id} in the last 90 days. Skipping budget suggestions.")
             return []
 
         cat_expenses = {}
@@ -337,6 +375,7 @@ class AIService:
             return items
 
         if not self.provider:
+            logger.warning(f"No LLM provider for user {self.user_id}. Falling back to simple budget suggestions.")
             results = [{
                 "category_id": s["category_id"],
                 "amount": int(s["avg_monthly"]),
@@ -368,10 +407,12 @@ class AIService:
         """
 
         try:
+            logger.info(f"Generating budget suggestions for user {self.user_id}...")
             suggestions = self.provider.generate_json(prompt, temperature=0.3)
+            logger.debug(f"Budget suggestions generated for user {self.user_id}: {suggestions}")
             return attach_names(suggestions)
         except Exception as e:
-            print(f"Error generating budget suggestions: {e}")
+            logger.error(f"Error generating budget suggestions for user {self.user_id}: {e}")
             results = [{
                 "category_id": s["category_id"],
                 "amount": int(s["avg_monthly"] * 1.1),
@@ -387,10 +428,12 @@ class AIService:
         ).all()
         
         if not expenses or not self.provider:
+            logger.info(f"No uncategorized expenses or no LLM provider for user {self.user_id}. Skipping auto-categorization.")
             return 0
             
         categories = self.session.exec(select(Category).where(Category.user_id == self.user_id)).all()
         if not categories:
+            logger.warning(f"No categories defined for user {self.user_id}. Cannot auto-categorize.")
             return 0
             
         cat_map = {c.id: c.name for c in categories}
@@ -422,6 +465,7 @@ class AIService:
         """
         
         try:
+            logger.info(f"Attempting to auto-categorize {len(expenses)} expenses for user {self.user_id}...")
             data = self.provider.generate_json(prompt, temperature=0.0)
             mappings = data.get("mappings", [])
             
@@ -437,9 +481,10 @@ class AIService:
                         count += 1
             
             self.session.commit()
+            logger.info(f"Successfully auto-categorized {count} expenses for user {self.user_id}.")
             return count
         except Exception as e:
-            print(f"Error auto-categorizing: {e}")
+            logger.error(f"Error auto-categorizing expenses for user {self.user_id}: {e}")
             return 0
 
     def process_natural_language_query(self, query_text: str) -> Dict[str, Any]:
@@ -479,12 +524,15 @@ class AIService:
         """
         
         if not self.provider:
+            logger.warning(f"Attempted to process NL query for user {self.user_id} without LLM provider.")
             return {"error": "API Key missing"}
 
         try:
+            logger.info(f"Processing natural language query for user {self.user_id}: '{query_text}'")
             params = self.provider.generate_json(prompt, system_prompt="You are a precise query generator that outputs raw JSON.")
             filters = params.get("filters", {})
             op = params.get("operation")
+            logger.debug(f"NL query parsed into: {params}")
             
             query = select(Expense).where(Expense.user_id == self.user_id)
             
@@ -514,14 +562,16 @@ class AIService:
                     result_value = sum(e.amount for e in expenses) / len(expenses)
                 formatted_result = f"₹{result_value:.2f}"
             else:
+                logger.warning(f"Unknown operation '{op}' for NL query for user {self.user_id}.")
                 return {"answer": "I didn't understand the operation."}
 
             template = params.get("human_readable_answer_template", "The answer is {value}.")
             final_answer = template.replace("{value}", formatted_result)
+            logger.info(f"NL query processed for user {self.user_id}. Answer: {final_answer}")
             return {"answer": final_answer, "debug_query": params}
 
         except Exception as e:
-            print(f"Error processing NL query: {e}")
+            logger.error(f"Error processing NL query for user {self.user_id}: {e}")
             return {"answer": "Sorry, I couldn't process that question."}
 
     def generate_spending_challenges(self) -> List[Dict[str, Any]]:
@@ -536,6 +586,7 @@ class AIService:
             )).first()
             
             if existing:
+                logger.info(f"User {self.user_id} has no recent expenses but already has 'First Step' challenge. Skipping new challenge generation.")
                 return []
 
             today = datetime.now()
@@ -553,6 +604,7 @@ class AIService:
             )
             self.session.add(starter)
             self.session.commit()
+            logger.info(f"Created 'First Step' challenge for user {self.user_id}.")
             return [{"title": "First Step", "description": "Track your spending to unlock insights."}]
             
         categories = self.session.exec(select(Category).where(Category.user_id == self.user_id)).all()
@@ -570,6 +622,7 @@ class AIService:
         context_str = "\n".join(context_data)
         
         if not self.provider:
+            logger.warning(f"No LLM provider for user {self.user_id}. Skipping spending challenge generation.")
             return []
             
         available_cats = ", ".join([c.name for c in categories])
@@ -604,6 +657,7 @@ class AIService:
         """
         
         try:
+            logger.info(f"Generating spending challenges for user {self.user_id}...")
             suggestions = self.provider.generate_json(prompt, temperature=0.7)
             today = datetime.now()
             next_week = today + timedelta(days=7)
@@ -632,6 +686,7 @@ class AIService:
                         Challenge.category_id == cat_id
                     )).first()
                     if existing:
+                        logger.debug(f"Challenge for category {cat_name} already pending for user {self.user_id}. Skipping.")
                         continue
 
                     new_chall = Challenge(
@@ -649,9 +704,10 @@ class AIService:
                     created_challenges.append(s)
             
             self.session.commit()
+            logger.info(f"Generated and saved {len(created_challenges)} new challenges for user {self.user_id}.")
             return created_challenges
         except Exception as e:
-            print(f"Error generating challenges: {e}")
+            logger.error(f"Error generating challenges for user {self.user_id}: {e}")
             return []
 
     def generate_monthly_audit(self, month_str: str = None) -> Optional[MonthlyReport]:
@@ -712,6 +768,7 @@ class AIService:
             change_pct = ((total_spent - prev_spent) / prev_spent) * 100
         
         if not self.provider:
+            logger.warning(f"No LLM provider for user {self.user_id}. Skipping monthly audit generation.")
             return None
 
         prompt = f"""
@@ -740,7 +797,9 @@ class AIService:
         """
         
         try:
+            logger.info(f"Generating monthly audit for user {self.user_id}, month {month_str}...")
             analysis_json = json.dumps(self.provider.generate_json(prompt, temperature=0.5))
+            logger.debug(f"Monthly audit analysis for user {self.user_id}: {analysis_json}")
             
             existing = self.session.exec(select(MonthlyReport).where(
                 MonthlyReport.user_id == self.user_id,
@@ -754,6 +813,7 @@ class AIService:
                 existing.analysis = analysis_json
                 self.session.add(existing)
                 report = existing
+                logger.info(f"Updated existing monthly report for user {self.user_id}, month {month_str}.")
             else:
                 report = MonthlyReport(
                     user_id=self.user_id,
@@ -764,10 +824,64 @@ class AIService:
                     analysis=analysis_json
                 )
                 self.session.add(report)
+                logger.info(f"Created new monthly report for user {self.user_id}, month {month_str}.")
                 
             self.session.commit()
             return report
 
         except Exception as e:
-            print(f"Error generating audit: {e}")
+            logger.error(f"Error generating monthly audit for user {self.user_id}, month {month_str}: {e}")
             return None
+
+    def generate_expense_breakdown(self, start_date: datetime, end_date: datetime) -> str:
+        if not self.provider:
+            logger.warning(f"Attempted to generate expense breakdown for user {self.user_id} without LLM provider.")
+            return "Please configure your OpenAI API Key in Settings to receive AI suggestions."
+
+        expenses = self.session.exec(
+            select(Expense)
+            .where(
+                Expense.user_id == self.user_id,
+                Expense.date >= start_date,
+                Expense.date <= end_date
+            )
+        ).all()
+
+        if not expenses:
+            return f"No expenses found between {start_date.strftime('%Y-%m-%d')} and {end_date.strftime('%Y-%m-%d')}."
+
+        categories = self.session.exec(select(Category).where(Category.user_id == self.user_id)).all()
+        cat_map = {c.id: c.name for c in categories}
+
+        expense_summary_lines = []
+        total_spent = 0.0
+        for expense in expenses:
+            cat_name = cat_map.get(expense.category_id, "Unknown")
+            expense_summary_lines.append(f"- {expense.date.strftime('%Y-%m-%d')}: {expense.title} ({cat_name}) - ₹{expense.amount:.2f}")
+            total_spent += expense.amount
+
+        expense_data_text = "\n".join(expense_summary_lines)
+
+        prompt = f"""
+        You are a financial analyst. Analyze the following expense data for the period from {start_date.strftime('%Y-%m-%d')} to {end_date.strftime('%Y-%m-%d')}.
+        The total spent is ₹{total_spent:.2f}.
+
+        Expense Data:
+        {expense_data_text}
+
+        Provide a concise breakdown of spending patterns, highlighting any significant categories or unusual transactions.
+        Suggest one actionable insight based on this data.
+        """
+        try:
+            logger.info(f"Generating expense breakdown for user {self.user_id} from {start_date} to {end_date}...")
+            response = self.provider.generate_text(prompt)
+            logger.debug(f"AI Response for expense breakdown: {response}")
+            
+            # Simple parsing (assuming JSON-like or exact format)
+            # In a real app, use structured output parsing
+            return response
+        except Exception as e:
+            logger.error(f"Error generating expense breakdown for user {self.user_id}: {e}")
+            return "Could not generate breakdown."
+
+

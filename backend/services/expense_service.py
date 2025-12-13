@@ -2,16 +2,23 @@ from typing import List, Optional
 from datetime import datetime
 from sqlmodel import Session
 from backend.adapters.database.repositories.expense_repository import ExpenseRepository
+import logging
 from backend.adapters.database.models import Expense, User
 from backend.api.schemas.all import ExpenseCreate, ExpenseUpdate
 from backend.adapters.ai.service import AIService
+
+logger = logging.getLogger(__name__)
 
 class ExpenseService:
     def __init__(self, session: Session):
         self.repository = ExpenseRepository(session)
         self.session = session
 
-    def create_expense(self, expense_create: ExpenseCreate, user_id: int) -> Expense:
+    def create_expense(self, expense_create: ExpenseCreate, user_id: int) -> Optional[Expense]:
+        if expense_create.amount <= 0:
+            logger.warning(f"Attempt to create expense with non-positive amount: {expense_create.amount}")
+            return None
+        
         db_expense = Expense(**expense_create.model_dump(), user_id=user_id)
         return self.repository.create(db_expense)
 
