@@ -10,7 +10,7 @@ done
 >&2 echo "Postgres is up - executing command"
 
 # Create User and Database if they don't exist
-PGPASSWORD=$POSTGRES_PASSWORD psql -h "db" -U "postgres" <<EOF
+PGPASSWORD=$POSTGRES_PASSWORD psql -v ON_ERROR_STOP=1 -h "db" -U "postgres" <<EOF
 DO
 \$do\$
 BEGIN
