@@ -42,3 +42,5 @@ app.include_router(reports.router)
 @app.get("/")
 def read_root():
     return {"message": "Expense Tracker API is running (Clean Architecture)"}
+
+# Force build trigger
