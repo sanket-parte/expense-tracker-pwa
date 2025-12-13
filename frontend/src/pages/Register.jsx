@@ -76,59 +76,72 @@ export default function Register() {
                         <p className="text-slate-500 dark:text-slate-400 mt-2">Start tracking your expenses today</p>
                     </div>
 
-                    {error && (
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 p-4 rounded-xl text-sm font-medium flex items-center gap-2 border border-red-100 dark:border-red-500/20"
-                        >
-                            <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
-                            {error}
-                        </motion.div>
+                    {!useAuth().registrationEnabled ? (
+                        <div className="text-center space-y-8 py-8">
+                            <div className="p-4 bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 rounded-xl font-medium border border-orange-200 dark:border-orange-500/20">
+                                Registration is currently disabled by the administrator.
+                            </div>
+                            <Link to="/login">
+                                <Button variant="outline" fullWidth>Back to Login</Button>
+                            </Link>
+                        </div>
+                    ) : (
+                        <>
+                            {error && (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 p-4 rounded-xl text-sm font-medium flex items-center gap-2 border border-red-100 dark:border-red-500/20"
+                                >
+                                    <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                                    {error}
+                                </motion.div>
+                            )}
+
+                            <form onSubmit={handleSubmit} className="space-y-5">
+                                <Input
+                                    label="Full Name"
+                                    type="text"
+                                    icon={User}
+                                    value={fullName}
+                                    onChange={(e) => setFullName(e.target.value)}
+                                    placeholder="John Doe"
+                                    required
+                                />
+
+                                <Input
+                                    label="Email"
+                                    type="email"
+                                    icon={Mail}
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="john@example.com"
+                                    required
+                                />
+
+                                <Input
+                                    label="Password"
+                                    type="password"
+                                    icon={Lock}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="••••••••"
+                                    required
+                                />
+
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    size="lg"
+                                    isLoading={loading}
+                                    className="text-lg group"
+                                >
+                                    <span className="mr-2">Create Account</span>
+                                    <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                                </Button>
+                            </form>
+                        </>
                     )}
-
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                        <Input
-                            label="Full Name"
-                            type="text"
-                            icon={User}
-                            value={fullName}
-                            onChange={(e) => setFullName(e.target.value)}
-                            placeholder="John Doe"
-                            required
-                        />
-
-                        <Input
-                            label="Email"
-                            type="email"
-                            icon={Mail}
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="john@example.com"
-                            required
-                        />
-
-                        <Input
-                            label="Password"
-                            type="password"
-                            icon={Lock}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="••••••••"
-                            required
-                        />
-
-                        <Button
-                            type="submit"
-                            fullWidth
-                            size="lg"
-                            isLoading={loading}
-                            className="text-lg group"
-                        >
-                            <span className="mr-2">Create Account</span>
-                            <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                        </Button>
-                    </form>
 
                     <div className="mt-8 text-center">
                         <p className="text-slate-600 dark:text-slate-400">

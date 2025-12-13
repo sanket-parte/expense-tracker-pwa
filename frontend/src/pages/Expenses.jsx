@@ -11,7 +11,7 @@ import { useExpenses, useCategories } from '../hooks/useQueries';
 import { useDeleteExpense } from '../hooks/useMutations';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import api from '../lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '../hooks/useQueries';

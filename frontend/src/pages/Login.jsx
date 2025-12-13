@@ -132,10 +132,16 @@ export default function Login() {
 
                     <div className="mt-8 text-center">
                         <p className="text-slate-600 dark:text-slate-400">
-                            Don't have an account?{' '}
-                            <Link to="/register" className="font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors">
-                                Create account
-                            </Link>
+                            {useAuth().registrationEnabled ? (
+                                <>
+                                    Don't have an account?{' '}
+                                    <Link to="/register" className="font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors">
+                                        Create account
+                                    </Link>
+                                </>
+                            ) : (
+                                "Registration is currently disabled"
+                            )}
                         </p>
                     </div>
                 </div>

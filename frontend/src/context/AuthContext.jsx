@@ -6,6 +6,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('token'));
+    const [registrationEnabled, setRegistrationEnabled] = useState(true);
     const [loading, setLoading] = useState(true);
 
     const logout = () => {
@@ -16,20 +17,26 @@ export const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        const loadUser = async () => {
-            if (token) {
-                try {
+        const initAuth = async () => {
+            try {
+                // Fetch config
+                const configRes = await api.get('/auth/config');
+                setRegistrationEnabled(configRes.data.enable_registration);
+
+                // Load user if token exists
+                if (token) {
                     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                     const res = await api.get('/auth/me');
                     setUser(res.data);
-                } catch (error) {
-                    console.error("Failed to load user", error);
-                    logout();
                 }
+            } catch (error) {
+                console.error("Auth init failed", error);
+                if (token) logout();
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
-        loadUser();
+        initAuth();
     }, [token]);
 
     const login = async (email, password) => {
@@ -68,7 +75,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, register, logout, updateProfile, loading, isAuthenticated: !!user }}>
+        <AuthContext.Provider value={{ user, login, register, logout, updateProfile, loading, isAuthenticated: !!user, registrationEnabled }}>
             {children}
         </AuthContext.Provider>
     );

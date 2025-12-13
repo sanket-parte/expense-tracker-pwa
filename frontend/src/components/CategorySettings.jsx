@@ -5,7 +5,7 @@ import { useCreateCategory, useDeleteCategory } from '../hooks/useMutations';
 import Card from './ui/Card';
 import Button from './ui/Button';
 import Input from './ui/Input';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export default function CategorySettings() {
     const { data: categories = [], isLoading } = useCategories();
