@@ -7,6 +7,7 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
+RUN npm run lint
 RUN npm run build
 
 # Production stage

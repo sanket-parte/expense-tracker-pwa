@@ -15,9 +15,7 @@ COPY requirements.txt .
 # Create virtual environment and install dependencies
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir -r requirements.txt && \
-    find /opt/venv -name "*.so" -exec strip --strip-unneeded {} +
-
+RUN pip install --no-cache-dir -r requirements.txt 
 # Final stage
 FROM python:3.11-alpine
 
