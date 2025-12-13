@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     ENABLE_REGISTRATION: bool = False
     
     # CORS
-    BACKEND_CORS_ORIGINS: list[str] = []
+    BACKEND_CORS_ORIGINS: list[str] | str = []
 
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
     def assemble_cors_origins(cls, v: str | list[str]) -> list[str]:
