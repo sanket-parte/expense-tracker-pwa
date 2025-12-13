@@ -12,8 +12,8 @@ from alembic import context
 sys.path.append(os.getcwd())
 
 # Import models to register them with SQLModel.metadata
-from models import *
-from database import database_url
+from backend.adapters.database import models
+from backend.adapters.database.session import database_url
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
