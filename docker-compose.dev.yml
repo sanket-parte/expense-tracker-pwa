@@ -1,0 +1,90 @@
+services:
+  # DB Service (Same as prod but with exposed port for local access if needed)
+  db:
+    image: postgres:15-alpine
+    container_name: et-db-dev
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-expense_tracker}
+    volumes:
+      - pgdata-dev:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Backend Service with Auto-Reload
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: et-backend-dev
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app/backend
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-expense_tracker}
+      - SECRET_KEY=dev_secret_key
+      - BACKEND_CORS_ORIGINS=["http://localhost:5173","http://localhost:8000"]
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  # Frontend Service with HMR
+  frontend:
+    image: node:20-alpine
+    container_name: et-frontend-dev
+    restart: always
+    working_dir: /app
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    command: sh -c "npm install && npm run dev -- --host"
+    depends_on:
+      backend:
+        condition: service_started
+    networks:
+      - app-network
+  # Data Seeder Service (Runs once then exits)
+  # seeder:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   container_name: et-seeder-dev
+  #   # Override entrypoint to run the seed script
+  #   entrypoint: [ "python", "-m", "backend.seed_data" ]
+  #   environment:
+  #     - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-expense_tracker}
+  #     - SECRET_KEY=dev_secret_key
+  #     - BACKEND_CORS_ORIGINS=["http://localhost:5173","http://localhost:8000"]
+  #   depends_on:
+  #     backend:
+  #       condition: service_started
+  #     db:
+  #       condition: service_healthy
+  #   networks:
+  #     - app-network
+
+volumes:
+  pgdata-dev:
+
+
+networks:
+  app-network:
+    driver: bridge
