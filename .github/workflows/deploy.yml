@@ -105,27 +105,27 @@ jobs:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         env:
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           CR_PAT: ${{ secrets.GITHUB_TOKEN }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          envs: GITHUB_REPOSITORY_OWNER,POSTGRES_PASSWORD,CR_PAT
+          envs: GITHUB_REPOSITORY,POSTGRES_PASSWORD,CR_PAT
           script: |
             # Login to GHCR so we can pull the images
-            echo $CR_PAT | docker login ghcr.io -u $GITHUB_REPOSITORY_OWNER --password-stdin
+            echo $CR_PAT | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
             
             # Pull latest images
-            docker pull ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/expense-tracker-frontend:latest
-            docker pull ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/expense-tracker-backend:latest
+            docker pull ghcr.io/${GITHUB_REPOSITORY,,}-frontend:latest
+            docker pull ghcr.io/${GITHUB_REPOSITORY,,}-backend:latest
             
             # Navigate to directory
             cd ~/expense-tracker
             
             # Start services
-            export GITHUB_REPOSITORY_OWNER=${GITHUB_REPOSITORY_OWNER,,}
+            export GITHUB_REPOSITORY=${GITHUB_REPOSITORY,,}
             export POSTGRES_PASSWORD=$POSTGRES_PASSWORD
             
             docker compose -f docker-compose.prod.yml up -d --pull always
