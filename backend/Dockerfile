@@ -23,7 +23,8 @@ WORKDIR /app
 
 # Install runtime dependencies for Postgres
 RUN apk add --no-cache \
-    libpq
+    libpq \
+    curl
 
 # Copy virtual environment from builder
 COPY --from=builder /opt/venv /opt/venv

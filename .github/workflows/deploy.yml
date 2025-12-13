@@ -129,9 +129,9 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             mkdir -p ~/expense-tracker
-            rm -rf ~/expense-tracker/docker-compose.prod.yml
 
       - name: Copy deployment files to VM
+        if: needs.changes.outputs.deploy == 'true'
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
@@ -164,7 +164,6 @@ jobs:
             cd ~/expense-tracker
             
             cp docker-compose.prod.yml docker-compose.yml
-            rm docker-compose.prod.yml
             
             export GITHUB_REPOSITORY=${GITHUB_REPOSITORY,,}
             export POSTGRES_PASSWORD=$POSTGRES_PASSWORD
