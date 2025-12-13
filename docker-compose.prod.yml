@@ -6,7 +6,8 @@ services:
     ports:
       - "80:8080"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     networks:
       - app-network
 
@@ -20,20 +21,28 @@ services:
       # Using the APP_USER and APP_PASSWORD defined below
       - DATABASE_URL=postgresql://${APP_USER}:${APP_PASSWORD}@db:5432/${APP_DB}
     depends_on:
-      - db
-      - init-db
+      db:
+        condition: service_healthy
+      init-db:
+        condition: service_completed_successfully
     networks:
       - app-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   init-db:
     image: postgres:15-alpine
     container_name: expense-tracker-init
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - ./db-init.sh:/db-init.sh
     environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
       - APP_USER=${APP_USER}
       - APP_PASSWORD=${APP_PASSWORD}
       - APP_DB=${APP_DB}
@@ -47,11 +56,16 @@ services:
     restart: always
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
       - app-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   pgdata:
