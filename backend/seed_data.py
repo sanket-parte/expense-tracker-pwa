@@ -43,7 +43,7 @@ def seed_data():
         user_categories = {} # Map name to object
         
         for name, color, _ in category_config:
-            existing_cat = session.exec(select(Category).where(Category.name == name)).first()
+            existing_cat = session.exec(select(Category).where(Category.name == name, Category.user_id == user.id)).first()
             if existing_cat:
                 user_categories[name] = existing_cat
             else:
