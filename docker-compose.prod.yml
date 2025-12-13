@@ -1,7 +1,7 @@
 services:
   frontend:
     image: ghcr.io/${GITHUB_REPOSITORY:-sanket-parte/expense-tracker-pwa}-frontend:latest
-    container_name: expense-tracker-frontend
+    container_name: et-frontend
     restart: always
     ports:
       - "80:8080"
@@ -13,7 +13,7 @@ services:
 
   backend:
     image: ghcr.io/${GITHUB_REPOSITORY:-sanket-parte/expense-tracker-pwa}-backend:latest
-    container_name: expense-tracker-backend
+    container_name: et-backend
     restart: always
     ports:
       - "8000:8000"
@@ -35,7 +35,7 @@ services:
 
   init-db:
     image: postgres:15-alpine
-    container_name: expense-tracker-init
+    container_name: et-init
     depends_on:
       db:
         condition: service_healthy
@@ -52,7 +52,7 @@ services:
 
   db:
     image: postgres:15-alpine
-    container_name: expense-tracker-db
+    container_name: et-db
     restart: always
     environment:
       - POSTGRES_USER=postgres

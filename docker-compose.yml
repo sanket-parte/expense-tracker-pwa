@@ -2,7 +2,7 @@ services:
   frontend:
     build:
       context: ./frontend
-    container_name: expense-tracker-frontend
+    container_name: et-frontend
     restart: always
     ports:
       - "80:80"
@@ -15,7 +15,7 @@ services:
   backend:
     build:
       context: ./backend
-    container_name: expense-tracker-backend
+    container_name: et-backend
     restart: always
     ports:
       - "8000:8000"
@@ -35,7 +35,7 @@ services:
 
   db:
     image: postgres:15-alpine
-    container_name: expense-tracker-db
+    container_name: et-db
     restart: always
     environment:
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
