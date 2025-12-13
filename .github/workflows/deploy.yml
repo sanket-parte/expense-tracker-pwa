@@ -173,6 +173,10 @@ jobs:
             # Navigate to directory
             cd ~/expense-tracker
             
+            # Copy prod file to standard docker-compose.yml
+            cp docker-compose.prod.yml docker-compose.yml
+            rm docker-compose.prod.yml
+            
             # Start services
             export GITHUB_REPOSITORY=${GITHUB_REPOSITORY,,}
             
@@ -182,4 +186,4 @@ jobs:
             export APP_PASSWORD=$APP_PASSWORD
             export APP_DB=$APP_DB
             
-            docker compose -f docker-compose.prod.yml up -d --pull always
+            docker compose up -d --pull always
