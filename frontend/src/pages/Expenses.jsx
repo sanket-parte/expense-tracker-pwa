@@ -11,7 +11,7 @@ import { useExpenses, useCategories } from '../hooks/useQueries';
 import { useDeleteExpense } from '../hooks/useMutations';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion as Motion } from 'framer-motion';
 import api from '../lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '../hooks/useQueries';
@@ -214,7 +214,7 @@ export default function Expenses() {
                     Error loading expenses. Please try again.
                 </Card>
             ) : expenses.length === 0 ? (
-                <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
+                <Motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
                     <Card className="text-center py-24 flex flex-col items-center border-dashed">
                         <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 text-slate-300 dark:text-slate-600 ring-8 ring-slate-50 dark:ring-slate-800">
                             <PlusCircle size={40} />
@@ -225,14 +225,14 @@ export default function Expenses() {
                             Add your first expense
                         </Button>
                     </Card>
-                </motion.div>
+                </Motion.div>
             ) : (
                 <div className="space-y-4">
                     <AnimatePresence mode="popLayout">
                         {expenses.map((expense, index) => {
                             const isLast = expenses.length === index + 1;
                             return (
-                                <motion.div
+                                <Motion.div
                                     ref={isLast ? lastExpenseElementRef : null}
                                     key={expense.id}
                                     layout
@@ -248,7 +248,7 @@ export default function Expenses() {
                                             onDelete={handleDelete}
                                         />
                                     </SwipeableItem>
-                                </motion.div>
+                                </Motion.div>
                             );
                         })}
                     </AnimatePresence>

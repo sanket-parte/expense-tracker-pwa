@@ -5,7 +5,7 @@ import { useCreateCategory, useDeleteCategory } from '../hooks/useMutations';
 import Card from './ui/Card';
 import Button from './ui/Button';
 import Input from './ui/Input';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion as Motion } from 'framer-motion';
 
 export default function CategorySettings() {
     const { data: categories = [], isLoading } = useCategories();
@@ -103,7 +103,7 @@ export default function CategorySettings() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     <AnimatePresence mode="popLayout">
                         {filteredCategories.map(cat => (
-                            <motion.div
+                            <Motion.div
                                 layout
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
@@ -127,7 +127,7 @@ export default function CategorySettings() {
                                 >
                                     <Trash2 size={16} />
                                 </button>
-                            </motion.div>
+                            </Motion.div>
                         ))}
                     </AnimatePresence>
                 </div>
@@ -144,7 +144,7 @@ export default function CategorySettings() {
             <AnimatePresence>
                 {isModalOpen && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                        <motion.div
+                        <Motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -224,7 +224,7 @@ export default function CategorySettings() {
                                     </Button>
                                 </div>
                             </form>
-                        </motion.div>
+                        </Motion.div>
                     </div>
                 )}
             </AnimatePresence>
