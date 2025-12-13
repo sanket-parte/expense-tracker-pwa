@@ -1,25 +1,49 @@
-
-FROM python:3.11-slim
+# Builder stage
+FROM python:3.11-alpine as builder
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Install build dependencies
+RUN apk add --no-cache \
     gcc \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+    musl-dev \
+    postgresql-dev \
+    libffi-dev
 
-# Copy requirements
 COPY requirements.txt .
 
-# Install python dependencies
+# Create virtual environment and install dependencies
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Final stage
+FROM python:3.11-alpine
+
+WORKDIR /app
+
+# Install runtime dependencies for Postgres
+RUN apk add --no-cache \
+    libpq
+
+# Copy virtual environment from builder
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Create and switch to non-root user
+RUN addgroup -S appgroup && \
+    adduser -S appuser -G appgroup
+USER appuser
+
 # Copy application code
-COPY . backend/
+COPY --chown=appuser:appgroup . backend/
+
+COPY --chown=appuser:appgroup entrypoint.sh .
+RUN chmod +x entrypoint.sh
 
 # Expose port
 EXPOSE 8000
 
-# Command to run the application
+# Set entrypoint and command
+ENTRYPOINT ["./entrypoint.sh"]
 CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -93,26 +93,30 @@ jobs:
             # Clean up potential conflicted file/directory that caused scp error
             rm -rf ~/expense-tracker/docker-compose.prod.yml
 
-      - name: Copy docker-compose.prod.yml to VM
+      - name: Copy deployment files to VM
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          source: "docker-compose.prod.yml"
+          source: "docker-compose.prod.yml,db-init.sh"
           target: "~/expense-tracker"
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           CR_PAT: ${{ secrets.GITHUB_TOKEN }}
+          # DB Secrets
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          APP_USER: ${{ secrets.APP_USER }}
+          APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+          APP_DB: ${{ secrets.APP_DB }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          envs: GITHUB_REPOSITORY,POSTGRES_PASSWORD,CR_PAT
+          envs: GITHUB_REPOSITORY,CR_PAT,POSTGRES_PASSWORD,APP_USER,APP_PASSWORD,APP_DB
           script: |
             # Login to GHCR so we can pull the images
             echo $CR_PAT | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
@@ -126,6 +130,11 @@ jobs:
             
             # Start services
             export GITHUB_REPOSITORY=${GITHUB_REPOSITORY,,}
+            
+            # Export DB credentials for docker-compose
             export POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+            export APP_USER=$APP_USER
+            export APP_PASSWORD=$APP_PASSWORD
+            export APP_DB=$APP_DB
             
             docker compose -f docker-compose.prod.yml up -d --pull always
