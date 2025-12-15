@@ -207,9 +207,9 @@ export default function Layout() {
                 </div>
             </main>
 
-            {/* Mobile Bottom Nav - Optimized for Max Touch Area */}
+            {/* Mobile Bottom Nav - Optimized for Maximum Stability */}
             <nav className="lg:hidden fixed bottom-6 inset-x-4 h-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur-3xl border border-white/20 dark:border-white/10 rounded-full z-[100] shadow-glass-lg safe-area-bottom ring-1 ring-black/5 dark:ring-white/5 pb-safe shadow-[inset_0_1px_0_0_rgba(255,255,255,0.2)] dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
-                <div className="flex items-center justify-between h-full w-full px-1">
+                <div className="flex items-center justify-between h-full w-full px-0"> {/* Removed px-1 to maximise width */}
                     {navItems.slice(0, 5).map((item) => (
                         <NavLink
                             key={item.to}
@@ -217,12 +217,12 @@ export default function Layout() {
                             end={item.to === '/dashboard'}
                             aria-label={item.label}
                             className={({ isActive }) => cn(
-                                "relative flex-1 flex flex-col items-center justify-center h-full transition-opacity duration-300 active:opacity-70 touch-manipulation cursor-pointer",
+                                "relative flex-1 flex flex-col items-center justify-center h-full touch-manipulation cursor-pointer select-none", // STATIC container
                                 isActive ? "text-brand-600 dark:text-brand-400" : "text-slate-400 dark:text-slate-500"
                             )}
                         >
                             {({ isActive }) => (
-                                <div className="relative flex items-center justify-center w-14 h-14 rounded-full">
+                                <div className="relative flex items-center justify-center w-14 h-14 rounded-full transition-transform duration-200 active:scale-90"> {/* ANIMATED visuals */}
                                     {isActive && (
                                         <motion.div
                                             layoutId="bottomNav"
@@ -251,12 +251,12 @@ export default function Layout() {
                         to="/settings"
                         aria-label="Settings"
                         className={({ isActive }) => cn(
-                            "relative flex-1 flex flex-col items-center justify-center h-full transition-opacity duration-300 active:opacity-70 touch-manipulation cursor-pointer",
+                            "relative flex-1 flex flex-col items-center justify-center h-full touch-manipulation cursor-pointer select-none", // STATIC container
                             isActive ? "text-brand-600 dark:text-brand-400" : "text-slate-400 dark:text-slate-500"
                         )}
                     >
                         {({ isActive }) => (
-                            <div className="relative flex items-center justify-center w-14 h-14 rounded-full">
+                            <div className="relative flex items-center justify-center w-14 h-14 rounded-full transition-transform duration-200 active:scale-90"> {/* ANIMATED visuals */}
                                 {isActive && (
                                     <motion.div
                                         layoutId="bottomNav"
