@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Send, Sparkles, Loader2 } from 'lucide-react';
 import api from '../lib/api';
 import { cn } from '../lib/utils';
@@ -6,10 +6,26 @@ import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 
+const placeholders = [
+    "Uber 450 yesterday",
+    "Coffee at Starbucks 350",
+    "Netflix subscription 800",
+    "Grocery 2500 from Dmart",
+    "Flight to Mumbai 5000"
+];
+
 export default function MagicExpenseInput({ onParse }) {
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
+    const [placeholderIndex, setPlaceholderIndex] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setPlaceholderIndex((prev) => (prev + 1) % placeholders.length);
+        }, 3000);
+        return () => clearInterval(interval);
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -44,7 +60,7 @@ export default function MagicExpenseInput({ onParse }) {
             )}></div>
 
             <div className="relative bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl rounded-[1.75rem] p-2 shadow-2xl ring-1 ring-white/50 dark:ring-white/10 transition-all duration-300">
-                <form onSubmit={handleSubmit} className="flex items-center gap-3 pl-4 pr-2">
+                <form onSubmit={handleSubmit} className="relative flex items-center gap-3 pl-4 pr-2">
                     <div className={cn(
                         "text-indigo-600 dark:text-indigo-400 p-2 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 transition-all duration-500",
                         isFocused ? "scale-110 rotate-12 bg-indigo-100 dark:bg-indigo-900/40" : ""
@@ -56,16 +72,33 @@ export default function MagicExpenseInput({ onParse }) {
                         )}
                     </div>
 
-                    <input
-                        type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onFocus={() => setIsFocused(true)}
-                        onBlur={() => setIsFocused(false)}
-                        placeholder={loading ? "Analyzing..." : "Ask AI: 'Uber 450 yesterday'"}
-                        disabled={loading}
-                        className="flex-1 py-4 text-lg bg-transparent border-none focus:ring-0 placeholder-slate-400 dark:placeholder-slate-500 text-slate-800 dark:text-slate-100 font-medium caret-indigo-500 disabled:opacity-50"
-                    />
+                    <div className="relative flex-1">
+                        {/* Rotating Placeholder */}
+                        <AnimatePresence mode="wait">
+                            {!input && !loading && (
+                                <motion.p
+                                    key={placeholders[placeholderIndex]}
+                                    initial={{ opacity: 0, y: 5 }}
+                                    animate={{ opacity: 0.5, y: 0 }}
+                                    exit={{ opacity: 0, y: -5 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="absolute inset-0 flex items-center text-lg text-slate-400 pointer-events-none truncate"
+                                >
+                                    Ask AI: "{placeholders[placeholderIndex]}"
+                                </motion.p>
+                            )}
+                        </AnimatePresence>
+
+                        <input
+                            type="text"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setIsFocused(false)}
+                            disabled={loading}
+                            className="w-full py-4 text-lg bg-transparent border-none focus:ring-0 placeholder-transparent text-slate-800 dark:text-slate-100 font-medium caret-indigo-500 disabled:opacity-50 relative z-10"
+                        />
+                    </div>
 
                     <button
                         type="submit"

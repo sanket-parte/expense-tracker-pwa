@@ -208,7 +208,8 @@ export default function Layout() {
             </main>
 
             {/* Mobile Bottom Nav - Optimized for Maximum Stability */}
-            <nav className="lg:hidden fixed bottom-6 inset-x-4 h-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur-3xl border border-white/20 dark:border-white/10 rounded-full z-[100] shadow-glass-lg safe-area-bottom ring-1 ring-black/5 dark:ring-white/5 pb-safe shadow-[inset_0_1px_0_0_rgba(255,255,255,0.2)] dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+            {/* Mobile Bottom Nav - Optimized for Maximum Stability */}
+            <nav className="lg:hidden fixed bottom-6 inset-x-4 h-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur-3xl border border-white/20 dark:border-white/10 rounded-full z-[100] shadow-glass-lg ring-1 ring-black/5 dark:ring-white/5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.2)] dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
                 <div className="flex items-center justify-between h-full w-full px-0"> {/* Removed px-1 to maximise width */}
                     {navItems.slice(0, 5).map((item) => (
                         <NavLink
@@ -218,6 +219,7 @@ export default function Layout() {
                             aria-label={item.label}
                             className={({ isActive }) => cn(
                                 "relative flex-1 flex flex-col items-center justify-center h-full touch-manipulation cursor-pointer select-none", // STATIC container
+                                "after:absolute after:-inset-2 after:content-[''] after:z-50", // Hitbox Expansion: Extends touch area outside the visible element
                                 isActive ? "text-brand-600 dark:text-brand-400" : "text-slate-400 dark:text-slate-500"
                             )}
                         >
@@ -252,6 +254,7 @@ export default function Layout() {
                         aria-label="Settings"
                         className={({ isActive }) => cn(
                             "relative flex-1 flex flex-col items-center justify-center h-full touch-manipulation cursor-pointer select-none", // STATIC container
+                            "after:absolute after:-inset-2 after:content-[''] after:z-50", // Hitbox Expansion
                             isActive ? "text-brand-600 dark:text-brand-400" : "text-slate-400 dark:text-slate-500"
                         )}
                     >
