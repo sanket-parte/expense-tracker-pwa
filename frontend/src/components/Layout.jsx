@@ -207,14 +207,15 @@ export default function Layout() {
                 </div>
             </main>
 
-            {/* Mobile Bottom Nav - Optimized for Touch */}
-            <nav className="lg:hidden fixed bottom-6 inset-x-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-3xl border border-white/20 dark:border-white/10 rounded-full z-50 shadow-glass-lg safe-area-bottom ring-1 ring-black/5 dark:ring-white/5 pb-safe">
+            {/* Mobile Bottom Nav - Optimized for Touch & Visuals */}
+            <nav className="lg:hidden fixed bottom-6 inset-x-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-3xl border border-white/20 dark:border-white/10 rounded-full z-50 shadow-glass-lg safe-area-bottom ring-1 ring-black/5 dark:ring-white/5 pb-safe shadow-[inset_0_1px_0_0_rgba(255,255,255,0.2)] dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
                 <div className="flex justify-around items-center h-16 px-2">
                     {navItems.slice(0, 5).map((item) => (
                         <NavLink
                             key={item.to}
                             to={item.to}
                             end={item.to === '/dashboard'}
+                            aria-label={item.label}
                             className={({ isActive }) => cn(
                                 "relative flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300 active:scale-95 touch-manipulation",
                                 isActive ? "text-brand-600 dark:text-brand-400" : "text-slate-400 dark:text-slate-500"
@@ -232,6 +233,7 @@ export default function Layout() {
                                     <item.icon
                                         size={26}
                                         strokeWidth={isActive ? 2.5 : 2}
+                                        fill={isActive ? "currentColor" : "none"}
                                         className={cn("transition-transform duration-300", isActive && "scale-110")}
                                     />
                                     {isActive && (
@@ -247,6 +249,7 @@ export default function Layout() {
                     ))}
                     <NavLink
                         to="/settings"
+                        aria-label="Settings"
                         className={({ isActive }) => cn(
                             "relative flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300 active:scale-95 touch-manipulation",
                             isActive ? "text-brand-600 dark:text-brand-400" : "text-slate-400 dark:text-slate-500"
@@ -264,6 +267,7 @@ export default function Layout() {
                                 <Settings
                                     size={26}
                                     strokeWidth={isActive ? 2.5 : 2}
+                                    fill={isActive ? "currentColor" : "none"}
                                     className={cn("transition-transform duration-300", isActive && "scale-110")}
                                 />
                                 {isActive && (
