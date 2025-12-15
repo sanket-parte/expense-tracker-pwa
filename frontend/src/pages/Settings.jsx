@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, Upload, AlertCircle, CheckCircle2, RefreshCcw, FileJson, FileSpreadsheet, Brain } from 'lucide-react';
+import { Download, Upload, AlertCircle, CheckCircle2, RefreshCcw, FileJson, FileSpreadsheet, GitCommit } from 'lucide-react';
 import api from '../lib/api';
 import CategorySettings from '../components/CategorySettings';
 import AISettings from '../components/AISettings';
@@ -232,6 +232,30 @@ export default function Settings() {
                     </div>
                 )
             }
+
+            <div className="flex flex-col items-center justify-center pt-8 pb-4 opacity-50 space-y-2">
+                <div className="flex items-center gap-2 text-xs font-mono text-slate-400 dark:text-slate-600">
+                    {/* eslint-disable-next-line no-undef */}
+                    <span>v{__APP_VERSION__}</span>
+                    <span>•</span>
+                    {/* eslint-disable-next-line no-undef */}
+                    <span>Build {__BUILD_NUMBER__}</span>
+                    {/* eslint-disable-next-line no-undef */}
+                    {__COMMIT_HASH__ !== 'local' && (
+                        <>
+                            <span>•</span>
+                            <div className="flex items-center gap-1">
+                                <GitCommit size={10} />
+                                {/* eslint-disable-next-line no-undef */}
+                                <span>{__COMMIT_HASH__.substring(0, 7)}</span>
+                            </div>
+                        </>
+                    )}
+                </div>
+                <p className="text-[10px] text-slate-300 dark:text-slate-700">
+                    Made with ❤️ by Flow Team
+                </p>
+            </div>
         </div >
     );
 }

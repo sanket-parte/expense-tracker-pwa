@@ -1,3 +1,4 @@
+/* eslint-env node */
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -141,8 +142,15 @@ export default defineConfig({
         enabled: true,
         type: 'module',
       },
-    })
+    }),
   ],
+  define: {
+    /* eslint-disable no-undef */
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version || '1.0.0'),
+    __BUILD_NUMBER__: JSON.stringify(process.env.GITHUB_RUN_NUMBER || 'dev'),
+    __COMMIT_HASH__: JSON.stringify(process.env.GITHUB_SHA || 'local'),
+    /* eslint-enable no-undef */
+  },
   build: {
     target: 'esnext',
     minify: 'esbuild',
