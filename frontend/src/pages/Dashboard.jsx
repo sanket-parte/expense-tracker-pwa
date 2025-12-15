@@ -16,6 +16,8 @@ import BudgetOverview from '../components/BudgetOverview';
 import RecentTransactions from '../components/RecentTransactions';
 import AISuggestion from '../components/AISuggestion';
 import Card from '../components/ui/Card';
+import { Badge } from '../components/ui/Badge';
+import { Skeleton } from '../components/ui/Skeleton';
 import { cn } from '../lib/utils';
 import { useDashboardStats, useBudgets } from '../hooks/useQueries';
 import { useAI } from '../context/AIContext';
@@ -39,7 +41,7 @@ const itemVariants = {
 
 // eslint-disable-next-line no-unused-vars
 const StatCard = ({ title, amount, icon: Icon, trend, color, labelColor }) => (
-    <Card hover className="relative overflow-hidden group">
+    <Card hover variant="glass-strong" className="relative overflow-hidden group">
         <div className={cn("absolute -right-6 -top-6 w-32 h-32 rounded-full opacity-10 transition-transform duration-700 group-hover:scale-150 blur-3xl", color)} />
 
         <div className="flex justify-between items-start mb-4 relative z-10">
@@ -47,10 +49,12 @@ const StatCard = ({ title, amount, icon: Icon, trend, color, labelColor }) => (
                 <Icon size={26} className={labelColor} />
             </div>
             {trend && (
-                <div className={cn("flex items-center gap-1 text-xs font-bold px-2.5 py-1.5 rounded-full border border-black/5 dark:border-white/10 backdrop-blur-md", trend > 0 ? "bg-emerald-50/50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400" : "bg-red-50/50 dark:bg-red-900/20 text-red-600 dark:text-red-400")}>
-                    {trend > 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-                    {Math.abs(trend)}%
-                </div>
+                <Badge variant={trend > 0 ? "success" : "destructive"} className="backdrop-blur-md">
+                    <div className="flex items-center gap-1">
+                        {trend > 0 ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                        {Math.abs(trend)}%
+                    </div>
+                </Badge>
             )}
         </div>
         <div className="relative z-10">
@@ -58,6 +62,30 @@ const StatCard = ({ title, amount, icon: Icon, trend, color, labelColor }) => (
             <h3 className="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight">₹{amount.toFixed(2)}</h3>
         </div>
     </Card>
+);
+
+const DashboardSkeleton = () => (
+    <div className="space-y-8 pb-20">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div className="space-y-2">
+                <Skeleton className="h-10 w-64" />
+                <Skeleton className="h-5 w-48" />
+            </div>
+            <Skeleton className="h-10 w-40 rounded-full" />
+        </div>
+        <Skeleton className="h-24 w-full rounded-2xl" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <Skeleton className="h-48 w-full rounded-2xl" />
+                <Skeleton className="h-48 w-full rounded-2xl" />
+            </div>
+            <Skeleton className="h-full w-full rounded-2xl min-h-[12rem]" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Skeleton className="h-80 w-full rounded-2xl" />
+            <Skeleton className="h-80 w-full rounded-2xl" />
+        </div>
+    </div>
 );
 
 export default function Dashboard() {
@@ -114,14 +142,8 @@ export default function Dashboard() {
     }, [queryClient]);
 
     if (loading) return (
-        <div className="flex items-center justify-center min-h-[60vh]">
-            <div className="flex flex-col items-center gap-4">
-                <div className="relative">
-                    <div className="w-16 h-16 border-4 border-brand-100 dark:border-brand-900/30 rounded-full"></div>
-                    <div className="w-16 h-16 border-4 border-brand-600 rounded-full border-t-transparent animate-spin absolute top-0 left-0"></div>
-                </div>
-                <p className="text-brand-600 dark:text-brand-400 font-semibold animate-pulse">Loading insights...</p>
-            </div>
+        <div className="min-h-[60vh] pt-4">
+            <DashboardSkeleton />
         </div>
     );
 
@@ -224,16 +246,16 @@ export default function Dashboard() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Spending Trend Chart */}
                     <motion.div variants={itemVariants}>
-                        <Card className="h-full">
+                        <Card className="h-full" variant="glass">
                             <div className="flex justify-between items-center mb-8">
                                 <div className="flex items-center gap-3">
                                     <div className={`p-3 rounded-xl bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400 group-hover:scale-110 transition-transform`}>
                                         <Activity size={24} strokeWidth={2.5} />
                                     </div>
-                                </div>
-                                <div>
-                                    <h3 className="text-lg font-bold text-slate-800 dark:text-white">Spending Trend</h3>
-                                    <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">Last 30 Days</p>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-slate-800 dark:text-white">Spending Trend</h3>
+                                        <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">Last 30 Days</p>
+                                    </div>
                                 </div>
                                 <select className="text-sm bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-600 dark:text-slate-400 font-medium focus:ring-brand-500 cursor-pointer py-2 px-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors outline-none">
                                     <option>Daily</option>
@@ -249,7 +271,7 @@ export default function Dashboard() {
                                                 <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
                                             </linearGradient>
                                         </defs>
-                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--tw-border-opacity, 0.1)" strokeOpacity={0.1} />
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--tw-border-opacity, 0.05)" strokeOpacity={0.05} />
                                         <XAxis
                                             dataKey="date"
                                             tick={{ fontSize: 11, fill: '#94a3b8', fontWeight: 500 }}
@@ -266,10 +288,11 @@ export default function Dashboard() {
                                             cursor={{ stroke: '#8b5cf6', strokeWidth: 1.5, strokeDasharray: '4 4' }}
                                             contentStyle={{
                                                 borderRadius: '16px',
-                                                border: 'none',
+                                                border: '1px solid rgba(255,255,255,0.1)',
                                                 boxShadow: '0 10px 25px -5px rgb(0 0 0 / 0.1)',
                                                 padding: '12px',
                                                 backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                                                backdropFilter: 'blur(8px)',
                                             }}
                                             formatter={(value) => [`₹${value.toFixed(2)}`, 'Amount']}
                                             labelStyle={{ color: '#64748b', fontSize: '12px', marginBottom: '4px' }}
@@ -291,7 +314,7 @@ export default function Dashboard() {
 
                     {/* Categories Pie Chart */}
                     <motion.div variants={itemVariants}>
-                        <Card className="h-full flex flex-col">
+                        <Card className="h-full flex flex-col" variant="glass">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="p-2 bg-pink-100 dark:bg-pink-900/30 rounded-lg text-pink-600 dark:text-pink-400">
                                     <PieChartIcon size={20} />
@@ -351,11 +374,11 @@ export default function Dashboard() {
                                     </>
                                 ) : (
                                     <div className="flex flex-col items-center justify-center text-slate-400 py-12">
-                                        <div className="bg-slate-50 dark:bg-slate-800 p-6 rounded-full mb-4">
+                                        <div className="bg-slate-50 dark:bg-slate-800 p-6 rounded-full mb-4 animate-pulse-slow">
                                             <PieChartIcon size={40} className="opacity-40" />
                                         </div>
-                                        <p className="font-medium">No expense data yet</p>
-                                        <p className="text-sm opacity-60">Start adding expenses to see insights</p>
+                                        <p className="font-medium text-slate-500">No expense data yet</p>
+                                        <Badge variant="secondary" className="mt-2">Start Spending!</Badge>
                                     </div>
                                 )}
                             </div>

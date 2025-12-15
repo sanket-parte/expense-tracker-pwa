@@ -96,12 +96,22 @@ export default function Layout() {
                                 className={({ isActive }) => cn(
                                     "flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-[15px] font-medium transition-all duration-300 group relative overflow-hidden",
                                     isActive
-                                        ? "text-white bg-brand-600 shadow-md shadow-brand-500/25"
-                                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-white/50 dark:hover:bg-white/5"
+                                        ? "text-white bg-brand-600 shadow-lg shadow-brand-500/30"
+                                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/50 dark:hover:bg-white/5"
+                                )}>
+                                {({ isActive }) => (
+                                    <>
+                                        {isActive && (
+                                            <motion.div
+                                                layoutId="activeNavIndicator"
+                                                className="absolute inset-0 bg-brand-600 rounded-xl -z-10"
+                                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                            />
+                                        )}
+                                        <item.icon size={20} className={cn("transition-transform duration-300 group-hover:scale-110", isActive && "text-white scale-105")} strokeWidth={isActive ? 2.5 : 2} />
+                                        <span className="relative z-10">{item.label}</span>
+                                    </>
                                 )}
-                            >
-                                <item.icon size={20} className={cn("transition-transform duration-300 group-hover:scale-110", ({ isActive }) => isActive && "text-white")} strokeWidth={2} />
-                                {item.label}
                             </NavLink>
                         ))}
                     </nav>
@@ -198,8 +208,8 @@ export default function Layout() {
             </main>
 
             {/* Mobile Bottom Nav */}
-            <nav className="lg:hidden fixed bottom-0 inset-x-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border-t border-slate-200/50 dark:border-white/5 z-40 safe-area-bottom shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
-                <div className="flex justify-around items-center p-2.5">
+            <nav className="lg:hidden fixed bottom-4 inset-x-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-2xl z-50 shadow-glass-lg safe-area-bottom">
+                <div className="flex justify-around items-center p-2">
                     {navItems.slice(0, 5).map((item) => (
                         <NavLink
                             key={item.to}

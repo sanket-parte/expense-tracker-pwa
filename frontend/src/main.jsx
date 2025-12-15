@@ -5,6 +5,7 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import { get, set, del } from 'idb-keyval'
 import './index.css'
 import App from './App.jsx'
+import Toaster from './components/ui/Toast'
 
 function createIDBPersister(idbValidKey = "reactQuery") {
   return {

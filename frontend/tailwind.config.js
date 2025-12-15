@@ -60,6 +60,8 @@ export default {
             boxShadow: {
                 'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
                 'glass-sm': '0 4px 16px 0 rgba(31, 38, 135, 0.05)',
+                'glass-md': '0 8px 30px rgba(0, 0, 0, 0.12)',
+                'glass-lg': '0 30px 60px -12px rgba(50, 50, 93, 0.25), 0 18px 36px -18px rgba(0, 0, 0, 0.3)',
                 'neon': '0 0 20px rgba(139, 92, 246, 0.3), 0 0 10px rgba(139, 92, 246, 0.2)',
                 'neon-strong': '0 0 30px rgba(124, 58, 237, 0.5), 0 0 15px rgba(124, 58, 237, 0.3)',
             },
@@ -70,7 +72,7 @@ export default {
                 'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
                 'fade-in': 'fadeIn 0.5s ease-out forwards',
                 'scale-in': 'scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                'shimmer': 'shimmer 2.5s linear infinite',
+                'shimmer': 'shimmer 2s linear infinite',
             },
             keyframes: {
                 float: {

@@ -4,6 +4,7 @@ import api from '../lib/api';
 import { cn } from '../lib/utils';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 
 export default function MagicExpenseInput({ onParse }) {
     const [input, setInput] = useState('');
@@ -20,11 +21,15 @@ export default function MagicExpenseInput({ onParse }) {
             if (data.parsed) {
                 onParse(data.parsed);
                 setInput('');
+                toast.success('Expense parsed successfully!', {
+                    description: `Added "${data.parsed.title}" for ₹${data.parsed.amount}`
+                });
             }
         } catch (error) {
             console.error("AI Parsing failed:", error);
-            // Fallback or error toast could go here
-            alert("Failed to understand expense. Please try again.");
+            toast.error("Failed to understand expense", {
+                description: "Please try again with more details."
+            });
         } finally {
             setLoading(false);
         }
