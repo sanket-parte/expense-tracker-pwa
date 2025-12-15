@@ -207,9 +207,9 @@ export default function Layout() {
                 </div>
             </main>
 
-            {/* Mobile Bottom Nav - Optimized for Touch & Visuals */}
-            <nav className="lg:hidden fixed bottom-6 inset-x-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-3xl border border-white/20 dark:border-white/10 rounded-full z-50 shadow-glass-lg safe-area-bottom ring-1 ring-black/5 dark:ring-white/5 pb-safe shadow-[inset_0_1px_0_0_rgba(255,255,255,0.2)] dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
-                <div className="flex justify-around items-center h-16 px-2">
+            {/* Mobile Bottom Nav - Optimized for Max Touch Area */}
+            <nav className="lg:hidden fixed bottom-6 inset-x-4 h-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur-3xl border border-white/20 dark:border-white/10 rounded-full z-[100] shadow-glass-lg safe-area-bottom ring-1 ring-black/5 dark:ring-white/5 pb-safe shadow-[inset_0_1px_0_0_rgba(255,255,255,0.2)] dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+                <div className="flex items-center justify-between h-full w-full px-1">
                     {navItems.slice(0, 5).map((item) => (
                         <NavLink
                             key={item.to}
@@ -217,21 +217,21 @@ export default function Layout() {
                             end={item.to === '/dashboard'}
                             aria-label={item.label}
                             className={({ isActive }) => cn(
-                                "relative flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300 active:scale-95 touch-manipulation",
+                                "relative flex-1 flex flex-col items-center justify-center h-full transition-opacity duration-300 active:opacity-70 touch-manipulation cursor-pointer",
                                 isActive ? "text-brand-600 dark:text-brand-400" : "text-slate-400 dark:text-slate-500"
                             )}
                         >
                             {({ isActive }) => (
-                                <>
+                                <div className="relative flex items-center justify-center w-14 h-14 rounded-full">
                                     {isActive && (
                                         <motion.div
                                             layoutId="bottomNav"
-                                            className="absolute inset-1 bg-brand-50 dark:bg-brand-900/20 rounded-full -z-10"
+                                            className="absolute inset-0 bg-brand-50 dark:bg-brand-900/20 rounded-full -z-10"
                                             transition={{ type: "spring", stiffness: 400, damping: 30 }}
                                         />
                                     )}
                                     <item.icon
-                                        size={26}
+                                        size={28}
                                         strokeWidth={isActive ? 2.5 : 2}
                                         fill={isActive ? "currentColor" : "none"}
                                         className={cn("transition-transform duration-300", isActive && "scale-110")}
@@ -243,7 +243,7 @@ export default function Layout() {
                                             className="absolute bottom-2 w-1 h-1 bg-current rounded-full"
                                         />
                                     )}
-                                </>
+                                </div>
                             )}
                         </NavLink>
                     ))}
@@ -251,21 +251,21 @@ export default function Layout() {
                         to="/settings"
                         aria-label="Settings"
                         className={({ isActive }) => cn(
-                            "relative flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300 active:scale-95 touch-manipulation",
+                            "relative flex-1 flex flex-col items-center justify-center h-full transition-opacity duration-300 active:opacity-70 touch-manipulation cursor-pointer",
                             isActive ? "text-brand-600 dark:text-brand-400" : "text-slate-400 dark:text-slate-500"
                         )}
                     >
                         {({ isActive }) => (
-                            <>
+                            <div className="relative flex items-center justify-center w-14 h-14 rounded-full">
                                 {isActive && (
                                     <motion.div
                                         layoutId="bottomNav"
-                                        className="absolute inset-1 bg-brand-50 dark:bg-brand-900/20 rounded-full -z-10"
+                                        className="absolute inset-0 bg-brand-50 dark:bg-brand-900/20 rounded-full -z-10"
                                         transition={{ type: "spring", stiffness: 400, damping: 30 }}
                                     />
                                 )}
                                 <Settings
-                                    size={26}
+                                    size={28}
                                     strokeWidth={isActive ? 2.5 : 2}
                                     fill={isActive ? "currentColor" : "none"}
                                     className={cn("transition-transform duration-300", isActive && "scale-110")}
@@ -277,7 +277,7 @@ export default function Layout() {
                                         className="absolute bottom-2 w-1 h-1 bg-current rounded-full"
                                     />
                                 )}
-                            </>
+                            </div>
                         )}
                     </NavLink>
                 </div>
