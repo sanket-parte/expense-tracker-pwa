@@ -7,10 +7,15 @@ import Card from './ui/Card';
 import Button from './ui/Button';
 import { formatCurrency } from '../lib/utils';
 
+import { useAI } from '../context/AIContext';
+
 export default function MonthlyReportCard({ month }) {
+    const { isAIEnabled } = useAI();
     const [report, setReport] = useState(null);
     const [loading, setLoading] = useState(true);
     const [generating, setGenerating] = useState(false);
+
+    if (!isAIEnabled) return null;
 
     const fetchReport = useCallback(async () => {
         setLoading(true);

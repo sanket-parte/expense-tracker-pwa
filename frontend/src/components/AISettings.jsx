@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useAI } from '../context/AIContext';
 import { Brain, Lock, CheckCircle2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import Card from './ui/Card';
 import Button from './ui/Button';
@@ -6,8 +7,8 @@ import api from '../lib/api';
 import { cn } from '../lib/utils';
 
 export default function AISettings() {
+    const { isAIEnabled, refreshAIConfig } = useAI();
     const [apiKey, setApiKey] = useState('');
-    const [isSet, setIsSet] = useState(false);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState(null);
     const [showKey, setShowKey] = useState(false);
@@ -19,7 +20,6 @@ export default function AISettings() {
     const fetchSettings = async () => {
         try {
             const { data } = await api.get('/ai/settings');
-            setIsSet(data.is_set);
             if (data.openai_api_key) {
                 setApiKey(data.openai_api_key); // Usually masked
             }
@@ -37,10 +37,10 @@ export default function AISettings() {
                 ai_provider: 'openai'
             });
             setMessage({ type: 'success', text: 'AI configuration saved successfully!' });
-            setIsSet(true);
+            await refreshAIConfig();
             setTimeout(() => setMessage(null), 3000);
         } catch {
-            console.error('Failed to load settings');
+            setMessage({ type: 'error', text: 'Failed to save settings.' });
         } finally {
             setLoading(false);
         }
@@ -69,7 +69,7 @@ export default function AISettings() {
                             type={showKey ? "text" : "password"}
                             value={apiKey}
                             onChange={(e) => setApiKey(e.target.value)}
-                            placeholder={isSet ? "••••••••••••••••" : "sk-..."}
+                            placeholder={isAIEnabled ? "••••••••••••••••" : "sk-..."}
                             className="block w-full pl-10 pr-10 py-2 border border-slate-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all placeholder:text-slate-400"
                         />
                         <button
@@ -84,7 +84,7 @@ export default function AISettings() {
 
                 <div className="flex items-center justify-between pt-2">
                     <div className="flex items-center gap-2">
-                        {isSet && (
+                        {isAIEnabled && (
                             <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2.5 py-1 rounded-full border border-emerald-100 dark:border-emerald-900/30">
                                 <CheckCircle2 size={12} />
                                 Configured

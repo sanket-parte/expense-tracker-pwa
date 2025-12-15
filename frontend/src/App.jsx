@@ -23,38 +23,41 @@ const Recurring = React.lazy(() => import('./pages/Recurring'));
 const Reports = React.lazy(() => import('./pages/Reports'));
 
 import { SettingsProvider } from './context/SettingsContext';
+import { AIProvider } from './context/AIContext';
 
 export default function App() {
   return (
     <SettingsProvider>
       <AuthProvider>
-        <ThemeProvider>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Router>
-              <InstallPrompt />
-              <React.Suspense fallback={<Loading />}>
-                <Routes>
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route element={<ProtectedRoute />}>
-                    <Route element={<Layout />}>
-                      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/expenses" element={<Expenses />} />
-                      <Route path="/reports" element={<Reports />} />
-                      <Route path="/settings" element={<Settings />} />
-                      <Route path="/calendar" element={<CalendarView />} />
-                      <Route path="/budgets" element={<Budgets />} />
-                      <Route path="/recurring" element={<Recurring />} />
-                      <Route path="/profile" element={<Profile />} />
+        <AIProvider>
+          <ThemeProvider>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Router>
+                <InstallPrompt />
+                <React.Suspense fallback={<Loading />}>
+                  <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route element={<ProtectedRoute />}>
+                      <Route element={<Layout />}>
+                        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/expenses" element={<Expenses />} />
+                        <Route path="/reports" element={<Reports />} />
+                        <Route path="/settings" element={<Settings />} />
+                        <Route path="/calendar" element={<CalendarView />} />
+                        <Route path="/budgets" element={<Budgets />} />
+                        <Route path="/recurring" element={<Recurring />} />
+                        <Route path="/profile" element={<Profile />} />
+                      </Route>
                     </Route>
-                  </Route>
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </React.Suspense>
-            </Router>
-          </LocalizationProvider>
-        </ThemeProvider>
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </React.Suspense>
+              </Router>
+            </LocalizationProvider>
+          </ThemeProvider>
+        </AIProvider>
       </AuthProvider>
     </SettingsProvider>
   );

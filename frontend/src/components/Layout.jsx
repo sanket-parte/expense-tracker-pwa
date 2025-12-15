@@ -5,6 +5,7 @@ import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Home, Receipt, Settings, LogOut, Menu, X, UserCircle, Wallet, RefreshCcw, Moon, Sun, Calendar, Search, BarChart2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useAI } from '../context/AIContext';
 import { cn } from '../lib/utils';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
@@ -254,7 +255,7 @@ export default function Layout() {
                     </NavLink>
                 </div>
             </nav>
-            <AIChat />
+            {isAIEnabled && <AIChat />}
         </div>
     );
 }

@@ -63,10 +63,10 @@ class AIService:
         logger.debug(f"Generated expense summary for user {self.user_id}.")
         return summary
 
-    def generate_financial_advice(self) -> str:
+    def generate_financial_advice(self) -> Optional[str]:
         if not self.provider:
             logger.warning(f"Attempted to generate financial advice for user {self.user_id} without LLM provider.")
-            return "Please configure your OpenAI API Key in Settings to receive AI suggestions."
+            return None
             
         expense_data = self._get_recent_expenses_text(days=365)
         
@@ -108,7 +108,8 @@ class AIService:
     def extract_receipt_data(self, image_data: bytes, media_type: str = "image/jpeg") -> Dict[str, Any]:
         if not self.provider:
              logger.warning(f"Attempted to extract receipt data for user {self.user_id} without LLM provider.")
-             raise ValueError("OpenAI API Key not configured")
+             # Raise error so API can return 400/403
+             raise ValueError("AI features are not enabled. Please configure your API key.")
 
         # Encode image to base64
         base64_image = base64.b64encode(image_data).decode('utf-8')
@@ -156,7 +157,7 @@ class AIService:
     def parse_expense_natural_language(self, text: str) -> Dict[str, Any]:
         if not self.provider:
              logger.warning(f"Attempted to parse natural language expense for user {self.user_id} without LLM provider.")
-             raise ValueError("OpenAI API Key not configured")
+             raise ValueError("AI features are not enabled. Please configure your API key.")
 
         categories = self.session.exec(select(Category).where(Category.user_id == self.user_id)).all()
         category_list = ", ".join([f"{c.id}:{c.name}" for c in categories])

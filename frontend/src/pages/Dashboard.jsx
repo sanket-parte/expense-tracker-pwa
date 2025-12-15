@@ -18,6 +18,7 @@ import AISuggestion from '../components/AISuggestion';
 import Card from '../components/ui/Card';
 import { cn } from '../lib/utils';
 import { useDashboardStats, useBudgets } from '../hooks/useQueries';
+import { useAI } from '../context/AIContext';
 
 const COLORS = ['#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#6366f1'];
 
@@ -63,6 +64,7 @@ export default function Dashboard() {
     const queryClient = useQueryClient();
     const { data, isLoading: loading, error, refetch } = useDashboardStats();
     const { data: budgets } = useBudgets();
+    const { isAIEnabled } = useAI();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [quickAddData, setQuickAddData] = useState(null);
 
@@ -165,11 +167,22 @@ export default function Dashboard() {
                 </motion.div>
 
                 <motion.div variants={itemVariants} className="relative z-20 flex items-center gap-3 mb-8">
-                    <div className="flex-1">
-                        <MagicExpenseInput onParse={handleQuickAdd} />
-                    </div>
-                    <VoiceInput onResult={handleVoiceResult} />
-                    <ScanReceipt onParse={handleQuickAdd} />
+                    {isAIEnabled ? (
+                        <>
+                            <div className="flex-1">
+                                <MagicExpenseInput onParse={handleQuickAdd} />
+                            </div>
+                            <VoiceInput onResult={handleVoiceResult} />
+                            <ScanReceipt onParse={handleQuickAdd} />
+                        </>
+                    ) : (
+                        /* Fallback or just empty space? Maybe a manual add button prompt if desired, 
+                           but Dashboard usually relies on these quick inputs. 
+                           Users can still use the Fab or Nav to add expenses manually. */
+                        <div className="flex-1 p-4 bg-white/50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 text-center text-slate-500 text-sm">
+                            Enable AI in Settings to unlock Magic Input & Receipt Scanning.
+                        </div>
+                    )}
                 </motion.div>
 
                 <motion.div variants={itemVariants}>
@@ -177,7 +190,7 @@ export default function Dashboard() {
                 </motion.div>
 
                 <motion.div variants={itemVariants}>
-                    <AISuggestion />
+                    {isAIEnabled && <AISuggestion />}
                 </motion.div>
 
                 {/* Stats Grid */}

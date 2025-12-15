@@ -15,6 +15,7 @@ import { AnimatePresence, motion as Motion } from 'framer-motion';
 import api from '../lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '../hooks/useQueries';
+import { useAI } from '../context/AIContext';
 
 export default function Expenses() {
     const [searchParams] = useSearchParams();
@@ -85,6 +86,7 @@ export default function Expenses() {
     const [modalMode, setModalMode] = useState('form'); // 'form' | 'scan'
     const [isScanning, setIsScanning] = useState(false);
     const queryClient = useQueryClient();
+    const { isAIEnabled } = useAI();
 
     const {
         data,
@@ -177,19 +179,21 @@ export default function Expenses() {
                     <p className="text-slate-500 dark:text-slate-400 font-medium mt-1">Manage your transactions</p>
                 </div>
                 <div className="flex gap-2 w-full sm:w-auto">
-                    <Button
-                        onClick={handleAutoCategorize}
-                        variant="outline"
-                        className="border-brand-200 text-brand-600 hover:bg-brand-50 dark:border-brand-800 dark:text-brand-400 dark:hover:bg-brand-900/20"
-                        disabled={isScanning}
-                    >
-                        {isScanning ? (
-                            <div className="w-5 h-5 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
-                        ) : (
-                            <Sparkles size={18} className="mr-2" />
-                        )}
-                        {isScanning ? 'Scanning...' : 'Scan Uncategorized'}
-                    </Button>
+                    {isAIEnabled && (
+                        <Button
+                            onClick={handleAutoCategorize}
+                            variant="outline"
+                            className="border-brand-200 text-brand-600 hover:bg-brand-50 dark:border-brand-800 dark:text-brand-400 dark:hover:bg-brand-900/20"
+                            disabled={isScanning}
+                        >
+                            {isScanning ? (
+                                <div className="w-5 h-5 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                                <Sparkles size={18} className="mr-2" />
+                            )}
+                            {isScanning ? 'Scanning...' : 'Scan Uncategorized'}
+                        </Button>
+                    )}
                     <Button
                         onClick={handleAdd}
                         variant="primary"
@@ -278,9 +282,15 @@ export default function Expenses() {
                                 Take a photo or upload a receipt to automatically fill details.
                             </p>
                         </div>
-                        <div className="scale-125">
-                            <ScanReceipt onParse={handleScanComplete} />
-                        </div>
+                        {isAIEnabled ? (
+                            <div className="scale-125">
+                                <ScanReceipt onParse={handleScanComplete} />
+                            </div>
+                        ) : (
+                            <div className="p-4 bg-red-50 text-red-600 rounded-lg">
+                                AI features are disabled. Please configure your API Key in Settings.
+                            </div>
+                        )}
                         <Button
                             variant="ghost"
                             onClick={() => setModalMode('form')}

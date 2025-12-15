@@ -6,11 +6,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 // eslint-disable-next-line no-unused-vars
 import { cn } from '../lib/utils';
 import Button from './ui/Button';
+import { useAI } from '../context/AIContext';
 
 export default function SubscriptionScanner({ onAddSubscription }) {
+    const { isAIEnabled } = useAI();
     const [loading, setLoading] = useState(false);
     const [suggestions, setSuggestions] = useState([]);
     const [scanned, setScanned] = useState(false);
+
+    if (!isAIEnabled) return null;
 
     const handleScan = async () => {
         setLoading(true);

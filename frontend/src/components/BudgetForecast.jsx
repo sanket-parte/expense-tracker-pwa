@@ -4,10 +4,14 @@ import { AlertTriangle, TrendingUp, Lightbulb } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../lib/api';
 import Card from './ui/Card';
+import { useAI } from '../context/AIContext';
 
 export default function BudgetForecast() {
+    const { isAIEnabled } = useAI();
     const [forecasts, setForecasts] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    if (!isAIEnabled) return null;
 
     useEffect(() => {
         const fetchForecast = async () => {

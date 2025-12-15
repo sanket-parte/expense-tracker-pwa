@@ -11,9 +11,12 @@ import Card from '../components/ui/Card';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../components/ui/Button';
 import BudgetForecast from '../components/BudgetForecast';
+import BudgetForecast from '../components/BudgetForecast';
 import api from '../lib/api';
+import { useAI } from '../context/AIContext';
 
 export default function Budgets() {
+    const { isAIEnabled } = useAI();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSuggesting, setIsSuggesting] = useState(false);
     const [suggestions, setSuggestions] = useState(null);
@@ -74,19 +77,21 @@ export default function Budgets() {
                     <p className="text-slate-500 dark:text-slate-400 font-medium mt-1">Manage your monthly spending limits</p>
                 </div>
                 <div className="flex gap-2">
-                    <Button
-                        onClick={handleAutoSuggest}
-                        variant="outline"
-                        className="border-brand-200 text-brand-600 hover:bg-brand-50 dark:border-brand-800 dark:text-brand-400 dark:hover:bg-brand-900/20"
-                        disabled={isSuggesting}
-                    >
-                        {isSuggesting ? (
-                            <div className="w-5 h-5 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
-                        ) : (
-                            <Sparkles size={18} className="mr-2" />
-                        )}
-                        {isSuggesting ? 'Thinking...' : 'Auto-Suggest'}
-                    </Button>
+                    {isAIEnabled && (
+                        <Button
+                            onClick={handleAutoSuggest}
+                            variant="outline"
+                            className="border-brand-200 text-brand-600 hover:bg-brand-50 dark:border-brand-800 dark:text-brand-400 dark:hover:bg-brand-900/20"
+                            disabled={isSuggesting}
+                        >
+                            {isSuggesting ? (
+                                <div className="w-5 h-5 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                                <Sparkles size={18} className="mr-2" />
+                            )}
+                            {isSuggesting ? 'Thinking...' : 'Auto-Suggest'}
+                        </Button>
+                    )}
                     <Button
                         onClick={() => setIsModalOpen(true)}
                         variant="primary"
