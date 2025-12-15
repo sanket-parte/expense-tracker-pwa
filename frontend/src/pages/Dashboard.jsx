@@ -20,7 +20,9 @@ import { Badge } from '../components/ui/Badge';
 import { Skeleton } from '../components/ui/Skeleton';
 import { cn } from '../lib/utils';
 import { useDashboardStats, useBudgets } from '../hooks/useQueries';
+import { useDashboardStats, useBudgets } from '../hooks/useQueries';
 import { useAI } from '../context/AIContext';
+import OnboardingTour from '../components/OnboardingTour';
 
 const COLORS = ['#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#6366f1'];
 
@@ -178,6 +180,7 @@ export default function Dashboard() {
                 initial="hidden"
                 animate="visible"
             >
+                <OnboardingTour />
                 <motion.div variants={itemVariants} className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
                         <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Financial Overview</h2>
@@ -191,10 +194,12 @@ export default function Dashboard() {
                 <motion.div variants={itemVariants} className="relative z-20 flex items-center gap-3 mb-8">
                     {isAIEnabled ? (
                         <>
-                            <div className="flex-1">
+                            <div className="flex-1" id="magic-input">
                                 <MagicExpenseInput onParse={handleQuickAdd} />
                             </div>
-                            <VoiceInput onResult={handleVoiceResult} />
+                            <div id="voice-input">
+                                <VoiceInput onResult={handleVoiceResult} />
+                            </div>
                             <ScanReceipt onParse={handleQuickAdd} />
                         </>
                     ) : (
@@ -218,7 +223,7 @@ export default function Dashboard() {
                 {/* Stats Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Left Column: Key Metrics */}
-                    <div className="space-y-6 lg:col-span-2">
+                    <div className="space-y-6 lg:col-span-2" id="stats-overview">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <motion.div variants={itemVariants}>
                                 <StatCard
