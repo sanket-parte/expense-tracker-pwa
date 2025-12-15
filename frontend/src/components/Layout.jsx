@@ -207,16 +207,16 @@ export default function Layout() {
                 </div>
             </main>
 
-            {/* Mobile Bottom Nav */}
-            <nav className="lg:hidden fixed bottom-6 inset-x-6 bg-white/90 dark:bg-slate-900/90 backdrop-blur-3xl border border-white/20 dark:border-white/10 rounded-full z-50 shadow-glass-lg safe-area-bottom ring-1 ring-black/5 dark:ring-white/5">
-                <div className="flex justify-around items-center p-2.5">
+            {/* Mobile Bottom Nav - Optimized for Touch */}
+            <nav className="lg:hidden fixed bottom-6 inset-x-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-3xl border border-white/20 dark:border-white/10 rounded-full z-50 shadow-glass-lg safe-area-bottom ring-1 ring-black/5 dark:ring-white/5 pb-safe">
+                <div className="flex justify-around items-center h-16 px-2">
                     {navItems.slice(0, 5).map((item) => (
                         <NavLink
                             key={item.to}
                             to={item.to}
                             end={item.to === '/dashboard'}
                             className={({ isActive }) => cn(
-                                "relative flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300",
+                                "relative flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300 active:scale-95 touch-manipulation",
                                 isActive ? "text-brand-600 dark:text-brand-400" : "text-slate-400 dark:text-slate-500"
                             )}
                         >
@@ -225,20 +225,20 @@ export default function Layout() {
                                     {isActive && (
                                         <motion.div
                                             layoutId="bottomNav"
-                                            className="absolute inset-0 bg-brand-50 dark:bg-brand-900/20 rounded-full -z-10"
+                                            className="absolute inset-1 bg-brand-50 dark:bg-brand-900/20 rounded-full -z-10"
                                             transition={{ type: "spring", stiffness: 400, damping: 30 }}
                                         />
                                     )}
                                     <item.icon
-                                        size={24}
+                                        size={26}
                                         strokeWidth={isActive ? 2.5 : 2}
-                                        className={cn("transition-transform duration-300", isActive && "scale-105")}
+                                        className={cn("transition-transform duration-300", isActive && "scale-110")}
                                     />
                                     {isActive && (
                                         <motion.div
                                             initial={{ opacity: 0, scale: 0.5 }}
                                             animate={{ opacity: 1, scale: 1 }}
-                                            className="absolute -bottom-1 w-1 h-1 bg-current rounded-full"
+                                            className="absolute bottom-2 w-1 h-1 bg-current rounded-full"
                                         />
                                     )}
                                 </>
@@ -248,7 +248,7 @@ export default function Layout() {
                     <NavLink
                         to="/settings"
                         className={({ isActive }) => cn(
-                            "relative flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300",
+                            "relative flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300 active:scale-95 touch-manipulation",
                             isActive ? "text-brand-600 dark:text-brand-400" : "text-slate-400 dark:text-slate-500"
                         )}
                     >
@@ -257,20 +257,20 @@ export default function Layout() {
                                 {isActive && (
                                     <motion.div
                                         layoutId="bottomNav"
-                                        className="absolute inset-0 bg-brand-50 dark:bg-brand-900/20 rounded-full -z-10"
+                                        className="absolute inset-1 bg-brand-50 dark:bg-brand-900/20 rounded-full -z-10"
                                         transition={{ type: "spring", stiffness: 400, damping: 30 }}
                                     />
                                 )}
                                 <Settings
-                                    size={24}
+                                    size={26}
                                     strokeWidth={isActive ? 2.5 : 2}
-                                    className={cn("transition-transform duration-300", isActive && "scale-105")}
+                                    className={cn("transition-transform duration-300", isActive && "scale-110")}
                                 />
                                 {isActive && (
                                     <motion.div
                                         initial={{ opacity: 0, scale: 0.5 }}
                                         animate={{ opacity: 1, scale: 1 }}
-                                        className="absolute -bottom-1 w-1 h-1 bg-current rounded-full"
+                                        className="absolute bottom-2 w-1 h-1 bg-current rounded-full"
                                     />
                                 )}
                             </>
