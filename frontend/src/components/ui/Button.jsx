@@ -15,15 +15,14 @@ const Button = React.forwardRef(({
     fullWidth,
     ...props
 }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center rounded-xl font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:pointer-events-none disabled:opacity-50 select-none';
-
     const variants = {
-        primary: 'bg-brand-600 text-white shadow-lg shadow-brand-500/25 hover:bg-brand-700 active:bg-brand-800',
-        secondary: 'bg-white text-slate-900 shadow-sm border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700 dark:hover:bg-slate-700',
+        primary: 'bg-brand-600 text-white hover:bg-brand-700 shadow-lg shadow-brand-500/25 border border-transparent',
+        secondary: 'bg-slate-100 text-slate-900 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700/80 border border-transparent',
         accent: 'bg-accent-500 text-white shadow-lg shadow-accent-500/25 hover:bg-accent-600 active:bg-accent-700',
-        ghost: 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white',
-        outline: 'border border-slate-200 bg-transparent hover:bg-slate-100 text-slate-900 dark:border-slate-700 dark:text-slate-100 dark:hover:bg-slate-800',
+        ghost: 'hover:bg-slate-100 text-slate-700 dark:text-slate-300 dark:hover:bg-slate-800',
+        outline: 'border border-slate-200 bg-transparent hover:bg-slate-50 text-slate-900 dark:border-slate-700 dark:text-slate-100 dark:hover:bg-slate-800',
         danger: 'bg-red-500 text-white shadow-lg shadow-red-500/25 hover:bg-red-600',
+        glass: 'bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/20'
     };
 
     const sizes = {
@@ -38,7 +37,7 @@ const Button = React.forwardRef(({
             ref={ref}
             className={twMerge(
                 clsx(
-                    baseStyles,
+                    'relative inline-flex items-center justify-center rounded-2xl font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]',
                     variants[variant],
                     sizes[size],
                     fullWidth && 'w-full',
@@ -46,8 +45,7 @@ const Button = React.forwardRef(({
                 )
             )}
             disabled={disabled || isLoading}
-            whileTap={{ scale: 0.96 }}
-            whileHover={{ y: -1 }}
+            whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
             {...props}
         >
