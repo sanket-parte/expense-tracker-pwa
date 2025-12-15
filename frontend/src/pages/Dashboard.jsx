@@ -20,7 +20,6 @@ import { Badge } from '../components/ui/Badge';
 import { Skeleton } from '../components/ui/Skeleton';
 import { cn } from '../lib/utils';
 import { useDashboardStats, useBudgets } from '../hooks/useQueries';
-import { useDashboardStats, useBudgets } from '../hooks/useQueries';
 import { useAI } from '../context/AIContext';
 import OnboardingTour from '../components/OnboardingTour';
 
