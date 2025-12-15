@@ -11,7 +11,6 @@ import Card from '../components/ui/Card';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../components/ui/Button';
 import BudgetForecast from '../components/BudgetForecast';
-import BudgetForecast from '../components/BudgetForecast';
 import api from '../lib/api';
 import { useAI } from '../context/AIContext';
 

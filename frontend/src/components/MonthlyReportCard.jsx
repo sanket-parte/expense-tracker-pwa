@@ -15,9 +15,8 @@ export default function MonthlyReportCard({ month }) {
     const [loading, setLoading] = useState(true);
     const [generating, setGenerating] = useState(false);
 
-    if (!isAIEnabled) return null;
-
     const fetchReport = useCallback(async () => {
+        if (!isAIEnabled) return;
         setLoading(true);
         try {
             const url = month ? `/reports/${month}` : '/reports/latest';
@@ -28,7 +27,7 @@ export default function MonthlyReportCard({ month }) {
         } finally {
             setLoading(false);
         }
-    }, [month]);
+    }, [month, isAIEnabled]);
 
     useEffect(() => {
         fetchReport();
@@ -46,6 +45,8 @@ export default function MonthlyReportCard({ month }) {
             setGenerating(false);
         }
     };
+
+    if (!isAIEnabled) return null;
 
     if (loading) return <div className="animate-pulse h-64 bg-slate-100 rounded-2xl"></div>;
 

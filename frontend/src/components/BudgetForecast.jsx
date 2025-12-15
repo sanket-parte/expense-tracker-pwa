@@ -11,8 +11,6 @@ export default function BudgetForecast() {
     const [forecasts, setForecasts] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    if (!isAIEnabled) return null;
-
     useEffect(() => {
         const fetchForecast = async () => {
             try {
@@ -27,6 +25,8 @@ export default function BudgetForecast() {
 
         fetchForecast();
     }, []);
+
+    if (!isAIEnabled) return null;
 
     if (loading) return null;
 

@@ -35,6 +35,7 @@ export const AIProvider = ({ children }) => {
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAI = () => {
     const context = useContext(AIContext);
     if (!context) {

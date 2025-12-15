@@ -15,6 +15,7 @@ import CommandPalette from './CommandPalette';
 export default function Layout() {
     const { logout, user } = useAuth();
     const { theme, setTheme } = useTheme();
+    const { isAIEnabled } = useAI();
     const navigate = useNavigate();
     const location = useLocation();
     const [isSearchOpen, setIsSearchOpen] = useState(false);
