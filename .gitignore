@@ -19,3 +19,8 @@ ngrok.yml
 
 # Docker
 docker-compose.override.yml
+
+# Logs and test artifacts
+logs/
+test-results/
+playwright-report/
