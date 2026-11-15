@@ -56,7 +56,3 @@ This project is configured for automated deployment via GitHub Actions.
 ## 🤝 Contributing
 
 We welcome contributions! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
