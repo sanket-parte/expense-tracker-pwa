@@ -2,8 +2,6 @@
 
 A modern, production-ready Expense Tracker designed to help you manage your finances with ease. Built with performance and user experience in mind, this Progressive Web App (PWA) offers seamless tracking, insightful analytics, and a beautiful interface.
 
-**Live Demo:** [https://expense-flow.duckdns.org](https://expense-flow.duckdns.org)
-
 ## ✨ Features
 
 *   **Smart Dashboard:** Get a quick overview of your financial health with intuitive charts and summaries.
