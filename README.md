@@ -1,15 +1,17 @@
 # Expense Flow - Expense Tracker PWA
 
-A modern, production-ready Expense Tracker designed to help you manage your finances with ease. Built with performance and user experience in mind, this Progressive Web App (PWA) offers seamless tracking, insightful analytics, and a beautiful interface.
+Side project built with AI coding agents.
+
+An expense tracker Progressive Web App (PWA) with a React frontend, a FastAPI backend, and a PostgreSQL database.
 
 ## ✨ Features
 
-*   **Smart Dashboard:** Get a quick overview of your financial health with intuitive charts and summaries.
+*   **Smart Dashboard:** Charts and summaries of spending.
 *   **Expense Tracking:** Easily log expenses with categories, dates, and notes.
 *   **Budget Management:** Set monthly budgets and track your spending against them.
-*   **PWA Support:** Install on your mobile device for a native-like experience.
-*   **Responsive Design:** Works perfectly on desktop, tablet, and mobile.
-*   **Secure:** JWT-based authentication to keep your data safe.
+*   **PWA Support:** Installable on mobile devices (web app manifest via vite-plugin-pwa).
+*   **Responsive Design:** Responsive layout.
+*   **Secure:** JWT-based authentication.
 *   **Export Data:** Download your expense reports as CSV.
 
 ## 🛠 Tech Stack
